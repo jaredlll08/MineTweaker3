@@ -37,7 +37,7 @@ public final class ExpandLootTable {
      * @param context       The context that will generate the loot.
      * @param stackConsumer A consumer to act on the rolled stacks.
      *
-     * @docParam context new LootContextBuilder(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).create(LootContextParamSets.gift())
+     * @docParam context LootContextBuilder.create(LootParamsBuilder.create(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).build(LootContextParamSets.gift())).create()
      * @docParam stackConsumer (stack) => {
      *
      * println(stack.commandString);
@@ -58,7 +58,7 @@ public final class ExpandLootTable {
      * @param context       The context that will generate the loot.
      * @param stackConsumer A consumer to act on the rolled stacks.
      *
-     * @docParam context new LootContextBuilder(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).create(LootContextParamSets.gift())
+     * @docParam context LootContextBuilder.create(LootParamsBuilder.create(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).build(LootContextParamSets.gift())).create()
      * @docParam stackConsumer (stack) => {
      *
      * println(stack.commandString);
@@ -78,7 +78,7 @@ public final class ExpandLootTable {
      *
      * @return A list containing all the rolled items.
      *
-     * @docParam context new LootContextBuilder(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).create(LootContextParamSets.gift())
+     * @docParam context LootContextBuilder.create(LootParamsBuilder.create(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).build(LootContextParamSets.gift())).create()
      */
     @ZenCodeType.Method
     public static List<IItemStack> getRandomItems(LootTable internal, LootContext context) {
@@ -95,7 +95,7 @@ public final class ExpandLootTable {
      *
      * @return A list containing all the rolled items.
      *
-     * @docParam context new LootContextBuilder(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).create(LootContextParamSets.gift())
+     * @docParam context LootContextBuilder.create(LootParamsBuilder.create(level).withParameter<Vec3>(LootContextParams.origin(), player.position).withParameter<Entity>(LootContextParams.thisEntity(), player).build(LootContextParamSets.gift())).create()
      */
     @ZenCodeType.Method
     public static List<IItemStack> getRandomItems(LootTable internal, LootParams params) {
