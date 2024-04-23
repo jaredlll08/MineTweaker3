@@ -69,7 +69,7 @@ public final class IDataOps implements DynamicOps<IData> {
             case LONG -> outOps.createLong(input.asLong());
             case MAP -> this.convertMap(outOps, input);
             case SHORT -> outOps.createShort(input.asShort());
-            case STRING -> outOps.createString(input.asString());
+            case STRING -> outOps.createString(input.getAsString());
             case EMPTY -> outOps.empty();
         };
     }
