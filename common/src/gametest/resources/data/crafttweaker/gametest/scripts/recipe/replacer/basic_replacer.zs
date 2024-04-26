@@ -4,7 +4,7 @@ import crafttweaker.api.ingredient.IIngredient;
 Replacer.create()
     .replace<IIngredient>(
         <recipecomponent:crafttweaker:input/ingredients>,
-        <item:minecraft:diamond>,
+        <item:minecraft:iron_ingot>,
         <item:minecraft:apple>
     )
     .execute();
