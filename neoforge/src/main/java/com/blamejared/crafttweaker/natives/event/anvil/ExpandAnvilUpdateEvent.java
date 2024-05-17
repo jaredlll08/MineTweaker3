@@ -57,13 +57,13 @@ public class ExpandAnvilUpdateEvent {
     }
     
     @ZenCodeType.Getter("cost")
-    public static int getCost(AnvilUpdateEvent internal) {
+    public static long getCost(AnvilUpdateEvent internal) {
         
         return internal.getCost();
     }
     
     @ZenCodeType.Setter("cost")
-    public static void setCost(AnvilUpdateEvent internal, int cost) {
+    public static void setCost(AnvilUpdateEvent internal, long cost) {
         
         internal.setCost(cost);
     }

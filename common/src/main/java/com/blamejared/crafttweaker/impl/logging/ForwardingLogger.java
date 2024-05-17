@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -1256,6 +1257,12 @@ final class ForwardingLogger implements Logger {
     public <MF extends MessageFactory> MF getMessageFactory() {
         
         return this.loggers[0].getMessageFactory();
+    }
+    
+    @Override
+    public FlowMessageFactory getFlowMessageFactory() {
+        
+        return this.loggers[0].getFlowMessageFactory();
     }
     
     @Override

@@ -20,8 +20,8 @@ public final class ModCommands {
                     Services.PLATFORM.getMods()
                             .forEach(mod -> CommandUtilities.COMMAND_LOGGER.info("- {}({})@{}", mod.displayName(), mod.id(), mod.version()));
                     
-                    CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.mods")), CommandUtilities.getFormattedLogFile())
-                            .withStyle(ChatFormatting.GREEN)));
+                    CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.mods")), CommandUtilities.getFormattedLogFile())
+                            .withStyle(ChatFormatting.GREEN));
                     
                     return Command.SINGLE_SUCCESS;
                 })

@@ -70,11 +70,10 @@ public class ExpandPlayerList {
         return internal.getPlayer(uuid);
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isAllowCheatsForAllPlayers")
-    public static boolean isAllowCheatsForAllPlayers(PlayerList internal) {
+    @ZenCodeType.Getter("allowCommandsForAllPlayers")
+    public static boolean isAllowCommandsForAllPlayers(PlayerList internal) {
         
-        return internal.isAllowCheatsForAllPlayers();
+        return internal.isAllowCommandsForAllPlayers();
     }
     
 }

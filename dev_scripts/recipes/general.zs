@@ -1,0 +1,1 @@
+craftingTable.addShapeless("diamond_2_dirt", <item:minecraft:dirt>, [<item:minecraft:diamond>]);

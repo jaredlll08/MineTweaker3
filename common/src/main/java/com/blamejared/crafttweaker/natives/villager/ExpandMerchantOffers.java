@@ -2,7 +2,7 @@ package com.blamejared.crafttweaker.natives.villager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeConstructor;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -20,7 +20,7 @@ public class ExpandMerchantOffers {
     @ZenCodeType.Method
     public static IData createTag(MerchantOffers internal) {
         
-        return TagToDataConverter.convert(internal.createTag());
+        return MerchantOffers.CODEC.encodeStart(IDataOps.INSTANCE, internal).getOrThrow();
     }
     
 }

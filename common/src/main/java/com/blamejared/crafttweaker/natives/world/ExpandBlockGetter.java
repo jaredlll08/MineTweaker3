@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.natives.world;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
@@ -31,7 +32,7 @@ public class ExpandBlockGetter {
     public static IData getBlockEntityData(BlockGetter internal, BlockPos pos) {
         
         BlockEntity te = internal.getBlockEntity(pos);
-        return te == null ? new MapData() : TagToDataConverter.convert(te.saveWithoutMetadata());
+        return te == null ? new MapData() : TagToDataConverter.convert(CraftTweakerAPI.getAccessibleElementsProvider().registryAccess(te::saveWithoutMetadata));
     }
     
     /**

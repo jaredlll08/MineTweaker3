@@ -3,7 +3,6 @@ package com.blamejared.crafttweaker.api.action.brewing;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.MCItemStackMutable;
 import net.neoforged.neoforge.common.brewing.BrewingRecipe;
-import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 
 import java.util.List;
@@ -21,7 +20,8 @@ public class ActionAddBrewingRecipe extends ActionBrewingBase {
     @Override
     public void apply() {
         
-        BrewingRecipeRegistry.addRecipe(recipe);
+        //TODO 1.20.5
+//        BrewingRecipeRegistry.addRecipe(recipe);1
     }
     
     @Override

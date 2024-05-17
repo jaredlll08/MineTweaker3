@@ -5,8 +5,8 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStackMutable;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientConditioned;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.CraftTweakerIngredients;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.item.MCItemStack;
@@ -33,8 +33,8 @@ import com.google.common.base.Suppliers;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import cpw.mods.modlauncher.api.INameMappingService;
 import net.minecraft.Util;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -55,7 +55,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.BasicItemListing;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -66,7 +65,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import net.neoforged.neoforgespi.locating.IModFile;
-import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
 import java.lang.annotation.Annotation;
@@ -140,27 +138,29 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public IItemStack createItemStack(ItemStack stack) {
+    public IItemStack createItemStack(ItemStack stack, IngredientConditions conditions, IngredientTransformers transformers) {
         
-        return new MCItemStack(stack);
+        return new MCItemStack(stack, conditions, transformers);
     }
     
     @Override
-    public IItemStack createItemStackMutable(ItemStack stack) {
+    public IItemStack createItemStackMutable(ItemStack stack, IngredientConditions conditions, IngredientTransformers transformers) {
         
-        return new MCItemStackMutable(stack);
+        return new MCItemStackMutable(stack, conditions, transformers);
     }
     
     @Override
-    public IFluidStack createFluidStack(Fluid fluid, long amount, @Nullable CompoundTag tag) {
+    public IFluidStack createFluidStack(Fluid fluid, long amount, DataComponentPatch patch) {
         
-        return new MCFluidStack(new FluidStack(fluid, Math.toIntExact(amount), tag));
+        //noinspection deprecation
+        return new MCFluidStack(new FluidStack(fluid.builtInRegistryHolder(), Math.toIntExact(amount), patch));
     }
     
     @Override
-    public IFluidStack createFluidStackMutable(Fluid fluid, long amount, @Nullable CompoundTag tag) {
+    public IFluidStack createFluidStackMutable(Fluid fluid, long amount, DataComponentPatch patch) {
         
-        return new MCFluidStackMutable(new FluidStack(fluid, Math.toIntExact(amount), tag));
+        //noinspection deprecation
+        return new MCFluidStackMutable(new FluidStack(fluid.builtInRegistryHolder(), Math.toIntExact(amount), patch));
     }
     
     @Override
@@ -211,14 +211,14 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public String findMappedMethodName(final Class<?> clazz, final String methodName, final Class<?> returnType,
                                        final Class<?>... parameterTypes) {
-        
-        return ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, methodName);
+        //TODO 1.20.5 confirm and make this default?
+        return methodName;
     }
     
     @Override
     public String findMappedFieldName(final Class<?> clazz, final String fieldName, final Class<?> fieldType) {
-        
-        return ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName);
+        //TODO 1.20.5 confirm and make this default?
+        return fieldName;
     }
     
     @Override
@@ -264,16 +264,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public IItemHandlerWrapper getPlayerInventory(Player player) {
         
         return new IItemHandlerWrapper(player.getCapability(Capabilities.ItemHandler.ENTITY));
-    }
-    
-    @Override
-    public boolean canItemStacksStack(ItemStack first, ItemStack second) {
-        
-        if(first.isEmpty() || !ItemStack.isSameItem(first, second) || first.hasTag() != second.hasTag()) {
-            return false;
-        }
-        
-        return (!first.hasTag() || Objects.equals(first.getTag(), second.getTag())) && first.areAttachmentsCompatible(second);
     }
     
     @Override
@@ -344,20 +334,24 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public void addFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect, float probability) {
         
-        ((AccessFoodPropertiesNeoForge) internal).crafttweaker$getEffects().add(Pair.of(() -> effect, probability));
+        //TODO 1.20.5 confirm this uncheck call works
+        GenericUtil.<AccessFoodPropertiesNeoForge> uncheck(internal)
+                .crafttweaker$getEffects()
+                .add(Pair.of(() -> effect, probability));
     }
     
     @Override
     public void removeFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect) {
-        
-        ((AccessFoodPropertiesNeoForge) internal).crafttweaker$getEffects()
+        //TODO 1.20.5 confirm this uncheck call works
+        GenericUtil.<AccessFoodPropertiesNeoForge> uncheck(internal).crafttweaker$getEffects()
                 .removeIf(pair -> pair.getFirst() != null && pair.getFirst().get().equals(effect));
     }
     
     @Override
     public void removeFoodPropertiesEffect(FoodProperties internal, MobEffect effect) {
         
-        ((AccessFoodPropertiesNeoForge) internal).crafttweaker$getEffects()
+        //TODO 1.20.5 confirm this uncheck call works
+        GenericUtil.<AccessFoodPropertiesNeoForge> uncheck(internal).crafttweaker$getEffects()
                 .removeIf(pair -> pair.getFirst() != null && pair.getFirst().get().getEffect() == effect);
     }
     
@@ -368,33 +362,39 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
     
     @Override
+    public IItemStack getRemainingItem(ItemStack stack) {
+        
+        return IItemStack.of(stack.getCraftingRemainingItem());
+    }
+    
+    @Override
     public Ingredient getIngredientAny() {
         
-        return CraftTweakerIngredients.Ingredients.any();
+        return CraftTweakerIngredients.Ingredients.any().toVanilla();
     }
     
     @Override
     public Ingredient getIngredientList(List<Ingredient> children) {
         
-        return CraftTweakerIngredients.Ingredients.list(children);
+        return CraftTweakerIngredients.Ingredients.list(children).toVanilla();
     }
     
     @Override
-    public <T extends IIngredient> Ingredient getIngredientConditioned(IIngredientConditioned<T> conditioned) {
+    public Ingredient getCraftTweakerIngredient(IIngredient internal) {
         
-        return CraftTweakerIngredients.Ingredients.conditioned(conditioned);
+        return CraftTweakerIngredients.Ingredients.crafttweaker(internal).toVanilla();
     }
     
     @Override
-    public <T extends IIngredient> Ingredient getIngredientTransformed(IIngredientTransformed<T> transformed) {
+    public Ingredient getIItemStackIngredient(IItemStack internal) {
         
-        return CraftTweakerIngredients.Ingredients.transformed(transformed);
+        return CraftTweakerIngredients.Ingredients.iitemstack(internal).toVanilla();
     }
     
     @Override
-    public Ingredient getIngredientPartialTag(ItemStack stack) {
+    public boolean isCustomIngredient(Ingredient ingredient) {
         
-        return CraftTweakerIngredients.Ingredients.partialTag(stack);
+        return ingredient.getCustomIngredient() != null;
     }
     
     @Override

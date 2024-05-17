@@ -20,3 +20,6 @@ accessible      class   net/minecraft/world/entity/npc/VillagerTrades$TippedArro
 accessible      class   net/minecraft/world/entity/npc/VillagerTrades$TreasureMapForEmeralds
 
 accessible      class   net/minecraft/advancements/critereon/StatePropertiesPredicate$PropertyMatcher
+
+accessible      class   net/minecraft/world/item/alchemy/PotionBrewing$Mix
+accessible      method  net/minecraft/world/item/alchemy/PotionBrewing$Mix <init> (Lnet/minecraft/core/Holder;Lnet/minecraft/world/item/crafting/Ingredient;Lnet/minecraft/core/Holder;)V

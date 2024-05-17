@@ -1,16 +1,21 @@
 package com.blamejared.crafttweaker.natives.item.alchemy;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
+import net.minecraft.Optionull;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.List;
+import java.util.Optional;
 
 @ZenRegister
 @Document("vanilla/api/item/alchemy/Potion")
@@ -24,10 +29,10 @@ public class ExpandPotion {
         return BuiltInRegistries.POTION.getKey(internal);
     }
     
-    @ZenCodeType.Method
-    public static String getName(Potion internal, String prefix) {
+    @ZenCodeType.StaticExpansionMethod
+    public static String getName(String prefix, @ZenCodeType.Optional @ZenCodeType.Nullable Potion potion) {
         
-        return internal.getName(prefix);
+        return Potion.getName(Optional.ofNullable(Optionull.map(potion, potion1 -> Services.REGISTRY.makeHolder(Registries.POTION, potion1))), prefix);
     }
     
     @ZenCodeType.Method

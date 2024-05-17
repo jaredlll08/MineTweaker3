@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker.gametest.framework.annotation.TestModifier;
 import com.blamejared.crafttweaker.gametest.logging.appender.GameTestLoggerAppender;
 import com.blamejared.crafttweaker.impl.script.scriptrun.GameTestScriptRunner;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,20 +33,19 @@ public class FoodTests implements CraftTweakerGameTest {
         log.assertNoErrors();
         log.assertNoWarnings();
         
-        FoodProperties food = Items.DIAMOND.getFoodProperties();
+        FoodProperties food = Items.DIAMOND.getDefaultInstance().get(DataComponents.FOOD);
         assertThat(food, is(notNullValue()));
         
-        assertThat(food.getNutrition(), is(1));
-        assertThat(food.getSaturationModifier(), is(2.0F));
-        assertThat(food.isMeat(), is(true));
+        assertThat(food.nutrition(), is(1));
+        assertThat(food.saturation(), is(2.0F));
         assertThat(food.canAlwaysEat(), is(true));
-        assertThat(food.isFastFood(), is(true));
-        assertThat(food.getEffects().size(), is(1));
-        Pair<MobEffectInstance, Float> effectPair = food.getEffects().get(0);
-        assertThat(effectPair.getFirst().getEffect(), is(MobEffects.DIG_SPEED));
-        assertThat(effectPair.getFirst().getDuration(), is(100));
-        assertThat(effectPair.getFirst().getAmplifier(), is(2));
-        assertThat(effectPair.getSecond(), is(1.0F));
+        assertThat(food.eatSeconds(), is(0.8f));
+        assertThat(food.effects().size(), is(1));
+        FoodProperties.PossibleEffect effectPair = food.effects().get(0);
+        assertThat(effectPair.effect().getEffect(), is(MobEffects.DIG_SPEED));
+        assertThat(effectPair.effect().getDuration(), is(100));
+        assertThat(effectPair.effect().getAmplifier(), is(2));
+        assertThat(effectPair.probability(), is(1.0F));
     }
     
     @GameTest(template = "crafttweaker:empty")
@@ -74,7 +74,7 @@ public class FoodTests implements CraftTweakerGameTest {
         log.assertNoErrors();
         log.assertNoWarnings();
         
-        FoodProperties food = Items.GOLDEN_APPLE.getFoodProperties();
+        FoodProperties food = Items.GOLDEN_APPLE.getDefaultInstance().get(DataComponents.FOOD);
         assertThat(food, is(nullValue()));
     }
     
@@ -88,9 +88,9 @@ public class FoodTests implements CraftTweakerGameTest {
         log.assertNoErrors();
         log.assertNoWarnings();
         
-        FoodProperties food = Items.BREAD.getFoodProperties();
+        FoodProperties food = Items.BREAD.getDefaultInstance().get(DataComponents.FOOD);
         assertThat(food, is(notNullValue()));
-        assertThat(food.isFastFood(), is(true));
+        assertThat(food.eatSeconds(), is(0.8));
     }
     
 }

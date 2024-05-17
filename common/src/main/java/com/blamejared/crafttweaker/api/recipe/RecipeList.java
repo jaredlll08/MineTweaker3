@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -27,18 +27,18 @@ import java.util.function.Predicate;
 public class RecipeList<T extends Recipe<?>> {
     
     private final RecipeType<T> recipeType;
-    private final Map<ResourceLocation, RecipeHolder<T>> recipes;
+    private final Collection<RecipeHolder<T>> recipes;
     private final Map<ResourceLocation, RecipeHolder<T>> byName;
     
-    private final Map<ResourceLocation, RecipeHolder<T>> unmodifiableRecipes;
+    private final Collection<RecipeHolder<T>> unmodifiableRecipes;
     private final Map<ResourceLocation, RecipeHolder<T>> unmodifiableByName;
     
-    public RecipeList(RecipeType<T> recipeType, Map<ResourceLocation, RecipeHolder<T>> recipes, Map<ResourceLocation, RecipeHolder<?>> byName) {
+    public RecipeList(RecipeType<T> recipeType, Collection<RecipeHolder<T>> recipes, Map<ResourceLocation, RecipeHolder<?>> byName) {
         
         this.recipeType = recipeType;
         this.recipes = recipes;
         this.byName = GenericUtil.uncheck(byName);
-        this.unmodifiableRecipes = Collections.unmodifiableMap(this.recipes);
+        this.unmodifiableRecipes = Collections.unmodifiableCollection(this.recipes);
         this.unmodifiableByName = Collections.unmodifiableMap(this.byName);
     }
     
@@ -51,10 +51,9 @@ public class RecipeList<T extends Recipe<?>> {
      */
     public List<RecipeHolder<T>> getRecipesByOutput(IIngredient output) {
         
-        return getRecipes().values()
-                .stream()
-                .filter(recipe -> output.matches(IItemStack.ofMutable(AccessibleElementsProvider.get().registryAccess(recipe.value()::getResultItem))))
-                .toList();
+        return AccessibleElementsProvider.get().registryAccess(registryAccess -> getRecipes().stream()
+                .filter(recipe -> output.matches(IItemStack.of(recipe.value().getResultItem(registryAccess))))
+                .toList());
     }
     
     /**
@@ -66,38 +65,28 @@ public class RecipeList<T extends Recipe<?>> {
      */
     public List<RecipeHolder<T>> getRecipesMatching(Predicate<RecipeHolder<T>> predicate) {
         
-        return getRecipes().values()
+        return getRecipes()
                 .stream()
                 .filter(predicate)
                 .toList();
     }
     
     /**
-     * Gets a view of the recipes in this RecipeList.
+     * Gets a recipe based on the given id.
      *
-     * @return A view of the recipes in this RecipeList.
-     */
-    public List<RecipeHolder<T>> getAllRecipes() {
-        
-        return new ArrayList<>(getRecipes().values());
-    }
-    
-    /**
-     * Gets a recipe based on the given Id.
-     *
-     * @param id The resource location Id of the recipe.
+     * @param id The resource location id of the recipe.
      *
      * @return Teh found recipe or null if not found.
      */
     public RecipeHolder<T> get(ResourceLocation id) {
         
-        return getRecipes().get(id);
+        return getByName().get(id);
     }
     
     /**
-     * Gets a recipe based on the given Id.
+     * Gets a recipe based on the given id.
      *
-     * @param id The string Id of the recipe.
+     * @param id The string id of the recipe.
      *
      * @return Teh found recipe or null if not found.
      */
@@ -109,19 +98,19 @@ public class RecipeList<T extends Recipe<?>> {
     /**
      * Checks if this list contains a recipe with the given key.
      *
-     * @param id The resource location Id of the recipe.
+     * @param id The resource location id of the recipe.
      *
      * @return True if the list has the recipe, false otherwise.
      */
     public boolean has(ResourceLocation id) {
         
-        return getRecipes().containsKey(id);
+        return getByName().containsKey(id);
     }
     
     /**
      * Checks if this list contains a recipe with the given key.
      *
-     * @param id The string Id of the recipe.
+     * @param id The string id of the recipe.
      *
      * @return True if the list has the recipe, false otherwise.
      */
@@ -133,7 +122,7 @@ public class RecipeList<T extends Recipe<?>> {
     /**
      * Adds the given recipe to this list.
      *
-     * @param id     The Id of the recipe.
+     * @param id     The id of the recipe.
      * @param recipe The recipe to add.
      */
     public void add(ResourceLocation id, RecipeHolder<T> recipe) {
@@ -145,19 +134,18 @@ public class RecipeList<T extends Recipe<?>> {
             );
         }
         
-        recipes.put(id, recipe);
+        recipes.add(recipe);
         byName.put(id, recipe);
     }
     
-    
     /**
-     * Remove the recipe with the given Id.
+     * Remove the recipe with the given id.
      *
-     * @param id The Id of the recipe to remove.
+     * @param id The id of the recipe to remove.
      */
     public void remove(ResourceLocation id) {
         
-        recipes.remove(id);
+        recipes.removeIf(tRecipeHolder -> tRecipeHolder.id().equals(id));
         byName.remove(id);
     }
     
@@ -168,13 +156,12 @@ public class RecipeList<T extends Recipe<?>> {
      */
     public void removeByRecipeTest(Predicate<RecipeHolder<T>> recipePredicate) {
         
-        Iterator<ResourceLocation> iterator = recipes.keySet().iterator();
+        Iterator<RecipeHolder<T>> iterator = recipes.iterator();
         
         while(iterator.hasNext()) {
-            ResourceLocation next = iterator.next();
-            RecipeHolder<T> recipe = recipes.get(next);
-            if(recipePredicate.test(recipe)) {
-                byName.remove(next);
+            RecipeHolder<T> next = iterator.next();
+            if(recipePredicate.test(next)) {
+                byName.remove(next.id());
                 iterator.remove();
             }
         }
@@ -198,10 +185,10 @@ public class RecipeList<T extends Recipe<?>> {
      */
     public void removeByIdTest(Predicate<ResourceLocation> idPredicate, Predicate<String> exclusions) {
         
-        Iterator<ResourceLocation> iterator = recipes.keySet().iterator();
+        Iterator<RecipeHolder<T>> iterator = recipes.iterator();
         
         while(iterator.hasNext()) {
-            ResourceLocation next = iterator.next();
+            ResourceLocation next = iterator.next().id();
             if(idPredicate.test(next) && !exclusions.test(next.getPath())) {
                 byName.remove(next);
                 iterator.remove();
@@ -214,7 +201,7 @@ public class RecipeList<T extends Recipe<?>> {
      */
     public void removeAll() {
         
-        byName.keySet().removeAll(recipes.keySet());
+        byName.values().removeAll(recipes);
         recipes.clear();
     }
     
@@ -229,11 +216,11 @@ public class RecipeList<T extends Recipe<?>> {
     }
     
     /**
-     * Gets an unmodifiable view of the recipe map in this list.
+     * Gets an unmodifiable view of the recipes in this list.
      *
-     * @return An unmodifiable view of the recipe map in this list.
+     * @return An unmodifiable view of the recipes in this list.
      */
-    public Map<ResourceLocation, RecipeHolder<T>> getRecipes() {
+    public Collection<RecipeHolder<T>> getRecipes() {
         
         return unmodifiableRecipes;
     }

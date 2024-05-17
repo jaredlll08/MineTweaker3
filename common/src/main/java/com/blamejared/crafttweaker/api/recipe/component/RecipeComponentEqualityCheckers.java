@@ -24,12 +24,12 @@ public final class RecipeComponentEqualityCheckers {
     
     public static boolean areStacksEqual(final IItemStack a, final IItemStack b) {
         
-        return a.matches(b, false);
+        return a.matches(b);
     }
     
     public static boolean areStacksEqual(final Percentaged<IItemStack> a, final Percentaged<IItemStack> b) {
         
-        return a.getData().matches(b.getData(), false) && a.getPercentage() >= b.getPercentage();
+        return a.getData().matches(b.getData()) && a.getPercentage() >= b.getPercentage();
     }
     
     public static <T extends Number> boolean areNumbersEqual(final T a, final T b) {

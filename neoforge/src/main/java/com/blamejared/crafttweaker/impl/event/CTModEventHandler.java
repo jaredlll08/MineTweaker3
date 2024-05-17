@@ -3,35 +3,34 @@ package com.blamejared.crafttweaker.impl.event;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
 import com.blamejared.crafttweaker.gametest.CraftTweakerGameTests;
-import com.blamejared.crafttweaker.impl.network.message.ClientMessages;
-import com.blamejared.crafttweaker.impl.network.message.IMessage;
+import com.blamejared.crafttweaker.impl.network.packet.ClientBoundPackets;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.tags.TagManager;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = CraftTweakerConstants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = CraftTweakerConstants.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class CTModEventHandler {
     
     @SubscribeEvent
-    public static void registerPackets(RegisterPayloadHandlerEvent event) {
+    public static void registerPackets(RegisterPayloadHandlersEvent event) {
         
-        IPayloadRegistrar registrar = event.registrar(CraftTweakerConstants.MOD_ID)
+        PayloadRegistrar registrar = event.registrar(CraftTweakerConstants.MOD_ID)
                 .versioned(CraftTweakerConstants.NETWORK_VERSION_STRING);
-        for(ClientMessages msg : ClientMessages.values()) {
-            registrar.play(msg.getId(), msg::getCustomPacketPayload, (payload, context) -> context.workHandler()
-                    .execute(() -> ((IMessage) payload).handle()));
+        
+        for(ClientBoundPackets msg : ClientBoundPackets.values()) {
+            registrar.playToClient(msg.type(), msg.streamCodec(), (payload, context) -> context.enqueueWork(payload::handle));
         }
     }
     

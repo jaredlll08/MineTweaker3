@@ -50,9 +50,9 @@ public class ExpandEntityType {
     
     @ZenCodeType.Method
     @ZenCodeType.Nullable
-    public static Entity spawn(EntityType<Entity> internal, ServerLevel level, @ZenCodeType.Nullable MapData data, @ZenCodeType.Nullable Consumer<Entity> onSpawn, BlockPos position, MobSpawnType spawnType, boolean alignPosition, boolean invertY) {
+    public static Entity spawn(EntityType<Entity> internal, ServerLevel level, @ZenCodeType.Nullable Consumer<Entity> onSpawn, BlockPos position, MobSpawnType spawnType, boolean alignPosition, boolean invertY) {
         
-        return internal.spawn(level, data == null ? null : data.getInternal(), onSpawn, position, spawnType, alignPosition, invertY);
+        return internal.spawn(level, onSpawn, position, spawnType, alignPosition, invertY);
     }
     
     @ZenCodeType.Method
@@ -104,11 +104,10 @@ public class ExpandEntityType {
         return internal.toShortString();
     }
     
-    @ZenCodeType.Method
     @ZenCodeType.Getter("defaultLootTable")
     public static ResourceLocation getDefaultLootTable(EntityType<Entity> internal) {
         
-        return internal.getDefaultLootTable();
+        return internal.getDefaultLootTable().location();
     }
     
     @ZenCodeType.Method

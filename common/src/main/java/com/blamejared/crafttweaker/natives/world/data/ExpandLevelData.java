@@ -12,24 +12,6 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = LevelData.class, zenCodeName = "crafttweaker.api.world.data.LevelData")
 public class ExpandLevelData {
     
-    @ZenCodeType.Getter("xSpawn")
-    public static int getXSpawn(LevelData internal) {
-        
-        return internal.getXSpawn();
-    }
-    
-    @ZenCodeType.Getter("ySpawn")
-    public static int getYSpawn(LevelData internal) {
-        
-        return internal.getYSpawn();
-    }
-    
-    @ZenCodeType.Getter("zSpawn")
-    public static int getZSpawn(LevelData internal) {
-        
-        return internal.getZSpawn();
-    }
-    
     @ZenCodeType.Getter("spawnAngle")
     public static float getSpawnAngle(LevelData internal) {
         

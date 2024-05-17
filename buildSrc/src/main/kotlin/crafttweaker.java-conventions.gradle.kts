@@ -4,8 +4,6 @@ import com.blamejared.crafttweaker.gradle.Versions
 import com.blamejared.gradle.mod.utils.GMUtils
 import org.gradle.jvm.tasks.Jar
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
-import java.util.*
 
 plugins {
     base
@@ -19,7 +17,7 @@ version = GMUtils.updatingVersion(Versions.MOD)
 group = Properties.GROUP
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_17.majorVersion))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion))
     withSourcesJar()
     withJavadocJar()
     sourceSets {
@@ -71,9 +69,6 @@ repositories {
 }
 
 tasks {
-    withType<GenerateModuleMetadata>().configureEach {
-        enabled = false
-    }
     named<JavaCompile>("compileTestJava").configure {
         options.isFork = true
         options.compilerArgs.add("-XDenableSunApiLintControl")
@@ -117,19 +112,19 @@ tasks {
                 source(project(it).sourceSets.getByName("test").allSource)
             }
         }
-        if (this.project.name == "forge") {
-            project.copy {
-                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                from(project.sourceSets.getByName("gametest").output)
-                Dependencies.ZENCODE.forEach {
-                    from(project(it).sourceSets.main.get().output)
-                }
-                Dependencies.ZENCODE_TEST.forEach {
-                    from(project(it).sourceSets.test.get().output)
-                }
-                into(project.layout.buildDirectory.dir("sourcesSets/main"))
-            }
-        }
+//        if (this.project.name == "forge") {
+//            project.copy {
+//                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//                from(project.sourceSets.getByName("gametest").output)
+//                Dependencies.ZENCODE.forEach {
+//                    from(project(it).sourceSets.main.get().output)
+//                }
+//                Dependencies.ZENCODE_TEST.forEach {
+//                    from(project(it).sourceSets.test.get().output)
+//                }
+//                into(project.layout.buildDirectory.dir("sourcesSets/main"))
+//            }
+//        }
     }
     withType<ProcessResources>().matching { notNeoTask(it) }.configureEach {
         dependsOn(":StdLibs:zipItUp")
@@ -159,7 +154,7 @@ tasks {
                 "ITEM_ICON" to Properties.ITEM_ICON,
         )
         inputs.properties(properties)
-        filesMatching(setOf("fabric.mod.json", "META-INF/mods.toml", "pack.mcmeta")) {
+        filesMatching(setOf("fabric.mod.json", "META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta")) {
             expand(properties)
         }
     }
@@ -172,8 +167,6 @@ tasks {
             attributes["Implementation-Title"] = project.name
             attributes["Implementation-Version"] = archiveVersion
             attributes["Implementation-Vendor"] = Properties.SIMPLE_AUTHOR
-            attributes["Implementation-Timestamp"] = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date())
-            attributes["Timestamp"] = System.currentTimeMillis()
             attributes["Built-On-Java"] = "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
             attributes["Build-On-Minecraft"] = Versions.MINECRAFT
         }
@@ -224,7 +217,6 @@ publishing {
         register<MavenPublication>("mavenJava") {
             artifactId = base.archivesName.get()
             from(components.getByName("java"))
-
         }
     }
     repositories {

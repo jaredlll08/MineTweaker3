@@ -6,15 +6,21 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @Document("vanilla/api/item/type/projectileweapon/CrossbowItem")
 @NativeTypeRegistration(value = CrossbowItem.class, zenCodeName = "crafttweaker.api.item.type.projectileweapon.CrossbowItem")
 public class ExpandCrossBowItem {
+    
+    @ZenCodeType.Method
+    public static void performShooting(CrossbowItem internal, Level level, LivingEntity shooter, InteractionHand hand, ItemStack stack, float power, float accuracy, @ZenCodeType.Nullable LivingEntity target) {
+        
+        internal.performShooting(level, shooter, hand, stack, power, accuracy, target);
+    }
     
     /**
      * Checks if the stack is charged
@@ -29,44 +35,6 @@ public class ExpandCrossBowItem {
     public static boolean isCharged(ItemStack crossbowStack) {
         
         return CrossbowItem.isCharged(crossbowStack);
-    }
-    
-    /**
-     * Sets the charged value on the given stack.
-     *
-     * @param crossbowStack the stack to set the value on
-     * @param charged       the charged value
-     *
-     * @docParam crossbowStack <item:minecraft:crossbow>
-     * @docParam charged true
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static void setCharged(ItemStack crossbowStack, boolean charged) {
-        
-        CrossbowItem.setCharged(crossbowStack, charged);
-    }
-    
-    /**
-     * Checks if the given stack has any charged items of the given type
-     *
-     * @param crossbowStack The stack to check
-     * @param ammoItem      The ammo to check for
-     *
-     * @return true if it contains the charged item, false otherwise.
-     *
-     * @docParam crossbowStack <item:minecraft:crossbow>
-     * @docParam ammoItem <item:minecraft:arrow>
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static boolean containsChargedProjectile(ItemStack crossbowStack, Item ammoItem) {
-        
-        return CrossbowItem.containsChargedProjectile(crossbowStack, ammoItem);
-    }
-    
-    @ZenCodeType.StaticExpansionMethod
-    public static void performShooting(Level level, LivingEntity shooter, InteractionHand hand, ItemStack crossbowStack, float velocity, float accuracy) {
-        
-        CrossbowItem.performShooting(level, shooter, hand, crossbowStack, velocity, accuracy);
     }
     
     /**

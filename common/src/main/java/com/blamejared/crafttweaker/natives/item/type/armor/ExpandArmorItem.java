@@ -23,7 +23,7 @@ public class ExpandArmorItem {
     @ZenCodeType.Getter("material")
     public static ArmorMaterial getMaterial(ArmorItem internal) {
         
-        return internal.getMaterial();
+        return internal.getMaterial().value();
     }
     
     @ZenCodeType.Getter("defense")
@@ -42,7 +42,7 @@ public class ExpandArmorItem {
     @ZenCodeType.Getter("equipSound")
     public static SoundEvent getEquipSound(ArmorItem internal) {
         
-        return internal.getEquipSound();
+        return internal.getEquipSound().value();
     }
     
 }

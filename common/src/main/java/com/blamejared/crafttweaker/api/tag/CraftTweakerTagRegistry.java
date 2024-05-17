@@ -9,6 +9,7 @@ import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.tag.manager.type.UnknownTagManager;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.InstantiationUtil;
+import com.blamejared.crafttweaker.mixin.common.access.tag.AccessTagNetworkSerialization;
 import com.blamejared.crafttweaker.platform.Services;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.Registry;
@@ -259,7 +260,7 @@ public final class CraftTweakerTagRegistry {
             HashMap<Object, Object> resultMap = new HashMap<>();
             
             Registry<Object> registry = registryAccess.registryOrThrow(resourceKey);
-            TagNetworkSerialization.deserializeTagsFromNetwork(GenericUtil.uncheck(resourceKey), registry, networkPayload, (key, holders) -> resultMap.put(key.location(), holders));
+            AccessTagNetworkSerialization.crafttweaker$$callDeserializeTagsFromNetwork(GenericUtil.uncheck(resourceKey), registry, networkPayload, (key, holders) -> resultMap.put(key.location(), holders));
             
             results.add(new TagManager.LoadResult(resourceKey, resultMap));
             

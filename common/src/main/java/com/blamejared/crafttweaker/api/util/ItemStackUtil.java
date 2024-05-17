@@ -2,12 +2,15 @@ package com.blamejared.crafttweaker.api.util;
 
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
+import com.blamejared.crafttweaker.natives.component.ExpandDataComponentType;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Objects;
+import java.util.function.Predicate;
 
 public final class ItemStackUtil {
     
@@ -21,21 +24,31 @@ public final class ItemStackUtil {
         final StringBuilder sb = new StringBuilder("<item:").append(BuiltInRegistries.ITEM.getKey(stack.getItem()))
                 .append('>');
         
-        final CompoundTag tag;
-        if((tag = stack.getTag()) != null) {
-            
-            final IData data = Objects.requireNonNull(TagToDataConverter.convert(tag)).copyInternal();
-            
-            //Damage is special case, if we have more special cases we can handle them here.
-            if(stack.getItem().canBeDepleted()) {
-                
-                data.remove("Damage");
-            }
-            if(!data.isEmpty()) {
-                
-                sb.append(".withTag(").append(data.asString()).append(')');
-            }
-        }
+        DataComponentPatch.SplitResult split = stack.getComponentsPatch().split();
+        split.added().filter(Predicate.not(DataComponentType::isTransient)).forEach(typedDataComponent -> {
+            sb.append(".withJsonComponent(")
+                    .append(ExpandDataComponentType.getCommandString(typedDataComponent.type()))
+                    .append(", ")
+                    .append(typedDataComponent.encodeValue(IDataOps.INSTANCE).getOrThrow())
+                    .append(")");
+        });
+        split.removed().forEach(dataComponentType -> sb.append(".remove(").append(ExpandDataComponentType.getCommandString(dataComponentType)).append(")"));
+        //TODO 1.20.5 fix all of this
+        //        final CompoundTag tag;
+        //        if((tag = stack.getTag()) != null) {
+        //
+        //            final IData data = Objects.requireNonNull(TagToDataConverter.convert(tag)).copyInternal();
+        //
+        //            //Damage is special case, if we have more special cases we can handle them here.
+        //            if(stack.getItem().canBeDepleted()) {
+        //
+        //                data.remove("Damage");
+        //            }
+        //            if(!data.isEmpty()) {
+        //
+        //                sb.append(".withTag(").append(data.asString()).append(')');
+        //            }
+        //        }
         
         if(stack.getDamageValue() > 0) {
             
@@ -56,17 +69,14 @@ public final class ItemStackUtil {
         return sb.toString();
     }
     
+    
     public static boolean areStacksTheSame(final ItemStack first, final ItemStack second) {
         
         return areStacksTheSame(first, second, false);
     }
     
-    public static boolean areStacksTheSame(final ItemStack first, final ItemStack second, final boolean ignoreDamage) {
-        
-        return areStacksTheSame(first, second, ignoreDamage, false);
-    }
-    
-    public static boolean areStacksTheSame(final ItemStack first, final ItemStack second, final boolean ignoreDamage, final boolean partial) {
+    //TODO 1.20.5 write docs
+    public static boolean areStacksTheSame(final ItemStack first, final ItemStack second, final boolean partial) {
         
         //Sometimes mods are bad and use null itemstacks, so lets just sort that out here
         if(first == null || second == null) {
@@ -81,54 +91,54 @@ public final class ItemStackUtil {
         if(first.getCount() > second.getCount()) {
             return false;
         }
-        if(!ignoreDamage && first.getDamageValue() != second.getDamageValue()) {
-            return false;
-        }
+        //TODO 1.20.5 do we want to check components or just completely ignore them for now?
         
-        final CompoundTag firstTag = first.getTag();
-        final CompoundTag secondTag = second.getTag();
-        
-        // Note: different from original (see comment at the end of the method)
-        // The original code checks if they are both null and returns true if so, otherwise it converts both of them to
-        // MapData and then checks again if the first tag is null. The only possibility is if firstTag is actually null,
-        // so we can simplify the check. Also, if the first tag is not null, the second tag cannot be null, otherwise
-        // there is no match. We can account for that too.
-        if(firstTag == null) {
-            return true;
-        }
-        if(secondTag == null) {
-            return false;
-        }
-        
-        final Tag firstDamage = firstTag.get("Damage");
-        final Tag secondDamage = secondTag.get("Damage");
-        
-        try {
-            if(ignoreDamage) {
-                firstTag.remove("Damage");
-                secondTag.remove("Damage");
-            }
-            
-            // We want to perform the full check only if partial matching is not required. In fact, checking tag
-            // equality means making a full comparison of the two compound's maps. In Java's wisdom, this is done by
-            // looping over all keys and checking with get and contains... which is literally what we'd end up doing in
-            // a partial match. It's very interesting that HashMap does not override this behavior to check for buckets.
-            if(!partial) {
-                return firstTag.equals(secondTag);
-            }
-            
-            return areStackTagsPartiallyEqual(firstTag, secondTag);
-        } finally {
-            // We set the values we obtained back into the tag. If we ignored damage, then the removal operation did not
-            // occur. Setting the values again results in a no-op then, the equivalent of map.put("a", map.get("a")).
-            // If that's not the case, on the other hand, we reset the tag to how it was before
-            if(firstDamage != null) {
-                firstTag.put("Damage", firstDamage);
-            }
-            if(secondDamage != null) {
-                secondTag.put("Damage", secondDamage);
-            }
-        }
+        return true;
+        //TODO 1.20.5
+        //        final CompoundTag firstTag = first.getTag();
+        //        final CompoundTag secondTag = second.getTag();
+        //
+        //        // Note: different from original (see comment at the end of the method)
+        //        // The original code checks if they are both null and returns true if so, otherwise it converts both of them to
+        //        // MapData and then checks again if the first tag is null. The only possibility is if firstTag is actually null,
+        //        // so we can simplify the check. Also, if the first tag is not null, the second tag cannot be null, otherwise
+        //        // there is no match. We can account for that too.
+        //        if(firstTag == null) {
+        //            return true;
+        //        }
+        //        if(secondTag == null) {
+        //            return false;
+        //        }
+        //
+        //        final Tag firstDamage = firstTag.get("Damage");
+        //        final Tag secondDamage = secondTag.get("Damage");
+        //
+        //        try {
+        //            if(ignoreDamage) {
+        //                firstTag.remove("Damage");
+        //                secondTag.remove("Damage");
+        //            }
+        //
+        //            // We want to perform the full check only if partial matching is not required. In fact, checking tag
+        //            // equality means making a full comparison of the two compound's maps. In Java's wisdom, this is done by
+        //            // looping over all keys and checking with get and contains... which is literally what we'd end up doing in
+        //            // a partial match. It's very interesting that HashMap does not override this behavior to check for buckets.
+        //            if(!partial) {
+        //                return firstTag.equals(secondTag);
+        //            }
+        //
+        //            return areStackTagsPartiallyEqual(firstTag, secondTag);
+        //        } finally { // TODO 1.20.5 lets try and not do this?
+        //            // We set the values we obtained back into the tag. If we ignored damage, then the removal operation did not
+        //            // occur. Setting the values again results in a no-op then, the equivalent of map.put("a", map.get("a")).
+        //            // If that's not the case, on the other hand, we reset the tag to how it was before
+        //            if(firstDamage != null) {
+        //                firstTag.put("Damage", firstDamage);
+        //            }
+        //            if(secondDamage != null) {
+        //                secondTag.put("Damage", secondDamage);
+        //            }
+    }
         
         /*
         ItemStack stack1 = getInternal();
@@ -171,7 +181,7 @@ public final class ItemStackUtil {
         }
         return stack2Data != null && stack2Data.contains(stack1Data);
         */
-    }
+    //    }
     
     private static boolean areStackTagsPartiallyEqual(final CompoundTag partial, final CompoundTag actual) {
         

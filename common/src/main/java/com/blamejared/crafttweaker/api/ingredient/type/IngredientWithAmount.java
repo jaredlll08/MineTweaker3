@@ -9,16 +9,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("vanilla/api/ingredient/type/IngredientWithAmount")
 @ZenCodeType.Name("crafttweaker.api.ingredient.type.IngredientWithAmount")
-public class IngredientWithAmount implements IIngredientWithAmount {
-    
-    private final IIngredient ingredient;
-    private final int amount;
-    
-    public IngredientWithAmount(IIngredient ingredient, int amount) {
-        
-        this.ingredient = ingredient;
-        this.amount = amount;
-    }
+public record IngredientWithAmount(IIngredient ingredient, int amount) implements IIngredientWithAmount {
     
     @Override
     public String getCommandString() {
@@ -27,18 +18,6 @@ public class IngredientWithAmount implements IIngredientWithAmount {
             return ingredient.getCommandString();
         }
         return String.format("(%s) * %d", ingredient.getCommandString(), amount);
-    }
-    
-    @Override
-    public IIngredient getIngredient() {
-        
-        return ingredient;
-    }
-    
-    @Override
-    public int getAmount() {
-        
-        return amount;
     }
     
 }

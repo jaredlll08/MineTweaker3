@@ -2,6 +2,10 @@ package com.blamejared.crafttweaker.api.ingredient.type;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -23,9 +27,10 @@ public class IIngredientEmpty implements IIngredient {
     }
     
     @Override
-    public boolean matches(IItemStack stack, boolean ignoreDamage) {
+    public boolean matches(IItemStack stack) {
         
-        return stack.isEmpty();
+        //I'm not sure *what* condition you could test for, but it is here
+        return stack.isEmpty() && this.conditions().test(stack);
     }
     
     @Override
@@ -50,6 +55,18 @@ public class IIngredientEmpty implements IIngredient {
     public IItemStack[] getItems() {
         
         return new IItemStack[0];
+    }
+    
+    @Override
+    public IngredientTransformers transformers() {
+        
+        return IngredientTransformers.EMPTY;
+    }
+    
+    @Override
+    public IngredientConditions conditions() {
+        
+        return IngredientConditions.EMPTY;
     }
     
 }

@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class BracketValidators {
     
     private BracketValidators() {
-    
+        
     }
     
     @ZenCodeType.Method
@@ -65,7 +65,7 @@ public class BracketValidators {
         
         if(tokens.split(":").length != 2) {
             CommonLoggers.zenCode()
-                    .error("Invalid Bracket Syntax: <effect:" + tokens + ">! Syntax is <effect:modid:potionname>");
+                    .error("Invalid Bracket Syntax: <effect:{}>! Syntax is <effect:modid:potionname>", tokens);
             return false;
         }
         
@@ -102,7 +102,7 @@ public class BracketValidators {
         
         if(ResourceLocation.tryParse(tokens) == null) {
             CommonLoggers.zenCode()
-                    .error("Invalid Bracket Syntax: <entitytype:" + tokens + ">! Syntax is <entitytype:modid:entity_type_name>");
+                    .error("Invalid Bracket Syntax: <entitytype:{}>! Syntax is <entitytype:modid:entity_type_name>", tokens);
             return false;
         }
         
@@ -120,14 +120,13 @@ public class BracketValidators {
         final String[] split = tokens.split(":");
         if(split.length != 2) {
             CommonLoggers.zenCode()
-                    .error("Could not get item with name: <item:" + tokens + ">! Syntax is <item:modid:itemname>");
+                    .error("Could not get item with name: <item:{}>! Syntax is <item:modid:itemname>", tokens);
             return false;
         }
         ResourceLocation key = new ResourceLocation(split[0], split[1]);
         
         if(!BuiltInRegistries.ITEM.containsKey(key)) {
-            CommonLoggers.zenCode()
-                    .error("Could not get item with name: <item:" + tokens + ">! Item does not exist!");
+            CommonLoggers.zenCode().error("Could not get item with name: <item:{}>! Item does not exist!", tokens);
             return false;
         }
         
@@ -140,7 +139,7 @@ public class BracketValidators {
         
         if(tokens.split(":").length != 2) {
             CommonLoggers.zenCode()
-                    .error("Invalid Bracket Syntax: <profession:" + tokens + ">! Syntax is <profession:modid:profession_name>");
+                    .error("Invalid Bracket Syntax: <profession:{}>! Syntax is <profession:modid:profession_name>", tokens);
             return false;
         }
         
@@ -177,7 +176,7 @@ public class BracketValidators {
         
         if(tokens.split(":").length != 2) {
             CommonLoggers.zenCode()
-                    .error("Invalid Bracket Syntax: <soundevent:" + tokens + ">! Syntax is <soundevent:modid:name>");
+                    .error("Invalid Bracket Syntax: <soundevent:{}>! Syntax is <soundevent:modid:name>", tokens);
             return false;
         }
         
@@ -190,11 +189,24 @@ public class BracketValidators {
         
         if(tokens.split(":").length != 2) {
             CommonLoggers.zenCode()
-                    .error("Invalid Bracket Syntax <targetingstrategy:" + tokens + ">! Syntax is <targetingstrategy:modid:name>");
+                    .error("Invalid Bracket Syntax <targetingstrategy:{}>! Syntax is <targetingstrategy:modid:name>", tokens);
             return false;
         }
         
         return validateBracket("targetingstrategy", tokens, BracketHandlers::getTargetingStrategy);
+    }
+    
+    @ZenCodeType.Method
+    @BracketValidator("componenttype")
+    public static boolean validateComponentType(String tokens) {
+        
+        if(tokens.split(":").length != 2) {
+            CommonLoggers.zenCode()
+                    .error("Invalid Bracket Syntax: <componenttype:{}>! Syntax is <componenttype:modid:component_type_name>", tokens);
+            return false;
+        }
+        
+        return validateBracket("componenttype", tokens, BracketHandlers::getComponentType);
     }
     
 }

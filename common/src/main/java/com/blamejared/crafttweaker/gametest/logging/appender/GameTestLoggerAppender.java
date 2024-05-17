@@ -1,6 +1,7 @@
 package com.blamejared.crafttweaker.gametest.logging.appender;
 
 import com.blamejared.crafttweaker.CraftTweakerCommon;
+import com.google.common.collect.Lists;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -80,7 +81,7 @@ public class GameTestLoggerAppender extends AbstractAppender {
         
         public static QueryableLog mock(final List<String> mockMessages) {
             
-            return new QueryableLog(mockMessages.stream().map(LogMessage::mock).toList());
+            return new QueryableLog(Lists.transform(mockMessages, LogMessage::mock));
         }
         
         public void assertNoErrors() {

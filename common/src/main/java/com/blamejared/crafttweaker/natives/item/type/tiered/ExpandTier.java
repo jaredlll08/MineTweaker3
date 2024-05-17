@@ -35,13 +35,6 @@ public class ExpandTier {
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Getter("level")
-    public static int getLevel(Tier internal) {
-        
-        return internal.getLevel();
-    }
-    
-    @ZenCodeType.Method
     @ZenCodeType.Getter("enchantmentValue")
     public static int getEnchantmentValue(Tier internal) {
         

@@ -12,12 +12,21 @@ import com.blamejared.crafttweaker.natives.predicate.ExpandEnchantmentPredicate;
 import com.blamejared.crafttweaker.natives.predicate.ExpandItemPredicate;
 import com.blamejared.crafttweaker.natives.predicate.ExpandMinMaxBoundsInts;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import net.minecraft.advancements.critereon.ItemCustomDataPredicate;
+import net.minecraft.advancements.critereon.ItemDamagePredicate;
+import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.ItemSubPredicates;
+import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.critereon.NbtPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import org.openzen.zencode.java.ZenCodeType;
+
+import java.util.List;
 
 /**
  * Additional methods for easier modification of block-related loot tables.
@@ -26,7 +35,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Expansion("crafttweaker.api.block.Block")
 @ZenRegister
 public final class ModifierSpecificExpandBlock {
-    
+    //TODO 1.20.5 redo the data component touching ones
     /**
      * Adds an {@link ILootModifier} to this block, with the given name.
      *
@@ -53,15 +62,17 @@ public final class ModifierSpecificExpandBlock {
      */
     @ZenCodeType.Method
     public static void addNoSilkTouchLootModifier(final Block internal, final String name, final ILootModifier modifier) {
-    
+        
         LootManager.INSTANCE.getModifierManager().register(
                 name,
                 LootConditions.allOf(
                         ExpandLootItemBlockStatePropertyCondition.create(internal),
                         ExpandInvertedLootItemCondition.create(ExpandMatchTool.create(ExpandItemPredicate.create()
-                                .hasEnchantment(ExpandEnchantmentPredicate.create(Enchantments.SILK_TOUCH))))
-                ),
-            
+                                .withSubPredicate(ItemSubPredicates.ENCHANTMENTS,
+                                        ItemEnchantmentsPredicate.enchantments(List.of(
+                                                ExpandEnchantmentPredicate.create(
+                                                        Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1)))))))),
+                
                 modifier
         );
     }
@@ -86,40 +97,43 @@ public final class ModifierSpecificExpandBlock {
         );
     }
     
-    /**
-     * Adds an {@link ILootModifier} that fires if this block gets broken with the given tool.
-     *
-     * <p>Parameters that may be attached to the tool such as count, damage, or NBT data are ignored.</p>
-     *
-     * @param internal The block to add the loot modifier to.
-     * @param name     The name of the loot modifier.
-     * @param tool     The tool the block was broken with.
-     * @param modifier The loot modifier to add to the block.
-     */
-    @ZenCodeType.Method
-    public static void addToolLootModifier(final Block internal, final String name, final IItemStack tool, final ILootModifier modifier) {
-        
-        addToolLootModifier(internal, name, tool, false, modifier);
-    }
+    //TODO 1.20.5
+//    /**
+//     * Adds an {@link ILootModifier} that fires if this block gets broken with the given tool.
+//     *
+//     * <p>Parameters that may be attached to the tool such as count, damage, or NBT data are ignored.</p>
+//     *
+//     * @param internal The block to add the loot modifier to.
+//     * @param name     The name of the loot modifier.
+//     * @param tool     The tool the block was broken with.
+//     * @param modifier The loot modifier to add to the block.
+//     */
+//    @ZenCodeType.Method
+//    public static void addToolLootModifier(final Block internal, final String name, final IItemStack tool, final ILootModifier modifier) {
+//
+//        addToolLootModifier(internal, name, tool, false, modifier);
+//    }
     
-    /**
-     * Adds an {@link ILootModifier} that fires if this block gets broken with the given tool, optionally considering
-     * its damage.
-     *
-     * <p>Additional parameters that may be attached to the tool, such as NBT or count, are ignored.</p>
-     *
-     * @param internal    The block to add the loot modifier to.
-     * @param name        The name of the loot modifier.
-     * @param tool        The tool the block was broken with.
-     * @param matchDamage Whether to consider damage or not when trying to match the tool.
-     * @param modifier    The loot modifier to add to the block.
-     */
-    @ZenCodeType.Method
-    public static void addToolLootModifier(final Block internal, final String name, final IItemStack tool, final boolean matchDamage, final ILootModifier modifier) {
-        
-        addToolLootModifier(internal, name, tool, matchDamage, false, modifier);
-    }
+    //TODO 1.20.5
+//    /**
+//     * Adds an {@link ILootModifier} that fires if this block gets broken with the given tool, optionally considering
+//     * its damage.
+//     *
+//     * <p>Additional parameters that may be attached to the tool, such as NBT or count, are ignored.</p>
+//     *
+//     * @param internal    The block to add the loot modifier to.
+//     * @param name        The name of the loot modifier.
+//     * @param tool        The tool the block was broken with.
+//     * @param matchDamage Whether to consider damage or not when trying to match the tool.
+//     * @param modifier    The loot modifier to add to the block.
+//     */
+//    @ZenCodeType.Method
+//    public static void addToolLootModifier(final Block internal, final String name, final IItemStack tool, final boolean matchDamage, final ILootModifier modifier) {
+//
+//        addToolLootModifier(internal, name, tool, matchDamage, false, modifier);
+//    }
     
+    //TODO 1.20.5
     /**
      * Adds an {@link ILootModifier} that fires if this block gets broken with the given tool, optionally considering
      * its damage or NBT.
@@ -135,21 +149,19 @@ public final class ModifierSpecificExpandBlock {
      */
     @ZenCodeType.Method
     public static void addToolLootModifier(final Block internal, final String name, final IItemStack tool, final boolean matchDamage, final boolean matchNbt, final ILootModifier modifier) {
-        
+
         final ItemPredicate.Builder predicateBuilder = ExpandItemPredicate.create(tool);
-        
+
         if(matchDamage) {
-            predicateBuilder.hasDurability(ExpandMinMaxBoundsInts.exactly(tool.getDamage()));
+            predicateBuilder.withSubPredicate(ItemSubPredicates.DAMAGE, ItemDamagePredicate.durability(ExpandMinMaxBoundsInts.exactly(tool.getDamage())));
         }
-        
-        if(matchNbt) {
-            final CompoundTag tag = tool.getInternal().getTag();
+
+        if(matchNbt && tool.getInternal().has(DataComponents.CUSTOM_DATA)) {
+            final CompoundTag tag = tool.getInternal().get(DataComponents.CUSTOM_DATA).copyTag();
             
-            if(tag != null) {
-                predicateBuilder.hasNbt(tag);
-            }
+            predicateBuilder.withSubPredicate(ItemSubPredicates.CUSTOM_DATA, ItemCustomDataPredicate.customData(new NbtPredicate(tag)));
         }
-        
+
         LootManager.INSTANCE.getModifierManager().register(
                 name,
                 LootConditions.allOf(

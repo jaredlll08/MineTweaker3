@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -40,7 +41,7 @@ public class CraftTweakerSavedData extends SavedData {
         this.data = data;
     }
     
-    public static CraftTweakerSavedData load(CompoundTag tag) {
+    public static CraftTweakerSavedData load(CompoundTag tag, HolderLookup.Provider lookup) {
         
         CompoundTag dataTag = tag.getCompound("data");
         Set<String> booleanKeys = tag.getList("booleanKeys", Tag.TAG_STRING)
@@ -72,7 +73,7 @@ public class CraftTweakerSavedData extends SavedData {
     }
     
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag) {
+    public @NotNull CompoundTag save(CompoundTag tag, HolderLookup.Provider lookup) {
         
         ListTag booleanKeys = new ListTag();
         data.boolDataKeys().stream().map(StringTag::valueOf).forEach(booleanKeys::add);

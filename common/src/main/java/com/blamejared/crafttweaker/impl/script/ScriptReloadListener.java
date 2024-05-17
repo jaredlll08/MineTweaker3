@@ -12,17 +12,18 @@ import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
 import com.blamejared.crafttweaker.mixin.common.access.tag.AccessTagManager;
 import com.blamejared.crafttweaker.platform.helper.IAccessibleServerElementsProvider;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.tags.TagManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +31,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
@@ -96,11 +96,8 @@ public final class ScriptReloadListener extends SimplePreparableReloadListener<V
     
     private void fixRecipeManager(final RecipeManager manager) {
         
-        //ImmutableMap of ImmutableMaps. Nice.
         final AccessRecipeManager accessRecipeManager = (AccessRecipeManager) manager;
-        accessRecipeManager.crafttweaker$setRecipes(new HashMap<>(accessRecipeManager.crafttweaker$getRecipes()));
-        accessRecipeManager.crafttweaker$getRecipes()
-                .replaceAll((k, v) -> new HashMap<>(accessRecipeManager.crafttweaker$getRecipes().get(k)));
+        accessRecipeManager.crafttweaker$setByType(HashMultimap.create(accessRecipeManager.crafttweaker$getByType()));
         accessRecipeManager.crafttweaker$setByName(new HashMap<>(accessRecipeManager.crafttweaker$getByName()));
         CraftTweakerAPI.getAccessibleElementsProvider().recipeManager(manager);
     }
@@ -140,11 +137,10 @@ public final class ScriptReloadListener extends SimplePreparableReloadListener<V
     
     private void storeScriptsInRecipes(final RecipeManager manager, final Path root, final List<Path> scripts) {
         
-        final Map<ResourceLocation, RecipeHolder<?>> recipes = ((AccessRecipeManager) manager).crafttweaker$getRecipes()
-                .computeIfAbsent(ScriptRecipeType.INSTANCE, it -> new HashMap<>());
+        final Multimap<RecipeType<?>, RecipeHolder<?>> recipes = ((AccessRecipeManager) manager).crafttweaker$getByType();
         scripts.stream()
                 .map(it -> this.buildScriptRecipe(it, root))
-                .forEach(it -> recipes.put(it.getId(), new RecipeHolder<>(it.getId(), it)));
+                .forEach(it -> recipes.put(it.getType(), new RecipeHolder<>(it.getId(), it)));
     }
     
     private ScriptRecipe buildScriptRecipe(final Path file, final Path root) {
@@ -163,7 +159,6 @@ public final class ScriptReloadListener extends SimplePreparableReloadListener<V
         }
     }
     
-    @SuppressWarnings("SpellCheckingInspection")
     private void displayPatreonBranding() {
         
         final Collection<String> patronList = CraftTweakerCommon.getPatronList();

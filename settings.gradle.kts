@@ -47,7 +47,7 @@ collectSubProjects("ZenCode")
 
 include("common")
 include("fabric")
-include("forge")
+//include("forge")
 include("neoforge")
 
 if (file("CraftTweaker-Annotation-Processors").exists()) {

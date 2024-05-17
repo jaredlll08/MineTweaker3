@@ -42,8 +42,6 @@ public class CraftTweakerCommon {
         }
         CraftTweakerEarlyInit.run();
         
-        Services.REGISTRY.init();
-        
         final Thread patronThread = new Thread(() -> {
             try {
                 final String ua = CraftTweakerConstants.MOD_NAME + '|' + SharedConstants.getCurrentVersion().getName();

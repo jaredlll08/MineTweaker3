@@ -4,6 +4,8 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -15,57 +17,50 @@ import org.openzen.zencode.java.ZenCodeType;
 public class ExpandArmorMaterial {
     
     @ZenCodeType.Method
-    public static int getDurabilityForType(ArmorMaterial internal, ArmorItem.Type type) {
+    public static int getDefense(ArmorMaterial internal, ArmorItem.Type type) {
         
-        return internal.getDurabilityForType(type);
-    }
-    
-    @ZenCodeType.Method
-    public static int getDefenseForType(ArmorMaterial internal, ArmorItem.Type type) {
-        
-        return internal.getDefenseForType(type);
+        return internal.getDefense(type);
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("enchantmentValue")
-    public static int getEnchantmentValue(ArmorMaterial internal) {
+    public static int enchantmentValue(ArmorMaterial internal) {
         
-        return internal.getEnchantmentValue();
+        return internal.enchantmentValue();
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("equipSound")
-    public static SoundEvent getEquipSound(ArmorMaterial internal) {
+    public static SoundEvent equipSound(ArmorMaterial internal) {
         
-        return internal.getEquipSound();
+        return internal.equipSound().value();
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("repairIngredient")
-    public static IIngredient getRepairIngredient(ArmorMaterial internal) {
+    public static IIngredient repairIngredient(ArmorMaterial internal) {
         
-        return IIngredient.fromIngredient(internal.getRepairIngredient());
+        return IIngredient.fromIngredient(internal.repairIngredient().get());
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("name")
-    public static String getName(ArmorMaterial internal) {
+    @ZenCodeType.Getter("registryName")
+    public static ResourceLocation getName(ArmorMaterial internal) {
         
-        return internal.getName();
+        return BuiltInRegistries.ARMOR_MATERIAL.getKey(internal);
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("toughness")
-    public static float getToughness(ArmorMaterial internal) {
+    public static float toughness(ArmorMaterial internal) {
         
-        return internal.getToughness();
+        return internal.toughness();
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("knockbackResistance")
-    public static float getKnockbackResistance(ArmorMaterial internal) {
+    public static float knockbackResistance(ArmorMaterial internal) {
         
-        return internal.getKnockbackResistance();
+        return internal.knockbackResistance();
     }
     
 }

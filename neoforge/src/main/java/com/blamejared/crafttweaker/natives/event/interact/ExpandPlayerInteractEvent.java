@@ -61,26 +61,4 @@ public class ExpandPlayerInteractEvent {
         return internal.getHand();
     }
     
-    /**
-     * @return The EnumActionResult that will be returned to vanilla if the event is cancelled, instead of calling the relevant
-     * method of the event. By default, this is PASS, meaning cancelled events will cause
-     * the client to keep trying more interactions until something works.
-     */
-    @ZenCodeType.Getter("cancellationResult")
-    public static InteractionResult getCancellationResult(PlayerInteractEvent internal) {
-        
-        return internal.getCancellationResult();
-    }
-    
-    /**
-     * Set the EnumActionResult that will be returned to vanilla if the event is cancelled, instead of calling the relevant method of the event.
-     *
-     * Note that this only has an effect on RightClickBlockEvent, RightClickItemEvent, EntityInteractEvent.
-     */
-    @ZenCodeType.Setter("cancellationResult")
-    public static void setCancellationResult(PlayerInteractEvent internal, InteractionResult result) {
-        
-        internal.setCancellationResult(result);
-    }
-    
 }

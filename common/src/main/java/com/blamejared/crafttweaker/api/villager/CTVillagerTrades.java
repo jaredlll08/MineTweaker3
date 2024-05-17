@@ -224,7 +224,7 @@ public class CTVillagerTrades {
         
         removeTradeInternal(profession, villagerLevel, trade -> {
             if(trade instanceof VillagerTrades.EmeraldForItems) {
-                return tradeFor.matches(IItemStack.of(((AccessEmeraldForItems)trade).crafttweaker$getItemStack()));
+                return tradeFor.matches(IItemStack.of(((AccessEmeraldForItems)trade).crafttweaker$getItemStack().itemStack()));
             } else if(trade instanceof IBasicItemListing basicTrade) {
                 return tradeFor.matches(IItemStack.of(basicTrade.getForSale()));
             }
@@ -275,7 +275,7 @@ public class CTVillagerTrades {
         removeTradeInternal(profession, villagerLevel, trade -> {
             if(trade instanceof VillagerTrades.ItemsAndEmeraldsToItems) {
                 if(sellingItem.matches(IItemStack.ofMutable(((AccessItemsAndEmeraldsToItems) trade).crafttweaker$getToItem()))) {
-                    return buyingItem.matches(IItemStack.ofMutable(((AccessItemsAndEmeraldsToItems) trade).crafttweaker$getFromItem()));
+                    return buyingItem.matches(IItemStack.ofMutable(((AccessItemsAndEmeraldsToItems) trade).crafttweaker$getFromItem().itemStack()));
                 }
             } else if(trade instanceof IBasicItemListing basicTrade) {
                 if(sellingItem.matches(IItemStack.ofMutable(basicTrade.getPrice()))) {

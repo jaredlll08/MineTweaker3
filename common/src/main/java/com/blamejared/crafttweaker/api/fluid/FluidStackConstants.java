@@ -9,7 +9,8 @@ import java.util.function.Supplier;
 class FluidStackConstants {
     
     static final Supplier<IFluidStack> EMPTY = Suppliers.memoize(() -> IFluidStack.of(Fluids.EMPTY, 0));
-    static final BiPredicate<IFluidStack, IFluidStack> TAG_EQUALS = (first, second) -> !first.hasTag() ? !second.hasTag() : second.hasTag() && first.getInternalTag()
-            .equals(second.getInternalTag());
+//    static final BiPredicate<IFluidStack, IFluidStack> TAG_EQUALS = (first, second) -> !first.hasTag() ? !second.hasTag() : second.hasTag() && first.getInternalTag()
+//            .equals(second.getInternalTag());
+static final BiPredicate<IFluidStack, IFluidStack> TAG_EQUALS = (first, second) -> true;
     
 }

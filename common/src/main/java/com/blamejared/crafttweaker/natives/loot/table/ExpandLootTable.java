@@ -1,12 +1,13 @@
 package com.blamejared.crafttweaker.natives.loot.table;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.util.GenericUtil;
-import com.blamejared.crafttweaker.impl.loot.ILootTableIdHolder;
 import com.blamejared.crafttweaker.mixin.common.access.loot.AccessLootTable;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import com.google.common.collect.Lists;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -17,6 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A loot table is used to determine what is dropped when the game needs to drop loot.
@@ -69,6 +71,7 @@ public final class ExpandLootTable {
         
         internal.getRandomItems(context, itemStack -> stackConsumer.accept(IItemStack.of(itemStack)));
     }
+    
     /**
      * Rolls this table and returns the rolled items in a list.
      *
@@ -83,7 +86,7 @@ public final class ExpandLootTable {
     @ZenCodeType.Method
     public static List<IItemStack> getRandomItems(LootTable internal, LootContext context) {
         
-        return ((AccessLootTable)internal).crafttweaker$callGetRandomItems(context).stream().map(IItemStack::of).toList();
+        return ((AccessLootTable) internal).crafttweaker$callGetRandomItems(context).stream().map(IItemStack::of).collect(Collectors.toList());
     }
     
     /**
@@ -100,7 +103,7 @@ public final class ExpandLootTable {
     @ZenCodeType.Method
     public static List<IItemStack> getRandomItems(LootTable internal, LootParams params) {
         
-        return internal.getRandomItems(params).stream().map(IItemStack::of).toList();
+        return internal.getRandomItems(params).stream().map(IItemStack::of).collect(Collectors.toList());
     }
     
     /**
@@ -124,7 +127,10 @@ public final class ExpandLootTable {
     @ZenCodeType.Getter("id")
     public static ResourceLocation getId(LootTable internal) {
         
-        return GenericUtil.<ILootTableIdHolder>uncheck(internal).crafttweaker$tableId();
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+                .registryAccess()
+                .registryOrThrow(Registries.LOOT_TABLE)
+                .getKey(internal);
     }
     
     /**

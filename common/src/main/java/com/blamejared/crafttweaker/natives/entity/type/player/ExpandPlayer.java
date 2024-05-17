@@ -103,9 +103,9 @@ public class ExpandPlayer {
     }
     
     @ZenCodeType.Method
-    public static void disableShield(Player internal, boolean usingAxe) {
+    public static void disableShield(Player internal) {
         
-        internal.disableShield(usingAxe);
+        internal.disableShield();
     }
     
     @ZenCodeType.Method

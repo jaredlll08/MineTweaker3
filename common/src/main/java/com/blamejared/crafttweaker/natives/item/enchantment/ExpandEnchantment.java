@@ -9,9 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.openzen.zencode.java.ZenCodeType;
@@ -30,11 +30,10 @@ public class ExpandEnchantment {
         return internal.getSlotItems(entity);
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("rarity")
-    public static Enchantment.Rarity getRarity(Enchantment internal) {
+    @ZenCodeType.Getter("weight")
+    public static int getWeight(Enchantment internal) {
         
-        return internal.getRarity();
+        return internal.getWeight();
     }
     
     @ZenCodeType.Method
@@ -70,7 +69,7 @@ public class ExpandEnchantment {
     }
     
     @ZenCodeType.Method
-    public static float getDamageBonus(Enchantment internal, int level, MobType mobType) {
+    public static float getDamageBonus(Enchantment internal, int level, EntityType<Entity> mobType) {
         
         return internal.getDamageBonus(level, mobType);
     }

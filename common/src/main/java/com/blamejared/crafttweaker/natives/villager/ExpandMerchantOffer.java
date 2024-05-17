@@ -2,55 +2,45 @@ package com.blamejared.crafttweaker.natives.villager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.blamejared.crafttweaker_annotations.annotations.NativeConstructor;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import org.openzen.zencode.java.ZenCodeType;
 
+import java.util.Optional;
+
 @ZenRegister
 @Document("vanilla/api/villager/MerchantOffer")
-@NativeTypeRegistration(value = MerchantOffer.class, zenCodeName = "crafttweaker.api.villager.MerchantOffer",
-        constructors = {
-                @NativeConstructor({
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "baseCostA"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "result"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "maxUses"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "xp"),
-                        @NativeConstructor.ConstructorParameter(type = float.class, name = "priceMultiplier"),
-                }),
-                @NativeConstructor({
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "baseCostA"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "costB"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "result"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "maxUses"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "xp"),
-                        @NativeConstructor.ConstructorParameter(type = float.class, name = "priceMultiplier"),
-                }),
-                @NativeConstructor({
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "baseCostA"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "costB"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "result"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "uses"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "maxUses"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "xp"),
-                        @NativeConstructor.ConstructorParameter(type = float.class, name = "priceMultiplier"),
-                }),
-                @NativeConstructor({
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "baseCostA"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "costB"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "result"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "uses"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "maxUses"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "xp"),
-                        @NativeConstructor.ConstructorParameter(type = float.class, name = "priceMultiplier"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "demand"),
-                })
-        })
+@NativeTypeRegistration(value = MerchantOffer.class, zenCodeName = "crafttweaker.api.villager.MerchantOffer")
 public class ExpandMerchantOffer {
+    
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static MerchantOffer of(ItemCost baseCostA, IItemStack result, int maxUses, int xp, float priceMultiplier) {
+        
+        return new MerchantOffer(baseCostA, result.getInternal(), maxUses, xp, priceMultiplier);
+    }
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static MerchantOffer of(ItemCost baseCostA, ItemCost costB, IItemStack result, int maxUses, int xp, float priceMultiplier) {
+        
+        return new MerchantOffer(baseCostA, Optional.of(costB), result.getInternal(), maxUses, xp, priceMultiplier);
+    }
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static MerchantOffer of(ItemCost baseCostA, ItemCost costB, IItemStack result, int uses, int maxUses, int xp, float priceMultiplier) {
+        
+        return new MerchantOffer(baseCostA, Optional.of(costB), result.getInternal(), uses, maxUses, xp, priceMultiplier);
+    }
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static MerchantOffer of(ItemCost baseCostA, ItemCost costB, IItemStack result, int uses, int maxUses, int xp, float priceMultiplier, int demand) {
+        
+        return new MerchantOffer(baseCostA, Optional.of(costB), result.getInternal(), uses, maxUses, demand, priceMultiplier, xp);
+    }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("baseCostA")
@@ -195,7 +185,7 @@ public class ExpandMerchantOffer {
     @ZenCodeType.Method
     public static IData createTag(MerchantOffer internal) {
         
-        return TagToDataConverter.convert(internal.createTag());
+        return MerchantOffer.CODEC.encodeStart(IDataOps.INSTANCE, internal).getOrThrow();
     }
     
     @ZenCodeType.Method

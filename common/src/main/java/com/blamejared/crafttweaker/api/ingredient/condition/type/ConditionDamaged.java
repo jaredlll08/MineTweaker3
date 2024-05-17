@@ -2,26 +2,19 @@ package com.blamejared.crafttweaker.api.ingredient.condition.type;
 
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientConditionSerializer;
 import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionDamagedSerializer;
-import com.blamejared.crafttweaker.api.ingredient.condition.serializer.IIngredientConditionSerializer;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.ingredient.condition.type.ConditionDamaged")
 @Document("vanilla/api/ingredient/condition/type/ConditionDamaged")
-public class ConditionDamaged<T extends IIngredient> implements IIngredientCondition<T> {
+public class ConditionDamaged implements IIngredientCondition {
     
-    public static final ConditionDamaged<?> INSTANCE_RAW = new ConditionDamaged<>();
-    
-    public static <T extends IIngredient> ConditionDamaged<T> getInstance() {
-        
-        return GenericUtil.uncheck(INSTANCE_RAW);
-    }
+    public static final ConditionDamaged INSTANCE = new ConditionDamaged();
     
     private ConditionDamaged() {}
     
@@ -38,13 +31,13 @@ public class ConditionDamaged<T extends IIngredient> implements IIngredientCondi
     }
     
     @Override
-    public String getCommandString(IIngredient ingredient) {
+    public String getCommandString(String base) {
         
-        return ingredient.getCommandString() + ".onlyDamaged()";
+        return "%s.onlyDamaged()".formatted(base);
     }
     
     @Override
-    public IIngredientConditionSerializer<ConditionDamaged<?>> getSerializer() {
+    public ConditionDamagedSerializer getSerializer() {
         
         return ConditionDamagedSerializer.INSTANCE;
     }

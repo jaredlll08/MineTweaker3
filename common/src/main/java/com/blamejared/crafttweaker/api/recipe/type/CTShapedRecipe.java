@@ -8,6 +8,7 @@ import com.blamejared.crafttweaker.api.recipe.serializer.CTShapedRecipeSerialize
 import com.blamejared.crafttweaker.api.util.ArrayUtil;
 import com.blamejared.crafttweaker.api.util.RecipeUtil;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -153,7 +154,7 @@ public class CTShapedRecipe extends ShapedRecipe {
     }
     
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider lookup) {
         
         final Pair<Integer, Integer> offset = calculateOffset(container);
         if(offset == INVALID) {
@@ -161,7 +162,7 @@ public class CTShapedRecipe extends ShapedRecipe {
         }
         
         if(function == null) {
-            return getResultItem(access);
+            return getResultItem(lookup);
         }
         
         final int rowOffset;
@@ -186,8 +187,9 @@ public class CTShapedRecipe extends ShapedRecipe {
         return function.process(this.output, stacks).getImmutableInternal();
     }
     
+    
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
+    public ItemStack getResultItem(HolderLookup.Provider lookup) {
         
         return output.getInternal().copy();
     }
@@ -263,6 +265,16 @@ public class CTShapedRecipe extends ShapedRecipe {
     public IIngredient[][] getCtIngredients() {
         
         return this.ingredients;
+    }
+    
+    public NonNullList<IIngredient> getFlatCtIngredients() {
+        
+        NonNullList<IIngredient> ingredients = NonNullList.create();
+        
+        for(IIngredient[] ctIngredient : getCtIngredients()) {
+            ingredients.addAll(Arrays.asList(ctIngredient));
+        }
+        return ingredients;
     }
     
     public IItemStack getCtOutput() {

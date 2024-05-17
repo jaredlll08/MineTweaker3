@@ -7,7 +7,7 @@ import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
     id("crafttweaker.modloader-conventions")
-    id("fabric-loom") version "1.5-SNAPSHOT"
+    id("fabric-loom") version "1.6-SNAPSHOT"
 }
 
 dependencies {
@@ -68,6 +68,7 @@ loom {
             runDir("run")
             programArg("--username=Dev")
             environmentVariable("crafttweaker.logger.forward_to_latest_log", true)
+            environmentVariable("crafttweaker.scripts.directory", rootProject.file("dev_scripts"))
         }
         named("server") {
             server()
@@ -75,6 +76,7 @@ loom {
             ideConfigGenerated(true)
             runDir("run_server")
             environmentVariable("crafttweaker.logger.forward_to_latest_log", true)
+            environmentVariable("crafttweaker.scripts.directory", rootProject.file("dev_scripts"))
         }
         create("GameTest") {
             server()

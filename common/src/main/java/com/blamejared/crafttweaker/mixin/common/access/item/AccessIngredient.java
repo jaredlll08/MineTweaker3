@@ -18,9 +18,6 @@ public interface AccessIngredient {
     Ingredient.Value[] crafttweaker$getValues();
     
     @Accessor("itemStacks")
-    ItemStack[] crafttweaker$getItemStacks();
-    
-    @Accessor("itemStacks")
     void crafttweaker$setItemStacks(ItemStack[] itemStacks);
     
 }

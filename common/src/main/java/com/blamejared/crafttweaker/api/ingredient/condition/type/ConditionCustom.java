@@ -2,10 +2,9 @@ package com.blamejared.crafttweaker.api.ingredient.condition.type;
 
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientConditionSerializer;
 import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionCustomSerializer;
-import com.blamejared.crafttweaker.api.ingredient.condition.serializer.IIngredientConditionSerializer;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import org.openzen.zencode.java.ZenCodeType;
@@ -18,9 +17,9 @@ import java.util.function.Predicate;
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.ingredient.condition.type.ConditionCustom")
 @Document("vanilla/api/ingredient/condition/type/ConditionCustom")
-public class ConditionCustom<T extends IIngredient> implements IIngredientCondition<T> {
+public class ConditionCustom implements IIngredientCondition {
     
-    public static final Map<String, Predicate<IItemStack>> knownConditions = new HashMap<>();
+    private static final Map<String, Predicate<IItemStack>> KNOWN_CONDITIONS = new HashMap<>();
     
     private final String uid;
     private Predicate<IItemStack> function;
@@ -36,7 +35,7 @@ public class ConditionCustom<T extends IIngredient> implements IIngredientCondit
         this.function = function;
         
         if(function != null) {
-            knownConditions.put(uid, function);
+            KNOWN_CONDITIONS.put(uid, function);
         }
     }
     
@@ -44,7 +43,7 @@ public class ConditionCustom<T extends IIngredient> implements IIngredientCondit
     public boolean matches(IItemStack stack) {
         
         if(function == null) {
-            function = knownConditions.get(uid);
+            function = KNOWN_CONDITIONS.get(uid);
         }
         
         if(function == null) {
@@ -55,9 +54,9 @@ public class ConditionCustom<T extends IIngredient> implements IIngredientCondit
     }
     
     @Override
-    public String getCommandString(T ingredient) {
+    public String getCommandString(String base) {
         
-        return String.format("%s.onlyIf('%s')", ingredient.getCommandString(), uid);
+        return "%s.onlyIf('%s')".formatted(base, uid);
     }
     
     @Override
@@ -72,8 +71,7 @@ public class ConditionCustom<T extends IIngredient> implements IIngredientCondit
     }
     
     @Override
-    @SuppressWarnings("rawtypes")
-    public IIngredientConditionSerializer getSerializer() {
+    public ConditionCustomSerializer getSerializer() {
         
         return ConditionCustomSerializer.INSTANCE;
     }
@@ -88,7 +86,7 @@ public class ConditionCustom<T extends IIngredient> implements IIngredientCondit
             return false;
         }
         
-        ConditionCustom<?> that = (ConditionCustom<?>) o;
+        ConditionCustom that = (ConditionCustom) o;
         
         return Objects.equals(uid, that.uid);
     }

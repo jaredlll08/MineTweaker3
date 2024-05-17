@@ -1,13 +1,16 @@
 package com.blamejared.crafttweaker.natives.villager.trade.type;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,9 +38,9 @@ public class ExpandTreasureMapForEmeralds {
      * @docParam villagerXp 2
      */
     @ZenCodeType.StaticExpansionMethod
-    public static VillagerTrades.TreasureMapForEmeralds create(int emeraldCost, ResourceLocation destination, String displayName, MapDecoration.Type destinationType, int maxUses, int villagerXp) {
+    public static VillagerTrades.TreasureMapForEmeralds create(int emeraldCost, ResourceLocation destination, String displayName, MapDecorationType destinationType, int maxUses, int villagerXp) {
         
-        return new VillagerTrades.TreasureMapForEmeralds(emeraldCost, TagKey.create(Registries.STRUCTURE, destination), displayName, destinationType, maxUses, villagerXp);
+        return new VillagerTrades.TreasureMapForEmeralds(emeraldCost, TagKey.create(Registries.STRUCTURE, destination), displayName, Services.REGISTRY.makeHolder(Registries.MAP_DECORATION_TYPE, destinationType), maxUses, villagerXp);
     }
     
 }

@@ -3,24 +3,34 @@ package com.blamejared.crafttweaker.api.fluid;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.MapData;
-import com.blamejared.crafttweaker.natives.resource.ExpandResourceLocation;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
+import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.natives.component.ExpandDataComponentType;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.fluid.IFluidStack")
 @Document("vanilla/api/fluid/IFluidStack")
-public interface IFluidStack extends CommandStringDisplayable {
+public interface IFluidStack extends CommandStringDisplayable, DataComponentHolder {
     
     /**
      * Gets the empty IFluidStack
@@ -51,12 +61,12 @@ public interface IFluidStack extends CommandStringDisplayable {
     
     static IFluidStack of(final Fluid fluid, final long amount) {
         
-        return Services.PLATFORM.createFluidStack(fluid, amount, null);
+        return Services.PLATFORM.createFluidStack(fluid, amount, DataComponentPatch.EMPTY);
     }
     
-    static IFluidStack of(final Fluid fluid, final long amount, final @Nullable CompoundTag tag) {
+    static IFluidStack of(final Fluid fluid, final long amount, final DataComponentPatch components) {
         
-        return Services.PLATFORM.createFluidStack(fluid, amount, tag);
+        return Services.PLATFORM.createFluidStack(fluid, amount, components);
     }
     
     /**
@@ -78,12 +88,12 @@ public interface IFluidStack extends CommandStringDisplayable {
     
     static IFluidStack of(final Fluid fluid, final long amount, final boolean mutable) {
         
-        return mutable ? ofMutable(fluid, amount, null) : of(fluid, amount, null);
+        return mutable ? ofMutable(fluid, amount, DataComponentPatch.EMPTY) : of(fluid, amount, DataComponentPatch.EMPTY);
     }
     
-    static IFluidStack of(final Fluid fluid, final long amount, final @Nullable CompoundTag tag, final boolean mutable) {
+    static IFluidStack of(final Fluid fluid, final long amount, final DataComponentPatch components, final boolean mutable) {
         
-        return mutable ? ofMutable(fluid, amount, tag) : of(fluid, amount, tag);
+        return mutable ? ofMutable(fluid, amount, components) : of(fluid, amount, components);
     }
     
     /**
@@ -104,12 +114,12 @@ public interface IFluidStack extends CommandStringDisplayable {
     
     static IFluidStack ofMutable(final Fluid fluid, final long amount) {
         
-        return Services.PLATFORM.createFluidStackMutable(fluid, amount, null);
+        return Services.PLATFORM.createFluidStackMutable(fluid, amount, DataComponentPatch.EMPTY);
     }
     
-    static IFluidStack ofMutable(final Fluid fluid, final long amount, final @Nullable CompoundTag tag) {
+    static IFluidStack ofMutable(final Fluid fluid, final long amount, final DataComponentPatch components) {
         
-        return Services.PLATFORM.createFluidStackMutable(fluid, amount, tag);
+        return Services.PLATFORM.createFluidStackMutable(fluid, amount, components);
     }
     
     /**
@@ -222,13 +232,15 @@ public interface IFluidStack extends CommandStringDisplayable {
     Fluid getFluid();
     
     /**
-     * Returns the NBT tag attached to this FluidStack.
+     * Returns the {@link CustomData} attached to this stack.
      *
-     * @return MapData of the FluidStack's NBT Tag, null if it doesn't exist.
+     * @return the custom data attached to this stack.
      */
-    @ZenCodeType.Getter("tag")
-    @ZenCodeType.Method
-    IData getTag();
+    @ZenCodeType.Getter("customData")
+    default CustomData getCustomData() {
+        
+        return getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+    }
     
     /**
      * Sets the tag for the FluidStack.
@@ -243,12 +255,15 @@ public interface IFluidStack extends CommandStringDisplayable {
     IFluidStack withTag(@ZenCodeType.Nullable IData tag);
     
     /**
-     * Returns true if this FluidStack has a Tag
+     * Returns true if this stack has {@link CustomData}.
      *
-     * @return true if tag is present.
+     * @return true if this stack has {@link CustomData}.
      */
-    @ZenCodeType.Getter("hasTag")
-    boolean hasTag();
+    @ZenCodeType.Getter("hasCustomData")
+    default boolean hasCustomData() {
+        
+        return this.has(DataComponents.CUSTOM_DATA);
+    }
     
     @ZenCodeType.Caster(implicit = true)
     default CTFluidIngredient asFluidIngredient() {
@@ -269,14 +284,11 @@ public interface IFluidStack extends CommandStringDisplayable {
     @ZenCodeType.Caster(implicit = true)
     default IData asIData() {
         
-        MapData data = new MapData();
-        data.put("fluid", ExpandResourceLocation.asData(this.getRegistryName()));
-        //        data.put("amount", new IntData(this.getAmount()));
-        if(this.getTag() != null) {
-            data.put("nbt", this.getTag());
-        }
-        return data;
+        return codec().encodeStart(IDataOps.INSTANCE, this)
+                .getOrThrow(s -> new IllegalStateException("Error while encoding IFluidStack as IData: " + s));
     }
+    
+    Codec<IFluidStack> codec();
     
     @Override
     default String getCommandString() {
@@ -286,14 +298,23 @@ public interface IFluidStack extends CommandStringDisplayable {
                 .append(BuiltInRegistries.FLUID.getKey(fluid))
                 .append(">");
         
-        if(hasTag()) {
-            IData data = getTag().copyInternal();
-            if(!data.isEmpty()) {
-                builder.append(".withTag(");
-                builder.append(data.asString());
-                builder.append(")");
-            }
-        }
+        DataComponentPatch.SplitResult split = getComponents().asPatch().split();
+        
+        split.added().filter(Predicate.not(DataComponentType::isTransient)).forEach(typedDataComponent -> {
+            builder.append(".with(")
+                    .append(ExpandDataComponentType.getCommandString(typedDataComponent.type()))
+                    .append(", ")
+                    .append(typedDataComponent.encodeValue(IDataOps.INSTANCE).getOrThrow())
+                    .append(")");
+        });
+//        if(hasTag()) {
+//            IData data = getTag().copyInternal();
+//            if(!data.isEmpty()) {
+//                builder.append(".withTag(");
+//                builder.append(data.asString());
+//                builder.append(")");
+//            }
+//        }
         
         if(!isEmpty()) {
             if(getAmount() != 1) {
@@ -302,6 +323,15 @@ public interface IFluidStack extends CommandStringDisplayable {
         }
         return builder.toString();
     }
+    
+    PatchedDataComponentMap getComponents();
+    
+    @ZenCodeType.Method
+    <T> IFluidStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value);
+    
+    //TODO 1.20.5 add all the relevant method
+    @ZenCodeType.Method
+    <T> IFluidStack remove(DataComponentType<T> type);
     
     CompoundTag getInternalTag();
     
@@ -327,4 +357,6 @@ public interface IFluidStack extends CommandStringDisplayable {
      */
     <T> T getImmutableInternal();
     
+    
+    IFluidStack modifyThis(Consumer<IFluidStack> modifier);
 }

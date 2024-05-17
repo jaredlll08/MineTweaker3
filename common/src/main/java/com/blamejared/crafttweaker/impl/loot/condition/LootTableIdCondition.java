@@ -3,6 +3,7 @@ package com.blamejared.crafttweaker.impl.loot.condition;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.impl.loot.ILootTableIdHolder;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -11,7 +12,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 public record LootTableIdCondition(ResourceLocation tableId) implements LootItemCondition {
     
-    public static final Codec<LootTableIdCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<LootTableIdCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("table_id").forGetter(LootTableIdCondition::tableId)
     ).apply(instance, LootTableIdCondition::new));
     

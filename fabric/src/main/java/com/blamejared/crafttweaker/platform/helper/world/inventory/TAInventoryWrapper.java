@@ -54,7 +54,7 @@ public class TAInventoryWrapper implements IInventoryWrapper {
         
         ItemStack copied = stack.copy();
         long needToInsert = stack.getCount();
-        ItemVariantImpl variant = new ItemVariantImpl(stack.getItem(), stack.getTag());
+        ItemVariantImpl variant = new ItemVariantImpl(stack.getItem(), stack.getComponentsPatch());
         if(slot >= 0 && slot < storage.getSlots().size()) {
             SingleSlotStorage<ItemVariant> storageSlot = storage.getSlot(slot);
             if(!storage.supportsInsertion() || !storageSlot.supportsInsertion()) {

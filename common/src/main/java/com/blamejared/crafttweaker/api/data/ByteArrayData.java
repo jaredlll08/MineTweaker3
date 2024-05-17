@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
 import com.blamejared.crafttweaker.api.data.visitor.DataVisitor;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.google.common.collect.Lists;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.ByteTag;
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +84,7 @@ public class ByteArrayData implements IData {
     @Override
     public List<IData> asList() {
         
-        return getInternal().stream().map(ByteData::new).collect(Collectors.toList());
+        return Lists.transform(getInternal(), ByteData::new);
     }
     
     @Override

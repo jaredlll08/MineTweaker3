@@ -5,17 +5,28 @@ import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
+import net.minecraft.advancements.critereon.ItemCustomDataPredicate;
+import net.minecraft.advancements.critereon.ItemDamagePredicate;
+import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
+import net.minecraft.advancements.critereon.ItemPotionsPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.ItemSubPredicates;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.critereon.NbtPredicate;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Arrays;
+import java.util.List;
 
 @ZenRegister
 @Document("vanilla/api/predicate/builder/ItemPredicateBuilder")
@@ -39,10 +50,10 @@ public final class ExpandItemPredicateBuilder {
     
     @ZenCodeType.Method
     public static ItemPredicate.Builder tag(final ItemPredicate.Builder internal, final KnownTag<Item> tag) {
-
+        
         return internal.of(tag.getTagKey());
     }
-
+    
     @ZenCodeType.Method
     public static ItemPredicate.Builder amount(final ItemPredicate.Builder internal, final MinMaxBounds.Ints amount) {
         
@@ -52,37 +63,37 @@ public final class ExpandItemPredicateBuilder {
     @ZenCodeType.Method
     public static ItemPredicate.Builder durability(final ItemPredicate.Builder internal, final MinMaxBounds.Ints durability) {
         
-        return internal.hasDurability(durability);
+        return internal.withSubPredicate(ItemSubPredicates.DAMAGE, ItemDamagePredicate.durability(durability));
     }
     
     @ZenCodeType.Method
     public static ItemPredicate.Builder potion(final ItemPredicate.Builder internal, final Potion potion) {
         
-        return internal.isPotion(potion);
+        return internal.withSubPredicate(ItemSubPredicates.POTIONS, new ItemPotionsPredicate(HolderSet.direct(Services.REGISTRY.makeHolder(Registries.POTION, potion))));
     }
     
     @ZenCodeType.Method
-    public static ItemPredicate.Builder nbt(final ItemPredicate.Builder internal, final MapData nbt) {
+    public static ItemPredicate.Builder customData(final ItemPredicate.Builder internal, final MapData nbt) {
         
-        return internal.hasNbt(nbt.getInternal());
+        return internal.withSubPredicate(ItemSubPredicates.CUSTOM_DATA, new ItemCustomDataPredicate(new NbtPredicate(nbt.getInternal())));
     }
     
     @ZenCodeType.Method
-    public static ItemPredicate.Builder nbt(final ItemPredicate.Builder internal, final IData nbt) {
+    public static ItemPredicate.Builder customData(final ItemPredicate.Builder internal, final IData nbt) {
         
-        return nbt(internal, new MapData(nbt.asMap()));
+        return customData(internal, new MapData(nbt.asMap()));
     }
     
     @ZenCodeType.Method
     public static ItemPredicate.Builder enchantedWith(final ItemPredicate.Builder internal, final EnchantmentPredicate predicate) {
         
-        return internal.hasEnchantment(predicate);
+        return internal.withSubPredicate(ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(List.of(predicate)));
     }
     
     @ZenCodeType.Method
     public static ItemPredicate.Builder storingEnchantment(final ItemPredicate.Builder internal, final EnchantmentPredicate predicate) {
         
-        return internal.hasStoredEnchantment(predicate);
+        return internal.withSubPredicate(ItemSubPredicates.STORED_ENCHANTMENTS, ItemEnchantmentsPredicate.StoredEnchantments.storedEnchantments(List.of(predicate)));
     }
     
     @ZenCodeType.Method

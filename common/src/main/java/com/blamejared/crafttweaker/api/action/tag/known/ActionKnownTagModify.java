@@ -2,6 +2,7 @@ package com.blamejared.crafttweaker.api.action.tag.known;
 
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.platform.Services;
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +23,7 @@ public abstract class ActionKnownTagModify<T> extends ActionKnownTag<T> {
     }
     
     protected List<Holder<T>> holderValues() {
-        
-        return values().stream().map(t -> makeHolder(Either.left(t))).collect(Collectors.toList());
+        return Lists.transform(values(), input -> makeHolder(Either.left(input)));
     }
     
     public List<T> values() {

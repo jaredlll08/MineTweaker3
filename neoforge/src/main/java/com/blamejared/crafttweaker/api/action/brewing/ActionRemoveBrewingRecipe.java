@@ -3,7 +3,6 @@ package com.blamejared.crafttweaker.api.action.brewing;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.item.MCItemStackMutable;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 
 import java.util.ArrayList;
@@ -43,7 +42,8 @@ public class ActionRemoveBrewingRecipe extends ActionBrewingBase {
     @Override
     public void undo() {
         
-        removedRecipes.forEach(BrewingRecipeRegistry::addRecipe);
+        //TODO 1.20.5
+//        removedRecipes.forEach(BrewingRecipeRegistry::addRecipe);
     }
     
     @Override

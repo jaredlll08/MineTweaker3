@@ -1,44 +1,42 @@
 package com.blamejared.crafttweaker.api.ingredient.condition.serializer;
 
-
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientConditionSerializer;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionCustom;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-public class ConditionCustomSerializer implements IIngredientConditionSerializer<ConditionCustom<?>> {
+public class ConditionCustomSerializer implements IIngredientConditionSerializer<ConditionCustom> {
     
     public static final ConditionCustomSerializer INSTANCE = new ConditionCustomSerializer();
-    public static final Codec<ConditionCustom<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<ConditionCustom> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("uid").forGetter(ConditionCustom::getUid)
-    ).apply(instance, s -> new ConditionCustom<>(s, null)));
+    ).apply(instance, ConditionCustom::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ConditionCustom> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.STRING_UTF8, ConditionCustom::getUid, ConditionCustom::new);
     
     private ConditionCustomSerializer() {}
     
     @Override
-    public ConditionCustom<?> fromNetwork(FriendlyByteBuf buffer) {
-        
-        return new ConditionCustom<>(buffer.readUtf(), null);
-    }
-    
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, ConditionCustom<?> ingredient) {
-        
-        buffer.writeUtf(ingredient.getUid());
-    }
-    
-    @Override
-    public Codec<ConditionCustom<?>> codec() {
+    public MapCodec<ConditionCustom> codec() {
         
         return CODEC;
     }
     
     @Override
+    public StreamCodec<RegistryFriendlyByteBuf, ConditionCustom> streamCodec() {
+        
+        return STREAM_CODEC;
+    }
+    
+    @Override
     public ResourceLocation getType() {
         
-        return new ResourceLocation(CraftTweakerConstants.MOD_ID, "condition_custom");
+        return CraftTweakerConstants.rl("condition_custom");
     }
     
 }

@@ -4,9 +4,12 @@ package com.blamejared.crafttweaker.api.ingredient.type;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -83,10 +86,10 @@ public class IIngredientList implements IIngredient {
     }
     
     @Override
-    public boolean matches(IItemStack stack, boolean ignoreDamage) {
+    public boolean matches(IItemStack stack) {
         
         for(IIngredient item : ingredients) {
-            if(item.matches(stack, ignoreDamage)) {
+            if(item.matches(stack)) {
                 return true;
             }
         }
@@ -99,6 +102,48 @@ public class IIngredientList implements IIngredient {
         final IIngredient[] newArray = Arrays.copyOf(this.ingredients, this.ingredients.length + 1);
         newArray[this.ingredients.length] = other;
         return new IIngredientList(newArray);
+    }
+    
+    @Override
+    public IIngredient transform(IIngredientTransformer transformer) {
+        
+        for(int i = 0; i < this.ingredients.length; i++) {
+            this.ingredients[i] = this.ingredients[i].transform(transformer);
+        }
+        return this;
+    }
+    
+    @Override
+    public IIngredient condition(IIngredientCondition condition) {
+        
+        for(int i = 0; i < this.ingredients.length; i++) {
+            this.ingredients[i] = this.ingredients[i].condition(condition);
+        }
+        return this;
+    }
+    
+    @Override
+    public IItemStack getRemainingItem(IItemStack stack) {
+        
+        // In theory the ingredient that passed first in matches() should pass first here as well
+        for(IIngredient item : ingredients) {
+            if(item.matches(stack)) {
+                return item.getRemainingItem(stack);
+            }
+        }
+        return IIngredient.super.getRemainingItem(stack);
+    }
+    
+    @Override
+    public IngredientTransformers transformers() {
+        
+        return IngredientTransformers.EMPTY;
+    }
+    
+    @Override
+    public IngredientConditions conditions() {
+        
+        return IngredientConditions.EMPTY;
     }
     
     @Override
@@ -131,10 +176,12 @@ public class IIngredientList implements IIngredient {
     @Override
     public boolean equals(Object o) {
         
-        if(this == o)
+        if(this == o) {
             return true;
-        if(o == null || getClass() != o.getClass())
+        }
+        if(o == null || getClass() != o.getClass()) {
             return false;
+        }
         IIngredientList that = (IIngredientList) o;
         return Arrays.equals(ingredients, that.ingredients);
     }

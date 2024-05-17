@@ -43,8 +43,8 @@ public final class InventoryCommands {
                             .collect(Collectors.joining("\n", "Inventory items\n", ""));
                     
                     CommandUtilities.COMMAND_LOGGER.info(inventoryContents);
-                    CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.inventory.list")), CommandUtilities.getFormattedLogFile())
-                            .withStyle(ChatFormatting.GREEN)));
+                    CommandUtilities.openLogFile(context.getSource(), Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.inventory.list")), CommandUtilities.getFormattedLogFile())
+                            .withStyle(ChatFormatting.GREEN));
                     
                     return Command.SINGLE_SUCCESS;
                 })
@@ -67,8 +67,8 @@ public final class InventoryCommands {
                             .collect(Collectors.joining("\n", "Inventory item tags\n", ""));
                     
                     CommandUtilities.COMMAND_LOGGER.info(inventoryContents);
-                    CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.inventory.list.tag")), CommandUtilities.getFormattedLogFile())
-                            .withStyle(ChatFormatting.GREEN)));
+                    CommandUtilities.openLogFile(context.getSource(), Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.inventory.list.tag")), CommandUtilities.getFormattedLogFile())
+                            .withStyle(ChatFormatting.GREEN));
                     
                     return Command.SINGLE_SUCCESS;
                 })
@@ -91,9 +91,8 @@ public final class InventoryCommands {
                             .collect(Collectors.joining("\n", "Inventory items\n", ""));
                     
                     CommandUtilities.COMMAND_LOGGER.info(inventoryContents);
-                    CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.inventory.list")), CommandUtilities.getFormattedLogFile())
-                            .withStyle(ChatFormatting.GREEN)));
-                    
+                    CommandUtilities.openLogFile(context.getSource(), Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.inventory.list")), CommandUtilities.getFormattedLogFile())
+                            .withStyle(ChatFormatting.GREEN));
                     return Command.SINGLE_SUCCESS;
                 })
         );

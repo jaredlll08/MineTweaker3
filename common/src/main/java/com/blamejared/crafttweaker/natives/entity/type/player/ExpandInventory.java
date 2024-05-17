@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
@@ -92,12 +93,6 @@ public class ExpandInventory {
     }
     
     @ZenCodeType.Method
-    public static void hurtArmor(Inventory internal, DamageSource source, float damage, int[] armorSlots) {
-        
-        internal.hurtArmor(source, damage, armorSlots);
-    }
-    
-    @ZenCodeType.Method
     public static void dropAll(Inventory internal) {
         
         internal.dropAll();
@@ -121,7 +116,7 @@ public class ExpandInventory {
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
     public static boolean contains(Inventory internal, KnownTag<Item> tag) {
         
-        return internal.contains(tag.getTagKey());
+        return internal.contains(tag.<TagKey<Item>>getTagKey());
     }
     
 }

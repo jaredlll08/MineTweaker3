@@ -21,7 +21,7 @@ public class ExpandFoodData {
     @ZenCodeType.Method
     public static void eat(FoodData internal, IItemStack stack) {
         
-        internal.eat(stack.getInternal().getItem(), stack.getInternal());
+        internal.eat(stack.getInternal());
     }
     
     @ZenCodeType.Method

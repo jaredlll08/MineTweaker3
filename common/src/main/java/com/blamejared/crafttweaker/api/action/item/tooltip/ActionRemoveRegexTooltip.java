@@ -17,7 +17,7 @@ public class ActionRemoveRegexTooltip extends ActionTooltipBase {
         
         super(stack);
         this.regex = regex;
-        this.function = (stack1, tooltip, context) -> {
+        this.function = (stack1, tooltip, context, flag) -> {
             List<Component> content = new ArrayList<>();
             for(Component component : tooltip) {
                 if(!regex.matcher(component.getString()).find()) {

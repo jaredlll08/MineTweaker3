@@ -1,6 +1,7 @@
 package com.blamejared.crafttweaker.api.ingredient;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.action.item.ActionModifyAttribute;
 import com.blamejared.crafttweaker.api.action.item.ActionSetBurnTime;
 import com.blamejared.crafttweaker.api.action.item.tooltip.ActionAddShiftedTooltip;
@@ -13,34 +14,34 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
-import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionAnyDamage;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionCustom;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionDamaged;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionDamagedAtLeast;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionDamagedAtMost;
-import com.blamejared.crafttweaker.api.ingredient.transform.IIngredientTransformer;
-import com.blamejared.crafttweaker.api.ingredient.transform.type.TransformCustom;
-import com.blamejared.crafttweaker.api.ingredient.transform.type.TransformDamage;
-import com.blamejared.crafttweaker.api.ingredient.transform.type.TransformReplace;
-import com.blamejared.crafttweaker.api.ingredient.transform.type.TransformReuse;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientConditioned;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
+import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformCustom;
+import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformDamage;
+import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformReplace;
+import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformReuse;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
 import com.blamejared.crafttweaker.api.ingredient.type.IngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.item.tooltip.ITooltipFunction;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import net.minecraft.Util;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -63,7 +64,9 @@ import java.util.regex.Pattern;
 @Document("vanilla/api/ingredient/IIngredient")
 public interface IIngredient extends CommandStringDisplayable {
     
+    ResourceLocation INGREDIENT_ID = CraftTweakerConstants.rl("iingredient");
     Codec<IIngredient> CODEC = Ingredient.CODEC.xmap(IIngredient::fromIngredient, IIngredient::asVanillaIngredient);
+    StreamCodec<RegistryFriendlyByteBuf, IIngredient> STREAM_CODEC = Ingredient.CONTENTS_STREAM_CODEC.map(IIngredient::fromIngredient, IIngredient::asVanillaIngredient);
     
     /**
      * Does the given stack match the ingredient?
@@ -73,21 +76,7 @@ public interface IIngredient extends CommandStringDisplayable {
      * @docParam stack <item:minecraft:iron_ingot>
      */
     @ZenCodeType.Method
-    default boolean matches(IItemStack stack) {
-        
-        return matches(stack, false);
-    }
-    
-    /**
-     * Does the given stack match the ingredient?
-     *
-     * @param stack        The stack to check
-     * @param ignoreDamage Should damage be checked?
-     *
-     * @docParam stack <item:minecraft:iron_ingot>
-     */
-    @ZenCodeType.Method
-    boolean matches(IItemStack stack, boolean ignoreDamage);
+    boolean matches(IItemStack stack);
     
     /**
      * Checks if this ingredient is empty.
@@ -134,14 +123,10 @@ public interface IIngredient extends CommandStringDisplayable {
     @ZenCodeType.Method
     default IItemStack getRemainingItem(IItemStack stack) {
         
-        Item remainingItem = stack.getInternal()
-                .getItem()
-                .getCraftingRemainingItem();
-        if(remainingItem != null) {
-            
-            return IItemStack.of(remainingItem.getDefaultInstance());
+        if(!transformers().isEmpty()) {
+            return transformers().apply(stack);
         }
-        return IItemStack.empty();
+        return Services.PLATFORM.getRemainingItem(stack.getInternal());
     }
     
     /**
@@ -149,7 +134,6 @@ public interface IIngredient extends CommandStringDisplayable {
      */
     @ZenCodeType.Getter("commandString")
     String getCommandString();
-    
     
     @ZenCodeType.Getter("items")
     IItemStack[] getItems();
@@ -369,7 +353,7 @@ public interface IIngredient extends CommandStringDisplayable {
                 event.getModifiers()
                         .entries()
                         .stream()
-                        .filter(entry -> entry.getValue().getId().equals(uuid))
+                        .filter(entry -> entry.getValue().id().equals(uuid))
                         .forEach(entry -> event.removeModifier(entry.getKey(), entry.getValue()));
             }
         }));
@@ -390,7 +374,8 @@ public interface IIngredient extends CommandStringDisplayable {
     @ZenCodeType.Caster(implicit = true)
     default IData asIData() {
         
-        return Util.getOrThrow(Ingredient.CODEC_NONEMPTY.encodeStart(IDataOps.INSTANCE, this.asVanillaIngredient()), IllegalArgumentException::new);
+        return Ingredient.CODEC_NONEMPTY.encodeStart(IDataOps.INSTANCE, this.asVanillaIngredient())
+                .getOrThrow(IllegalArgumentException::new);
     }
     
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
@@ -422,80 +407,83 @@ public interface IIngredient extends CommandStringDisplayable {
         return mul(1);
     }
     
+    
     // <editor-fold desc="Transformers">
+    IngredientTransformers transformers();
+    
     @ZenCodeType.Method
-    default IIngredientTransformed<IIngredient> transformReplace(IItemStack replaceWith) {
+    default IIngredient transformReplace(IItemStack replaceWith) {
         
-        return new IIngredientTransformed<>(this, new TransformReplace<>(replaceWith));
+        return transform(new TransformReplace(replaceWith));
     }
     
     @ZenCodeType.Method
-    default IIngredientTransformed<IIngredient> transformDamage(@ZenCodeType.OptionalInt(1) int amount) {
+    default IIngredient transformDamage(@ZenCodeType.OptionalInt(1) int amount) {
         
-        return new IIngredientTransformed<>(this, new TransformDamage<>(amount));
+        return transform(new TransformDamage(amount));
     }
     
     @ZenCodeType.Method
-    default IIngredientTransformed<IIngredient> transformCustom(String uid, @ZenCodeType.Optional Function<IItemStack, IItemStack> function) {
+    default IIngredient transformCustom(String uid, @ZenCodeType.Optional Function<IItemStack, IItemStack> function) {
         
-        return new IIngredientTransformed<>(this, new TransformCustom<>(uid, function));
+        return transform(new TransformCustom(uid, function));
     }
     
     @ZenCodeType.Method
-    default IIngredientTransformed<IIngredient> reuse() {
+    default IIngredient reuse() {
         
-        return new IIngredientTransformed<>(this, TransformReuse.getInstance());
+        return transform(TransformReuse.INSTANCE);
     }
     
-    /**
-     * Use this if you already have the transformer from another ingredient
-     */
-    @ZenCodeType.Method
-    default IIngredientTransformed<IIngredient> transform(IIngredientTransformer<IIngredient> transformer) {
+    default IIngredient transform(IIngredientTransformer transformer) {
         
-        return new IIngredientTransformed<>(this, transformer);
+        this.transformers().add(transformer);
+        return this;
     }
     
     // </editor-fold>
     
     // <editor-fold desc="conditions">
+    IngredientConditions conditions();
+    
     @ZenCodeType.Method
-    default IIngredientConditioned<IIngredient> onlyDamaged() {
+    default IIngredient onlyDamaged() {
         
-        return new IIngredientConditioned<>(this, ConditionDamaged.getInstance());
+        return condition(ConditionDamaged.INSTANCE);
     }
     
     @ZenCodeType.Method
-    default IIngredientConditioned<IIngredient> onlyDamagedAtLeast(int minDamage) {
+    default IIngredient onlyDamagedAtLeast(int minDamage) {
         
-        return new IIngredientConditioned<>(this, new ConditionDamagedAtLeast<>(minDamage));
+        return condition(new ConditionDamagedAtLeast(minDamage));
     }
     
     @ZenCodeType.Method
-    default IIngredientConditioned<IIngredient> onlyDamagedAtMost(int maxDamage) {
+    default IIngredient onlyDamagedAtMost(int maxDamage) {
         
-        return new IIngredientConditioned<>(this, new ConditionDamagedAtMost<>(maxDamage));
+        return condition(new ConditionDamagedAtMost(maxDamage));
     }
     
     @ZenCodeType.Method
-    default IIngredientConditioned<IIngredient> anyDamage() {
+    default IIngredient anyDamage() {
         
-        return new IIngredientConditioned<>(this, ConditionAnyDamage.getInstance());
+        return condition(ConditionAnyDamage.INSTANCE);
     }
     
     @ZenCodeType.Method
-    default IIngredientConditioned<IIngredient> onlyIf(String uid, @ZenCodeType.Optional Predicate<IItemStack> function) {
+    default IIngredient onlyIf(String uid, @ZenCodeType.Optional Predicate<IItemStack> function) {
         
-        return new IIngredientConditioned<>(this, new ConditionCustom<>(uid, function));
+        return condition(new ConditionCustom(uid, function));
     }
     
     /**
      * Use this if you already have the condition from another ingredient
      */
     @ZenCodeType.Method
-    default IIngredientConditioned<IIngredient> only(IIngredientCondition<IIngredient> condition) {
+    default IIngredient condition(IIngredientCondition condition) {
         
-        return new IIngredientConditioned<>(this, condition);
+        this.conditions().add(condition);
+        return this;
     }
     // </editor-fold>
     

@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.natives.predicate.builder;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -8,9 +9,13 @@ import net.minecraft.advancements.critereon.FluidPredicate;
 import net.minecraft.advancements.critereon.LightPredicate;
 import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -39,7 +44,11 @@ public final class ExpandLocationPredicateBuilder {
     @ZenCodeType.Method
     public static LocationPredicate.Builder biome(final LocationPredicate.Builder internal, final ResourceLocation biome) {
         
-        return internal.setBiome(ResourceKey.create(Registries.BIOME, biome));
+        Holder.Reference<Biome> holder = CraftTweakerAPI.getAccessibleElementsProvider()
+                .registryAccess()
+                .registryOrThrow(Registries.BIOME)
+                .getHolderOrThrow(ResourceKey.create(Registries.BIOME, biome));
+        return internal.setBiomes(HolderSet.direct(holder));
     }
     
     @ZenCodeType.Method
@@ -51,7 +60,11 @@ public final class ExpandLocationPredicateBuilder {
     @ZenCodeType.Method
     public static LocationPredicate.Builder structure(final LocationPredicate.Builder internal, final ResourceLocation structure) {
         
-        return internal.setStructure(ResourceKey.create(Registries.STRUCTURE, structure));
+        Holder.Reference<Structure> holder = CraftTweakerAPI.getAccessibleElementsProvider()
+                .registryAccess()
+                .registryOrThrow(Registries.STRUCTURE)
+                .getHolderOrThrow(ResourceKey.create(Registries.STRUCTURE, structure));
+        return internal.setStructures(HolderSet.direct(holder));
     }
     
     @ZenCodeType.Method

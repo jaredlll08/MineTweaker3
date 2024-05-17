@@ -3,6 +3,8 @@ package com.blamejared.crafttweaker.api.ingredient.type;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientAny;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
@@ -22,6 +24,8 @@ public class IIngredientAny implements IIngredient {
     
     public static final ResourceLocation ID = CraftTweakerConstants.rl("any");
     public static final IIngredientAny INSTANCE = new IIngredientAny();
+    private final IngredientConditions conditions = new IngredientConditions();
+    private final IngredientTransformers transformers = new IngredientTransformers();
     
     private IIngredientAny() {}
     
@@ -32,9 +36,9 @@ public class IIngredientAny implements IIngredient {
     }
     
     @Override
-    public boolean matches(IItemStack stack, boolean ignoreDamage) {
+    public boolean matches(IItemStack stack) {
         
-        return stack != null && !stack.isEmpty();
+        return stack != null && !stack.isEmpty() && this.conditions().test(stack);
     }
     
     @Override
@@ -53,6 +57,18 @@ public class IIngredientAny implements IIngredient {
     public IItemStack[] getItems() {
         
         return new IItemStack[0];
+    }
+    
+    @Override
+    public IngredientTransformers transformers() {
+        
+        return transformers;
+    }
+    
+    @Override
+    public IngredientConditions conditions() {
+        
+        return conditions;
     }
     
 }

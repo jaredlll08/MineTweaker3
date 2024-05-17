@@ -13,30 +13,6 @@ import org.openzen.zencode.java.ZenCodeType;
 public class ExpandWritableLevelData {
     
     
-    @ZenCodeType.Setter("xSpawn")
-    public static void setXSpawn(WritableLevelData internal, int xSpawn) {
-        
-        internal.setXSpawn(xSpawn);
-    }
-    
-    @ZenCodeType.Setter("ySpawn")
-    public static void setYSpawn(WritableLevelData internal, int ySpawn) {
-        
-        internal.setYSpawn(ySpawn);
-    }
-    
-    @ZenCodeType.Setter("zSpawn")
-    public static void setZSpawn(WritableLevelData internal, int zSpawn) {
-        
-        internal.setZSpawn(zSpawn);
-    }
-    
-    @ZenCodeType.Setter("spawnAngle")
-    public static void setSpawnAngle(WritableLevelData internal, float spawnAngle) {
-        
-        internal.setSpawnAngle(spawnAngle);
-    }
-    
     @ZenCodeType.Method
     public static void setSpawn(WritableLevelData internal, BlockPos pos, float spawnAngle) {
         

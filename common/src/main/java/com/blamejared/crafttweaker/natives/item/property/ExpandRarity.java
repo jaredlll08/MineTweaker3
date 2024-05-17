@@ -24,7 +24,7 @@ public class ExpandRarity {
     @ZenCodeType.Getter("color")
     public static ChatFormatting color(Rarity internal) {
         
-        return internal.color;
+        return internal.color();
     }
     
 }

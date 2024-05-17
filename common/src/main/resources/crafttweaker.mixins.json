@@ -9,6 +9,7 @@
     "common.access.block.AccessAbstractCauldronBlock",
     "common.access.block.AccessBlockBehaviour",
     "common.access.block.AccessBlockStateBase",
+    "common.access.brewing.AccessPotionBrewing",
     "common.access.entity.AccessAttributeModifier",
     "common.access.entity.AccessFallingBlockEntity",
     "common.access.entity.AccessLightningBolt",
@@ -29,6 +30,7 @@
     "common.access.server.AccessMinecraftServer",
     "common.access.server.AccessReloadableServerResources",
     "common.access.tag.AccessTagManager",
+    "common.access.tag.AccessTagNetworkSerialization",
     "common.access.villager.AccessDyedArmorForEmeralds",
     "common.access.villager.AccessEmeraldForItems",
     "common.access.villager.AccessEnchantedItemForEmeralds",
@@ -38,7 +40,6 @@
     "common.transform.item.MixinIngredient",
     "common.transform.item.MixinIngredientTagValue",
     "common.transform.loot.MixinLootContext",
-    "common.transform.loot.MixinLootDataManager",
     "common.transform.loot.MixinLootTable",
     "common.transform.tags.MixinTagManager",
     "common.transform.world.level.MixinServerLevel"

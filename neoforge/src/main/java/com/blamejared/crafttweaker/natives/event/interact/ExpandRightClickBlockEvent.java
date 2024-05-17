@@ -8,6 +8,7 @@ import com.blamejared.crafttweaker.api.event.bus.IEventBus;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -71,6 +72,28 @@ public class ExpandRightClickBlockEvent {
     public static Direction getFace(PlayerInteractEvent internal) {
         
         return internal.getFace();
+    }
+    
+    /**
+     * @return The {@link InteractionResult} that will be returned to vanilla if the event is cancelled, instead of calling the relevant
+     * method of the event. By default, this is PASS, meaning cancelled events will cause
+     * the client to keep trying more interactions until something works.
+     */
+    @ZenCodeType.Getter("cancellationResult")
+    public static InteractionResult getCancellationResult(PlayerInteractEvent.RightClickBlock internal) {
+        
+        return internal.getCancellationResult();
+    }
+    
+    /**
+     * Set the {@link InteractionResult} that will be returned to vanilla if the event is cancelled, instead of calling the relevant method of the event.
+     *
+     * Note that this only has an effect on RightClickBlockEvent, RightClickItemEvent, EntityInteractEvent.
+     */
+    @ZenCodeType.Setter("cancellationResult")
+    public static void setCancellationResult(PlayerInteractEvent.RightClickBlock internal, InteractionResult result) {
+        
+        internal.setCancellationResult(result);
     }
     
 }

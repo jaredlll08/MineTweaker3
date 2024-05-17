@@ -4,9 +4,15 @@ import com.blamejared.crafttweaker.CraftTweakerRegistries;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.command.argument.IItemStackArgument;
 import com.blamejared.crafttweaker.api.command.argument.RecipeTypeArgument;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientConditioned;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
+import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionAnyDamagedSerializer;
+import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionCustomSerializer;
+import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionDamagedAtLeastSerializer;
+import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionDamagedAtMostSerializer;
+import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionDamagedSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformCustomSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformDamageSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformReplaceSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformReuseSerializer;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.CraftTweakerIngredients;
 import com.blamejared.crafttweaker.api.recipe.serializer.CTShapedRecipeSerializer;
 import com.blamejared.crafttweaker.api.recipe.serializer.CTShapelessRecipeSerializer;
@@ -20,15 +26,10 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-
-import java.util.List;
 
 public class FabricRegistryHelper implements IRegistryHelper {
     
-    @Override
-    public void init() {
+    public static void init() {
         
         Registry.register(BuiltInRegistries.RECIPE_TYPE, ScriptRecipeType.INSTANCE.id(), ScriptRecipeType.INSTANCE);
         
@@ -43,12 +44,23 @@ public class FabricRegistryHelper implements IRegistryHelper {
         
         CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.ANY);
         CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.LIST);
-        CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.CONDITIONED);
-        CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.TRANSFORMED);
-        CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.PARTIAL_TAG);
+        CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.CRAFTTWEAKER);
+        CustomIngredientSerializer.register(CraftTweakerIngredients.Serializers.IITEMSTACK);
+        
         
         ArgumentTypeRegistry.registerArgumentType(RecipeTypeArgument.ID, RecipeTypeArgument.class, SingletonArgumentInfo.contextFree(RecipeTypeArgument::get));
         ArgumentTypeRegistry.registerArgumentType(IItemStackArgument.ID, IItemStackArgument.class, SingletonArgumentInfo.contextFree(IItemStackArgument::get));
+        
+        Registry.register(CraftTweakerRegistries.TRANSFORMER_SERIALIZER, TransformReplaceSerializer.INSTANCE.getType(), TransformReplaceSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.TRANSFORMER_SERIALIZER, TransformDamageSerializer.INSTANCE.getType(), TransformDamageSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.TRANSFORMER_SERIALIZER, TransformCustomSerializer.INSTANCE.getType(), TransformCustomSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.TRANSFORMER_SERIALIZER, TransformReuseSerializer.INSTANCE.getType(), TransformReuseSerializer.INSTANCE);
+        
+        Registry.register(CraftTweakerRegistries.CONDITIONER_SERIALIZER, ConditionDamagedSerializer.INSTANCE.getType(), ConditionDamagedSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.CONDITIONER_SERIALIZER, ConditionAnyDamagedSerializer.INSTANCE.getType(), ConditionAnyDamagedSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.CONDITIONER_SERIALIZER, ConditionCustomSerializer.INSTANCE.getType(), ConditionCustomSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.CONDITIONER_SERIALIZER, ConditionDamagedAtMostSerializer.INSTANCE.getType(), ConditionDamagedAtMostSerializer.INSTANCE);
+        Registry.register(CraftTweakerRegistries.CONDITIONER_SERIALIZER, ConditionDamagedAtLeastSerializer.INSTANCE.getType(), ConditionDamagedAtLeastSerializer.INSTANCE);
     }
     
 }

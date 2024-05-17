@@ -3,7 +3,7 @@ package com.blamejared.crafttweaker;
 import com.blamejared.crafttweaker.api.util.sequence.SequenceManager;
 import com.blamejared.crafttweaker.api.util.sequence.SequenceType;
 import com.blamejared.crafttweaker.impl.logging.CraftTweakerLog4jEditor;
-import com.blamejared.crafttweaker.impl.network.message.ClientMessages;
+import com.blamejared.crafttweaker.impl.network.packet.ClientBoundPackets;
 import com.blamejared.crafttweaker.platform.Services;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -22,13 +22,11 @@ public class CraftTweakerFabricClient implements ClientModInitializer {
         
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> CraftTweakerLog4jEditor.removePlayer(client.player));
         
-        for(ClientMessages msg : ClientMessages.values()) {
-            ClientPlayNetworking.registerGlobalReceiver(msg.getId(), (client, handler, buf, responseSender) -> msg.getMessageFactory()
-                    .apply(buf)
-                    .handle());
-        }
-        
         ClientTickEvents.START_WORLD_TICK.register(world -> SequenceManager.tick(SequenceType.CLIENT_THREAD_LEVEL));
+        
+        for(ClientBoundPackets packet : ClientBoundPackets.values()) {
+            ClientPlayNetworking.registerGlobalReceiver(packet.type(), (payload, context) -> payload.handle());
+        }
     }
     
 }

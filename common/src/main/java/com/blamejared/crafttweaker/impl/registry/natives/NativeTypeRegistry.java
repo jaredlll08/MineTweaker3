@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class NativeTypeRegistry implements INativeTypeRegistry {
     
@@ -74,11 +75,31 @@ public final class NativeTypeRegistry implements INativeTypeRegistry {
         
         Arrays.stream(info.constructors()).forEach(it -> {
             final Class<?>[] parameters = convertConstructorToClassArray(it);
+            boolean foundConstructor = Arrays.stream(info.targetedType().getConstructors())
+                    .filter(constructor -> constructor.getParameterCount() == parameters.length)
+                    .anyMatch(constructor -> Arrays.equals(parameters, constructor.getParameterTypes()));
+            if(!foundConstructor) {
+                throw new IllegalStateException("Error while registering '" + info.name() + "'! No constructor found matching: " + Arrays.stream(parameters)
+                        .map(Class::getName)
+                        .collect(Collectors.joining(",", "(", ")")));
+            }
             result.computeIfAbsent("<init>", i -> new ExecutableReferenceGroupInfo())
                     .getOrCreateFor(parameters, ExecutableReferenceInfo.AnnotationCreator::appendConstructorAnnotation);
         });
         
         Arrays.stream(info.methods()).forEach(it -> {
+            Class<?>[] parameterTypes = Arrays.stream(it.parameters())
+                    .map(NativeTypeInfo.Parameter::type)
+                    .toArray(Class[]::new);
+            boolean foundMethod = Arrays.stream(info.targetedType().getMethods())
+                    .filter(method -> method.getName().equals(it.name()))
+                    .filter(method -> method.getParameterCount() == parameterTypes.length)
+                    .anyMatch(method -> Arrays.equals(method.getParameterTypes(), parameterTypes));
+            if(!foundMethod) {
+                throw new IllegalStateException("Error while registering '" + info.name() + "'! No method found matching: " + Arrays.stream(parameterTypes)
+                        .map(Class::getName)
+                        .collect(Collectors.joining(",", "(", ")")));
+            }
             result.computeIfAbsent(it.name(), i -> new ExecutableReferenceGroupInfo())
                     .getOrCreateFor(convertMethodToClassArray(it), cons -> {
                         cons.appendGetterAnnotation(it.getter());

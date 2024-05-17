@@ -3,11 +3,12 @@ package com.blamejared.crafttweaker.natives.event.item;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.event.NeoForgeEventCancellationCarrier;
 import com.blamejared.crafttweaker.api.event.ZenEvent;
-import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker.api.event.bus.IEventBus;
+import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import com.google.common.collect.Lists;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
 import org.openzen.zencode.java.ZenCodeType;
@@ -50,7 +51,7 @@ public class ExpandItemFishedEvent {
     public static void setDrops(ItemFishedEvent internal, List<IItemStack> drops) {
         
         internal.getDrops().clear();
-        internal.getDrops().addAll(drops.stream().map(IItemStack::getInternal).toList());
+        internal.getDrops().addAll(Lists.transform(drops, IItemStack::getInternal));
     }
     
     @ZenCodeType.Getter("hookEntity")

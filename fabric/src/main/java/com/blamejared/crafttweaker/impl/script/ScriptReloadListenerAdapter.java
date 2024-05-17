@@ -32,7 +32,7 @@ public final class ScriptReloadListenerAdapter implements IdentifiableResourceRe
     @Override
     public ResourceLocation getFabricId() {
         
-        return new ResourceLocation(CraftTweakerConstants.MOD_ID, "scripts");
+        return CraftTweakerConstants.rl("scripts");
     }
     
     @Override
@@ -51,7 +51,6 @@ public final class ScriptReloadListenerAdapter implements IdentifiableResourceRe
                 LootModifierManagerReloadListener.RELOAD_LISTENER_ID,
                 ResourceReloadListenerKeys.ADVANCEMENTS,
                 ResourceReloadListenerKeys.RECIPES,
-                ResourceReloadListenerKeys.LOOT_TABLES,
                 ResourceReloadListenerKeys.TAGS
         );
     }

@@ -4,8 +4,8 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStackMutable;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientConditioned;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.CraftTweakerIngredients;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.item.MCItemStack;
@@ -29,6 +29,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
 import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.fabricmc.fabric.api.recipe.v1.ingredient.FabricIngredient;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -41,6 +42,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.ModOrigin;
 import net.minecraft.Util;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -48,14 +50,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -145,27 +149,27 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public IItemStack createItemStack(ItemStack stack) {
+    public IItemStack createItemStack(ItemStack stack, IngredientConditions conditions, IngredientTransformers transformers) {
         
-        return new MCItemStack(stack);
+        return new MCItemStack(stack, conditions, transformers);
     }
     
     @Override
-    public IItemStack createItemStackMutable(ItemStack stack) {
+    public IItemStack createItemStackMutable(ItemStack stack, IngredientConditions conditions, IngredientTransformers transformers) {
         
-        return new MCItemStackMutable(stack);
+        return new MCItemStackMutable(stack, conditions, transformers);
     }
     
     @Override
-    public IFluidStack createFluidStack(Fluid fluid, long amount, @Nullable CompoundTag tag) {
+    public IFluidStack createFluidStack(Fluid fluid, long amount, DataComponentPatch patch) {
         
-        return new MCFluidStack(new SimpleFluidStack(fluid, Math.toIntExact(amount), tag));
+        return new MCFluidStack(new SimpleFluidStack(fluid, Math.toIntExact(amount), patch));
     }
     
     @Override
-    public IFluidStack createFluidStackMutable(Fluid fluid, long amount, @Nullable CompoundTag tag) {
+    public IFluidStack createFluidStackMutable(Fluid fluid, long amount, DataComponentPatch patch) {
         
-        return new MCFluidStackMutable(new SimpleFluidStack(fluid, Math.toIntExact(amount), tag));
+        return new MCFluidStackMutable(new SimpleFluidStack(fluid, Math.toIntExact(amount), patch));
     }
     
     @Override
@@ -217,7 +221,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
         final Path classFile;
         try {
             classFile = Paths.get(clazz.getProtectionDomain().getCodeSource().getLocation().toURI());
-        } catch (final URISyntaxException e) {
+        } catch(final URISyntaxException e) {
             return List.of();
         }
         
@@ -232,7 +236,8 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 .filter(pair -> pair.getKey().equals(classFile))
                 .map(pair -> {
                     final ModMetadata metadata = pair.getValue();
-                    final Mod mod = new Mod(metadata.getId(), metadata.getName(), metadata.getVersion().getFriendlyString());
+                    final Mod mod = new Mod(metadata.getId(), metadata.getName(), metadata.getVersion()
+                            .getFriendlyString());
                     return FabricMod.of(mod, pair.getKey());
                 })
                 .map(GenericUtil::<PlatformMod>uncheck) // Why??
@@ -277,7 +282,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
         return LootModifierManager.INSTANCE.modifiers();
     }
     
-    @SuppressWarnings("UnstableApiUsage")
     @Override
     public Set<MutableComponent> getFluidsForDump(ItemStack stack, Player player, InteractionHand hand) {
         
@@ -309,6 +313,25 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
     
     @Override
+    public void addFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect, float probability) {
+        //TODO 1.20.5 make sure this is mutable!
+        internal.effects().add(new FoodProperties.PossibleEffect(effect, probability));
+    }
+    
+    @Override
+    public void removeFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect) {
+        //TODO 1.20.5 make sure this is mutable!
+        internal.effects().removeIf(pair -> pair.effect().equals(effect));
+    }
+    
+    @Override
+    public void removeFoodPropertiesEffect(FoodProperties internal, MobEffect effect) {
+        
+        //TODO 1.20.5 make sure this is mutable!
+        internal.effects().removeIf(pair -> pair.effect().getEffect() == effect);
+    }
+    
+    @Override
     public boolean doesIngredientRequireTesting(Ingredient ingredient) {
         
         return ingredient.requiresTesting();
@@ -327,21 +350,27 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public <T extends IIngredient> Ingredient getIngredientConditioned(IIngredientConditioned<T> conditioned) {
+    public Ingredient getCraftTweakerIngredient(IIngredient internal) {
         
-        return CraftTweakerIngredients.Ingredients.conditioned(conditioned).toVanilla();
+        return CraftTweakerIngredients.Ingredients.crafttweaker(internal).toVanilla();
     }
     
     @Override
-    public <T extends IIngredient> Ingredient getIngredientTransformed(IIngredientTransformed<T> transformed) {
+    public Ingredient getIItemStackIngredient(IItemStack internal) {
         
-        return CraftTweakerIngredients.Ingredients.transformed(transformed).toVanilla();
+        return CraftTweakerIngredients.Ingredients.iitemstack(internal).toVanilla();
     }
     
     @Override
-    public Ingredient getIngredientPartialTag(ItemStack stack) {
+    public boolean isCustomIngredient(Ingredient ingredient) {
         
-        return CraftTweakerIngredients.Ingredients.partialTag(stack).toVanilla();
+        return ingredient.getCustomIngredient() != null;
+    }
+    
+    @Override
+    public Stream<ItemStack> getCustomIngredientItems(Ingredient ingredient) {
+        
+        return ingredient.getCustomIngredient() == null ? Stream.empty() : ingredient.getCustomIngredient().getMatchingStacks().stream();
     }
     
     @Override

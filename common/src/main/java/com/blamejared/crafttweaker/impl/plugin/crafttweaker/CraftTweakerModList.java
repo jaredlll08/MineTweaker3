@@ -3,6 +3,8 @@ package com.blamejared.crafttweaker.impl.plugin.crafttweaker;
 import com.blamejared.crafttweaker.CraftTweakerCommon;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.mod.PlatformMod;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import net.minecraft.Optionull;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +30,7 @@ final class CraftTweakerModList {
         
         final Logger logger = CraftTweakerCommon.logger();
         logger.info("The following mods have explicit CraftTweaker support, provided through the CraftTweaker compatibility plugin:");
-        this.addedMods.stream().map(this::formatInfo).forEach(logger::info);
+        Collections2.transform(this.addedMods, this::formatInfo).forEach(logger::info);
     }
     
     private DiscoveredMod toDiscoveredMod(final PlatformMod info) {

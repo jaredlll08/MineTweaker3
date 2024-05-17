@@ -17,7 +17,8 @@ import net.minecraft.world.level.Level;
                         @NativeConstructor.ConstructorParameter(name = "shooter", type = LivingEntity.class, description = "The entity that created the fireball, used to get the position.", examples = "shooter"),
                         @NativeConstructor.ConstructorParameter(name = "xPower", type = double.class, description = "The x power of the entity.", examples = "0"),
                         @NativeConstructor.ConstructorParameter(name = "yPower", type = double.class, description = "The y power of the entity.", examples = "1"),
-                        @NativeConstructor.ConstructorParameter(name = "zPower", type = double.class, description = "The z power of the entity.", examples = "2")
+                        @NativeConstructor.ConstructorParameter(name = "zPower", type = double.class, description = "The z power of the entity.", examples = "2"),
+                        @NativeConstructor.ConstructorParameter(name = "explosionPower", type = int.class, description = "The explosion power of this fireball", examples = "1")
                 })
         })
 public class ExpandLargeFireball {

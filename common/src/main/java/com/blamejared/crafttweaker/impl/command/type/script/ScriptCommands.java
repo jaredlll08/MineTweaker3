@@ -21,7 +21,7 @@ public final class ScriptCommands {
                 "log",
                 Component.translatable("crafttweaker.command.description.log"),
                 builder -> builder.executes(context -> {
-                    CommandUtilities.open(context.getSource(), PathUtil.makeRelativeToGameDirectory(CraftTweakerConstants.LOG_PATH));
+                    CommandUtilities.open(context.getSource(), PathUtil.makeRelativeToGameDirectory(CraftTweakerConstants.LOG_PATH).toString());
                     return Command.SINGLE_SUCCESS;
                 })
         );
@@ -30,7 +30,7 @@ public final class ScriptCommands {
                 "scripts",
                 Component.translatable("crafttweaker.command.description.script"),
                 builder -> builder.executes(context -> {
-                    CommandUtilities.open(context.getSource(), PathUtil.makeRelativeToGameDirectory(CraftTweakerConstants.SCRIPTS_DIRECTORY));
+                    CommandUtilities.open(context.getSource(), PathUtil.makeRelativeToGameDirectory(CraftTweakerConstants.scriptsDir()).toString());
                     return Command.SINGLE_SUCCESS;
                 })
         );

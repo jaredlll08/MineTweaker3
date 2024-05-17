@@ -109,7 +109,7 @@ public class LootModifierManager {
     @ZenCodeType.Method
     public void removeByName(final String name) {
         
-        final ResourceLocation id = name.contains(":") ? new ResourceLocation(name) : new ResourceLocation(CraftTweakerConstants.MOD_ID, name);
+        final ResourceLocation id = name.contains(":") ? new ResourceLocation(name) : CraftTweakerConstants.rl(name);
         CraftTweakerAPI.apply(new ActionRemoveLootModifier("with name '" + id + "'", entry -> entry.getKey()
                 .equals(id), this.lootMap));
     }

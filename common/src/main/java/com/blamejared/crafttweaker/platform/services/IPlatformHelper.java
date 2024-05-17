@@ -2,8 +2,8 @@ package com.blamejared.crafttweaker.platform.services;
 
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientConditioned;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.loot.modifier.ILootModifier;
 import com.blamejared.crafttweaker.api.mod.Mod;
@@ -15,7 +15,8 @@ import com.blamejared.crafttweaker.mixin.common.access.item.AccessIngredient;
 import com.blamejared.crafttweaker.platform.helper.inventory.IInventoryWrapper;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
+import net.minecraft.Optionull;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -32,10 +33,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -67,13 +68,13 @@ public interface IPlatformHelper {
     
     Optional<Mod> getMod(String modid);
     
-    IItemStack createItemStack(ItemStack stack);
+    IItemStack createItemStack(ItemStack stack, IngredientConditions conditions, IngredientTransformers transformers);
     
-    IItemStack createItemStackMutable(ItemStack stack);
+    IItemStack createItemStackMutable(ItemStack stack, IngredientConditions conditions, IngredientTransformers transformers);
     
-    IFluidStack createFluidStack(Fluid fluid, long amount, @Nullable CompoundTag tag);
+    IFluidStack createFluidStack(Fluid fluid, long amount, DataComponentPatch patch);
     
-    IFluidStack createFluidStackMutable(Fluid fluid, long amount, @Nullable CompoundTag tag);
+    IFluidStack createFluidStackMutable(Fluid fluid, long amount, DataComponentPatch patch);
     
     <T> IFluidStack createFluidStack(T stack);
     
@@ -110,15 +111,6 @@ public interface IPlatformHelper {
     
     IInventoryWrapper getPlayerInventory(Player player);
     
-    default boolean canItemStacksStack(ItemStack first, ItemStack second) {
-        
-        if(first.isEmpty() || !ItemStack.isSameItem(first, second) || first.hasTag() != second.hasTag()) {
-            return false;
-        }
-        
-        return (!first.hasTag() || first.getTag().equals(second.getTag()));
-    }
-    
     boolean doCraftingTableRecipesConflict(final IRecipeManager<?> manager, final Recipe<?> first, final Recipe<?> second);
     
     Set<MutableComponent> getFluidsForDump(ItemStack stack, Player player, InteractionHand hand);
@@ -127,20 +119,11 @@ public interface IPlatformHelper {
     
     CompoundTag getPersistentData(ServerPlayer player);
     
-    default void addFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect, float probability) {
-        
-        internal.getEffects().add(Pair.of(effect, probability));
-    }
+    void addFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect, float probability);
     
-    default void removeFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect) {
-        
-        internal.getEffects().removeIf(pair -> pair.getFirst().equals(effect));
-    }
+    void removeFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect);
     
-    default void removeFoodPropertiesEffect(FoodProperties internal, MobEffect effect) {
-        
-        internal.getEffects().removeIf(pair -> pair.getFirst().getEffect() == effect);
-    }
+    void removeFoodPropertiesEffect(FoodProperties internal, MobEffect effect);
     
     boolean doesIngredientRequireTesting(Ingredient ingredient);
     
@@ -152,15 +135,26 @@ public interface IPlatformHelper {
         ingredients.clear();
     }
     
+    default IItemStack getRemainingItem(ItemStack stack) {
+        
+        return Optionull.mapOrDefault(stack.getItem()
+                .getCraftingRemainingItem(), IItemStack::of, IItemStack.empty());
+    }
+    
     Ingredient getIngredientAny();
     
     Ingredient getIngredientList(List<Ingredient> children);
     
-    <T extends IIngredient> Ingredient getIngredientConditioned(IIngredientConditioned<T> conditioned);
+    Ingredient getCraftTweakerIngredient(IIngredient internal);
     
-    <T extends IIngredient> Ingredient getIngredientTransformed(IIngredientTransformed<T> transformed);
+    Ingredient getIItemStackIngredient(IItemStack internal);
     
-    Ingredient getIngredientPartialTag(ItemStack stack);
+    boolean isCustomIngredient(Ingredient ingredient);
+    
+    default Stream<ItemStack> getCustomIngredientItems(Ingredient ingredient) {
+        // Default for neoforge
+        return Arrays.stream(ingredient.getItems());
+    }
     
     Stream<GameProfile> fakePlayers();
     

@@ -3,12 +3,11 @@ package com.blamejared.crafttweaker.api.recipe.serializer;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.type.CTShapelessRecipe;
-import com.blamejared.crafttweaker.impl.helper.AccessibleElementsProvider;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 public class CTShapelessRecipeSerializer implements RecipeSerializer<CTShapelessRecipe> {
     
     public static final CTShapelessRecipeSerializer INSTANCE = new CTShapelessRecipeSerializer();
-    public static final Codec<CTShapelessRecipe> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<CTShapelessRecipe> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     IItemStack.CODEC.fieldOf("output").forGetter(CTShapelessRecipe::getCtOutput),
                     IIngredient.CODEC.listOf()
@@ -25,40 +24,28 @@ public class CTShapelessRecipeSerializer implements RecipeSerializer<CTShapeless
                             .xmap(iIngredients -> iIngredients.toArray(IIngredient[]::new), Arrays::asList)
                             .forGetter(CTShapelessRecipe::getCtIngredients)
             ).apply(instance, CTShapelessRecipe::new)
+    );
     
+    public static final StreamCodec<RegistryFriendlyByteBuf, CTShapelessRecipe> STREAM_CODEC = StreamCodec.composite(
+            IItemStack.STREAM_CODEC,
+            CTShapelessRecipe::getCtOutput,
+            IIngredient.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            CTShapelessRecipe::getFlatCtIngredients,
+            (iItemStack, iIngredients) -> new CTShapelessRecipe(iItemStack, iIngredients.toArray(IIngredient[]::new))
     );
     
     private CTShapelessRecipeSerializer() {}
     
     @Override
-    public Codec<CTShapelessRecipe> codec() {
+    public MapCodec<CTShapelessRecipe> codec() {
         
         return CODEC;
     }
     
     @Override
-    public CTShapelessRecipe fromNetwork(FriendlyByteBuf buffer) {
+    public StreamCodec<RegistryFriendlyByteBuf, CTShapelessRecipe> streamCodec() {
         
-        int i = buffer.readVarInt();
-        IIngredient[] ingredients = new IIngredient[i];
-        
-        for(int j = 0; j < ingredients.length; ++j) {
-            ingredients[j] = IIngredient.fromIngredient(Ingredient.fromNetwork(buffer));
-        }
-        
-        ItemStack output = buffer.readItem();
-        return new CTShapelessRecipe(IItemStack.of(output), ingredients);
-    }
-    
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, CTShapelessRecipe recipe) {
-        
-        
-        buffer.writeVarInt(recipe.getIngredients().size());
-        for(Ingredient ingredient : recipe.getIngredients()) {
-            ingredient.toNetwork(buffer);
-        }
-        buffer.writeItem(AccessibleElementsProvider.get().registryAccess(recipe::getResultItem));
+        return STREAM_CODEC;
     }
     
 }

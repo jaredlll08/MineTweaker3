@@ -1,31 +1,35 @@
 package com.blamejared.crafttweaker.platform.services;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.condition.serializer.IIngredientConditionSerializer;
-import com.blamejared.crafttweaker.api.ingredient.transform.serializer.IIngredientTransformerSerializer;
-import com.blamejared.crafttweaker.api.ingredient.type.*;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.mixin.common.access.registry.AccessRegistrySynchronization;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.core.*;
-import net.minecraft.core.registries.*;
-import net.minecraft.resources.*;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface IRegistryHelper {
@@ -35,18 +39,6 @@ public interface IRegistryHelper {
         return AccessRegistrySynchronization.crafttweaker$callOwnedNetworkableRegistries(CraftTweakerAPI.getAccessibleElementsProvider()
                 .registryAccess()).map(RegistryAccess.RegistryEntry::key).collect(Collectors.toSet());
     }
-    
-    default void registerSerializer(MappedRegistry<IIngredientTransformerSerializer<?>> registry, IIngredientTransformerSerializer<?> serializer) {
-        
-        registry.register(ResourceKey.create(registry.key(), serializer.getType()), serializer, Lifecycle.stable());
-    }
-    
-    default void registerSerializer(MappedRegistry<IIngredientConditionSerializer<?>> registry, IIngredientConditionSerializer<?> serializer) {
-        
-        registry.register(ResourceKey.create(registry.key(), serializer.getType()), serializer, Lifecycle.stable());
-    }
-    
-    void init();
     
     /**
      * Maybe returns the registry key of the given object if we know about its type.
@@ -130,6 +122,11 @@ public interface IRegistryHelper {
         }
         return registry.getHolder(ResourceKey.create(registry.key(), key))
                 .orElseThrow(() -> new RuntimeException("Unable to make holder for registry: " + registry + " and id: " + key));
+    }
+    
+    default <T> Registry<T> makeRegistry(ResourceKey<Registry<T>> resourceKey) {
+        
+        return new MappedRegistry<>(resourceKey, Lifecycle.stable());
     }
     
 }

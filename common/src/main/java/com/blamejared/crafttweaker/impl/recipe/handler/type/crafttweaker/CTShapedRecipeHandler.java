@@ -9,11 +9,11 @@ import com.blamejared.crafttweaker.api.recipe.fun.RecipeFunction2D;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.recipe.type.CTShapedRecipe;
+import com.blamejared.crafttweaker.api.util.RecipeUtil;
 import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.blamejared.crafttweaker.platform.Services;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -53,7 +53,7 @@ public final class CTShapedRecipeHandler implements IRecipeHandler<CTShapedRecip
         final int width = recipe.getWidth();
         final int height = recipe.getHeight();
         final RecipeFunction2D function = recipe.getFunction();
-        final List<IIngredient> ingredients = this.flatten(recipe.getCtIngredients(), width, height);
+        final List<IIngredient> ingredients = RecipeUtil.flatten(recipe.getCtIngredients(), width, height);
         
         final IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
                 .with(BuiltinRecipeComponents.Metadata.SHAPE_SIZE_2D, Pair.of(width, height))
@@ -91,28 +91,9 @@ public final class CTShapedRecipeHandler implements IRecipeHandler<CTShapedRecip
             throw new IllegalArgumentException("Invalid output: empty item");
         }
         
-        final IIngredient[][] matrix = this.inflate(ingredients, width, height);
+        final IIngredient[][] matrix = RecipeUtil.inflate(ingredients, width, height);
         final RecipeFunction2D recipeFunction = function == null ? null : function.get(0);
         return Optional.of(new CTShapedRecipe(output, matrix, axis, recipeFunction));
-    }
-    
-    private List<IIngredient> flatten(final IIngredient[][] ingredients, final int width, final int height) {
-        
-        final int size;
-        final List<IIngredient> flattened = Arrays.asList(new IIngredient[size = width * height]);
-        for(int i = 0; i < size; ++i) {
-            flattened.set(i, ingredients[i / width][i % width]);
-        }
-        return flattened;
-    }
-    
-    private IIngredient[][] inflate(final List<IIngredient> flattened, final int width, final int height) {
-        
-        final IIngredient[][] inflated = new IIngredient[width][height];
-        for(int i = 0, s = flattened.size(); i < s; ++i) {
-            inflated[i / width][i % width] = flattened.get(i);
-        }
-        return inflated;
     }
     
 }

@@ -1,31 +1,41 @@
 package com.blamejared.crafttweaker.api.item;
 
-import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.action.item.ActionSetFood;
-import com.blamejared.crafttweaker.api.action.item.ActionSetItemProperty;
+import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.IntData;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
-import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientPartialTag;
-import com.blamejared.crafttweaker.api.util.AttributeUtil;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
+import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientIItemStack;
 import com.blamejared.crafttweaker.api.util.EnchantmentUtil;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.blamejared.crafttweaker.mixin.common.access.item.AccessItem;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -33,28 +43,49 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.function.UnaryOperator;
 
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.item.IItemStack")
 @Document("vanilla/api/item/IItemStack")
-public interface IItemStack extends IIngredient, IIngredientWithAmount {
+public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComponentHolder {
+    //TODO 1.20.5 redo all of this and the comments!!!
+    //TODO 1.20.5 with<Type>(<component:minecraft:food>, new Food()));
+    
+    ResourceLocation INGREDIENT_ID = CraftTweakerConstants.rl("iitemstack");
     
     Codec<IItemStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ItemStack.CODEC.fieldOf("item").forGetter(IItemStack::getInternal),
-            Codec.BOOL.fieldOf("mutable").forGetter(IItemStack::isMutable)
+            Codec.BOOL.fieldOf("mutable").forGetter(IItemStack::isMutable),
+            IngredientTransformers.CODEC.fieldOf("transformers").forGetter(IItemStack::transformers)
     ).apply(instance, IItemStack::of));
+    
+    StreamCodec<RegistryFriendlyByteBuf, IItemStack> STREAM_CODEC = StreamCodec.composite(
+            ItemStack.STREAM_CODEC,
+            IItemStack::getInternal,
+            ByteBufCodecs.BOOL,
+            IItemStack::isMutable,
+            IngredientTransformers.STREAM_CODEC,
+            IItemStack::transformers,
+            IItemStack::of
+    );
     
     @ZenCodeType.Field
     String CRAFTTWEAKER_DATA_KEY = "CraftTweakerData";
@@ -66,9 +97,11 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     UUID BASE_ATTACK_SPEED_UUID = AccessItem.crafttweaker$getBASE_ATTACK_SPEED_UUID();
     
     static IItemStack empty() {
+        
         return IItemStackConstants.EMPTY_STACK.get();
     }
     
+    //TODO 1.20.5 clean these up and fix
     static IItemStack of(final ItemLike item) {
         
         return of(new ItemStack(item));
@@ -76,7 +109,12 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     
     static IItemStack of(final ItemStack stack) {
         
-        return Services.PLATFORM.createItemStack(stack);
+        return Services.PLATFORM.createItemStack(stack, IngredientConditions.EMPTY, IngredientTransformers.EMPTY);
+    }
+    
+    static IItemStack of(final ItemStack stack, final IngredientConditions conditions, final IngredientTransformers transformers) {
+        
+        return Services.PLATFORM.createItemStack(stack, conditions, transformers);
     }
     
     static IItemStack of(final ItemStack stack, final boolean mutable) {
@@ -86,7 +124,17 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     
     static IItemStack ofMutable(final ItemStack stack) {
         
-        return Services.PLATFORM.createItemStackMutable(stack);
+        return Services.PLATFORM.createItemStackMutable(stack, IngredientConditions.EMPTY, IngredientTransformers.EMPTY);
+    }
+    
+    static IItemStack ofMutable(final ItemStack stack, final IngredientConditions conditions, final IngredientTransformers transformers) {
+        
+        return Services.PLATFORM.createItemStackMutable(stack, conditions, transformers);
+    }
+    
+    static IItemStack of(final ItemStack stack, final boolean mutable, final IngredientTransformers transformers) {
+        
+        return mutable ? ofMutable(stack) : of(stack);
     }
     
     /**
@@ -128,6 +176,89 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
         return getInternal().isEmpty();
     }
     
+    @ZenCodeType.Getter("prototype")
+    default DataComponentMap getPrototype() {
+        
+        return getInternal().getPrototype();
+    }
+    
+    @ZenCodeType.Getter("componentsPatch")
+    default DataComponentPatch getComponentsPatch() {
+        
+        return getInternal().getComponentsPatch();
+    }
+    
+    @ZenCodeType.Method
+    default <T> IItemStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value) {
+        
+        return modify(itemStack -> {
+            itemStack.set(type, value);
+        });
+    }
+    
+    //TODO 1.20.5 do we want to change this name?
+    @ZenCodeType.Method
+    default IItemStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
+        
+        return modify(itemStack -> {
+            if(value == null) {
+                itemStack.remove(type);
+            } else {
+                Codec<?> codec = type.codecOrThrow();
+                DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE, value);
+                itemStack.set(type, decode.getOrThrow().getFirst());
+            }
+        });
+    }
+    
+    @ZenCodeType.Method
+    default <T, U> IItemStack update(DataComponentType<T> type, T defaultValue, U data, BiFunction<T, U, T> operator) {
+        
+        return modify(itemStack -> {
+            itemStack.update(type, defaultValue, data, operator);
+        });
+    }
+    
+    @ZenCodeType.Method
+    default <T> IItemStack update(DataComponentType<T> type, T defaultValue, UnaryOperator<T> operator) {
+        
+        return modify(itemStack -> {
+            itemStack.update(type, defaultValue, operator);
+        });
+    }
+    
+    @ZenCodeType.Method
+    default <T> IItemStack remove(DataComponentType<T> type) {
+        
+        return modify(itemStack -> {
+            itemStack.remove(type);
+        });
+    }
+    
+    @ZenCodeType.Method
+    default IItemStack applyComponents(DataComponentMap map) {
+        
+        return modify(itemStack -> {
+            itemStack.applyComponents(map);
+        });
+    }
+    
+    @ZenCodeType.Method
+    default IItemStack applyComponents(DataComponentPatch patch) {
+        
+        return modify(itemStack -> {
+            itemStack.applyComponents(patch);
+        });
+    }
+    
+    @ZenCodeType.Method
+    default IItemStack applyComponentsAndValidate(DataComponentPatch patch) {
+        
+        return modify(itemStack -> {
+            itemStack.applyComponents(patch);
+        });
+    }
+    
     /**
      * Returns the max stack size of the Item in the ItemStack
      *
@@ -137,23 +268,23 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Getter("maxStackSize")
     default int getMaxStackSize() {
         
-        return getInternal().getItem().getMaxStackSize();
+        return getInternal().getMaxStackSize();
     }
+    //TODO 1.20.5 make setters for these type of things?
     
     /**
-     * Sets the max stacksize of the Item.
+     * Sets the max stacksize of the ItemStack
      *
      * @param newMaxStackSize The new max stack size of the Item.
      *
      * @docParam newMaxStackSize 16
      */
     @ZenCodeType.Method
-    @ZenCodeType.Setter("maxStackSize")
-    default void setMaxStackSize(int newMaxStackSize) {
+    default IItemStack withMaxStackSize(int newMaxStackSize) {
         
-        CraftTweakerAPI.apply(new ActionSetItemProperty<>(this, "Max Stack Size", newMaxStackSize, this.getInternal()
-                .getItem().getMaxStackSize(), ((AccessItem) this.getInternal()
-                .getItem())::crafttweaker$setMaxStackSize));
+        return modify(itemStack -> {
+            itemStack.set(DataComponents.MAX_STACK_SIZE, newMaxStackSize);
+        });
     }
     
     /**
@@ -176,12 +307,9 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
      * @docParam newRarity Rarity.UNCOMMON
      */
     @ZenCodeType.Method
-    @ZenCodeType.Setter("rarity")
     default void setRarity(Rarity newRarity) {
         
-        CraftTweakerAPI.apply(new ActionSetItemProperty<>(this, "Rarity", newRarity, this.getInternal()
-                .getRarity(), ((AccessItem) this.getInternal()
-                .getItem())::crafttweaker$setRarity));
+        getInternal().set(DataComponents.RARITY, newRarity);
     }
     
     
@@ -190,21 +318,16 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
      *
      * @param lore the new Lore of the ItemStack.
      *
-     * @docParam lore new crafttweaker.api.text.TextComponent("I am the lore I speak for the trees");
+     * @docParam lore [crafttweaker.api.text.Component.literal("I am the lore I speak for the trees")];
      */
     @ZenCodeType.Method
-    default IItemStack withLore(@ZenCodeType.Nullable Component... lore) {
+    default IItemStack withLore(@ZenCodeType.Nullable Component[] lore) {
         
         return modify(itemStack -> {
-            CompoundTag tag = itemStack.getOrCreateTagElement(ItemStack.TAG_DISPLAY);
-            if(lore != null && lore.length != 0) {
-                ListTag listtag = new ListTag();
-                for(Component component : lore) {
-                    listtag.add(StringTag.valueOf(Component.Serializer.toJson(component)));
-                }
-                tag.put("Lore", listtag);
+            if(lore == null) {
+                itemStack.remove(DataComponents.LORE);
             } else {
-                tag.remove(ItemStack.TAG_LORE);
+                itemStack.set(DataComponents.LORE, new ItemLore(Arrays.asList(lore)));
             }
         });
     }
@@ -230,7 +353,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Method
     default IItemStack withDisplayName(Component name) {
         
-        return modify(itemStack -> itemStack.setHoverName(name));
+        return modify(itemStack -> itemStack.set(DataComponents.ITEM_NAME, name));
     }
     
     /**
@@ -240,31 +363,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
      *
      * @return The hover name of the ItemStack.
      */
-    @ZenCodeType.Method
     @ZenCodeType.Getter("hoverName")
     default Component getHoverName() {
         
         return getInternal().getHoverName();
-    }
-    
-    /**
-     * Clears any custom name set for this ItemStack
-     */
-    @ZenCodeType.Method
-    default void resetHoverName() {
-        
-        getInternal().resetHoverName();
-    }
-    
-    /**
-     * Returns true if the ItemStack has a display name.
-     *
-     * @return true if a display name is present on the ItemStack.
-     */
-    @ZenCodeType.Getter("hasCustomHoverName")
-    default boolean hasDisplayName() {
-        
-        return getInternal().hasCustomHoverName();
     }
     
     /**
@@ -303,23 +405,12 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     }
     
     /**
-     * Gets the base repair cost of the ItemStack, or 0 if no repair is defined.
-     *
-     * @return ItemStack repair cost or 0 if no repair is set.
-     */
-    @ZenCodeType.Getter("baseRepairCost")
-    default int getBaseRepairCost() {
-        
-        return getInternal().getBaseRepairCost();
-    }
-    
-    /**
      * Gets the amount of Items in the ItemStack
      *
      * @return ItemStack's amount
      */
     @ZenCodeType.Getter("amount")
-    default int getAmount() {
+    default int amount() {
         
         return getInternal().getCount();
     }
@@ -349,7 +440,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Method
     default IItemStack grow(@ZenCodeType.OptionalInt(1) int amount) {
         
-        return setAmount(getAmount() + amount);
+        return setAmount(amount() + amount);
     }
     
     /**
@@ -364,7 +455,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Method
     default IItemStack shrink(@ZenCodeType.OptionalInt(1) int amount) {
         
-        return setAmount(getAmount() - amount);
+        return setAmount(amount() - amount);
     }
     
     /**
@@ -458,13 +549,14 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     default IItemStack withAttributeModifier(Attribute attribute, UUID uuid, String name, double value, AttributeModifier.Operation operation, EquipmentSlot[] slotTypes, @ZenCodeType.OptionalBoolean boolean preserveDefaults) {
         
         return modify(itemStack -> {
-            for(EquipmentSlot slotType : slotTypes) {
-                if(preserveDefaults) {
-                    AttributeUtil.addAttributeModifier(itemStack, attribute, new AttributeModifier(uuid, name, value, operation), slotType);
-                } else {
-                    itemStack.addAttributeModifier(attribute, new AttributeModifier(uuid, name, value, operation), slotType);
-                }
-            }
+            //TODO 1.20.5 fix
+            //            for(EquipmentSlot slotType : slotTypes) {
+            //                if(preserveDefaults) {
+            //                    AttributeUtil.addAttributeModifier(itemStack, attribute, new AttributeModifier(uuid, name, value, operation), slotType);
+            //                } else {
+            //                    itemStack.addAttributeModifier(attribute, new AttributeModifier(uuid, name, value, operation), slotType);
+            //                }
+            //            }
         });
     }
     
@@ -498,13 +590,14 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     default IItemStack withAttributeModifier(Attribute attribute, String name, double value, AttributeModifier.Operation operation, EquipmentSlot[] slotTypes, @ZenCodeType.OptionalBoolean boolean preserveDefaults) {
         
         return modify(itemStack -> {
-            for(EquipmentSlot slotType : slotTypes) {
-                if(preserveDefaults) {
-                    AttributeUtil.addAttributeModifier(itemStack, attribute, new AttributeModifier(name, value, operation), slotType);
-                } else {
-                    itemStack.addAttributeModifier(attribute, new AttributeModifier(name, value, operation), slotType);
-                }
-            }
+            //TODO 1.20.5
+            //            for(EquipmentSlot slotType : slotTypes) {
+            //                if(preserveDefaults) {
+            //                    AttributeUtil.addAttributeModifier(itemStack, attribute, new AttributeModifier(name, value, operation), slotType);
+            //                } else {
+            //                    itemStack.addAttributeModifier(attribute, new AttributeModifier(name, value, operation), slotType);
+            //                }
+            //            }
         });
     }
     
@@ -521,12 +614,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     default Map<Attribute, List<AttributeModifier>> getAttributes(EquipmentSlot slotType) {
         
         // I don't think we expose Collection, so just convert it to a list.
-        return getInternal().getAttributeModifiers(slotType)
-                .asMap()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, attributeAttributeModifierEntry -> new ArrayList<>(attributeAttributeModifierEntry
-                        .getValue())));
+        Map<Attribute, List<AttributeModifier>> ret = new HashMap<>();
+        getInternal().forEachModifier(slotType, (attributeHolder, attributeModifier) -> ret.computeIfAbsent(attributeHolder.value(), attribute -> new ArrayList<>())
+                .add(attributeModifier));
+        return ret;
     }
     
     /**
@@ -574,12 +665,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
      *
      * @docParam maxDamage 5
      */
-    @ZenCodeType.Setter("maxDamage")
-    default void setMaxDamage(int newMaxDamage) {
+    @ZenCodeType.Method
+    default IItemStack setMaxDamage(int newMaxDamage) {
         
-        CraftTweakerAPI.apply(new ActionSetItemProperty<>(this, "Max Damage", newMaxDamage, this.getInternal()
-                .getMaxDamage(), ((AccessItem) this.getInternal()
-                .getItem())::crafttweaker$setMaxDamage));
+        return modify(itemStack -> itemStack.set(DataComponents.MAX_DAMAGE, newMaxDamage));
     }
     
     /**
@@ -605,7 +694,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Method
     default IItemStack withTag(MapData tag) {
         
-        return modify(itemStack -> itemStack.setTag(tag.getInternal()));
+        return modify(itemStack -> itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag.getInternal())));
     }
     
     /**
@@ -616,9 +705,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Method
     default IItemStack withoutTag() {
         
-        return modify(itemStack -> itemStack.setTag(null));
+        return modify(itemStack -> itemStack.remove(DataComponents.CUSTOM_DATA));
     }
     
+    //TODO 1.20.5 do we want this?
     
     /**
      * Returns true if this ItemStack has a Tag
@@ -628,7 +718,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Getter("hasTag")
     default boolean hasTag() {
         
-        return getInternal().hasTag();
+        return getInternal().has(DataComponents.CUSTOM_DATA);
     }
     
     /**
@@ -640,27 +730,33 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Getter("tag")
     default IData getTag() {
         
-        return TagToDataConverter.convert(getInternal().getTag());
+        CustomData customData = getInternal().get(DataComponents.CUSTOM_DATA);
+        if(customData == null) {
+            return null;
+        }
+        //noinspection deprecation
+        return TagToDataConverter.convert(customData.getUnsafe());
     }
     
-    /**
-     * Returns the NBT tag attached to this ItemStack or makes a new tag.
-     *
-     * @return MapData of the ItemStack NBT Tag, empty tag if it doesn't exist.
-     */
-    @ZenCodeType.Method
-    default IData getOrCreateTag() {
-        
-        if(getInternal().getTag() == null) {
-            getInternal().setTag(new CompoundTag());
-        }
-        return getTag();
-    }
+    //TODO 1.20.5, have this just return an empty CustomData, not set it?
+    //    /**
+    //     * Returns the NBT tag attached to this ItemStack or makes a new tag.
+    //     *
+    //     * @return MapData of the ItemStack NBT Tag, empty tag if it doesn't exist.
+    //     */
+    //    @ZenCodeType.Method
+    //    default IData getOrCreateTag() {
+    //        if(getInternal().getTag() == null) {
+    //            getInternal().setTag(new CompoundTag());
+    //        }
+    //        return getTag();
+    //    }
     
     @Override
-    default boolean matches(IItemStack stack, boolean ignoreDamage) {
+    default boolean matches(IItemStack stack) {
         
-        return ItemStackUtil.areStacksTheSame(this.getInternal(), stack.getInternal(), ignoreDamage, true);
+        return ItemStackUtil.areStacksTheSame(this.getInternal(), stack.getInternal(), true) && this.conditions()
+                .test(stack);
     }
     
     @Override
@@ -668,7 +764,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
         
         return ItemStackUtil.getCommandString(this.getInternal(), this.isMutable());
     }
-    
     
     /**
      * Gets the use duration of the ItemStack
@@ -697,23 +792,19 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     @ZenCodeType.Nullable
     default FoodProperties getFood() {
         
-        return getInternal().getItem().getFoodProperties();
+        return getInternal().get(DataComponents.FOOD);
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Setter("food")
-    default void setFood(@ZenCodeType.Nullable FoodProperties food) {
+    default IItemStack withFood(@ZenCodeType.Nullable FoodProperties food) {
         
-        CraftTweakerAPI.apply(new ActionSetFood(this, food, this.getInternal()
-                .getItem()
-                .getFoodProperties()));
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isEdible")
-    default boolean isEdible() {
-        
-        return getInternal().isEdible();
+        return modify(itemStack -> {
+            if(food == null) {
+                getInternal().remove(DataComponents.FOOD);
+            } else {
+                getInternal().set(DataComponents.FOOD, food);
+            }
+        });
     }
     
     @ZenCodeType.Getter("burnTime")
@@ -727,11 +818,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
      *
      * @return True if this IItemStack is immune to fire. False otherwise.
      */
-    @ZenCodeType.Method
     @ZenCodeType.Getter("fireResistant")
     default boolean isFireResistant() {
         
-        return getInternal().getItem().isFireResistant();
+        return getInternal().has(DataComponents.FIRE_RESISTANT);
     }
     
     /**
@@ -744,12 +834,9 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
      * @docParam immuneToFire true
      */
     @ZenCodeType.Method
-    @ZenCodeType.Setter("fireResistant")
-    default void setFireResistant(boolean fireResistant) {
+    default IItemStack setFireResistant(boolean fireResistant) {
         
-        CraftTweakerAPI.apply(new ActionSetItemProperty<>(this, "Fire Resistant", fireResistant, this.getInternal()
-                .getItem().isFireResistant(), ((AccessItem) this.getInternal()
-                .getItem())::crafttweaker$setFireResistant));
+        return modify(itemStack -> itemStack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE));
     }
     
     @ZenCodeType.Method
@@ -810,12 +897,13 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
         return getInternal().getDamageValue();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("enchantments")
-    default Map<Enchantment, Integer> getEnchantments() {
-        
-        return EnchantmentHelper.getEnchantments(getInternal());
-    }
+    //TODO 1.20.5 make this return ItemEnchantments? I think it solves a lot of our issues
+    //    @ZenCodeType.Method
+    //    @ZenCodeType.Getter("enchantments")
+    //    default Map<Enchantment, Integer> getEnchantments() {
+    //
+    //        return EnchantmentHelper.getEnchantments(getInternal());
+    //    }
     
     /**
      * Sets the enchantments on this IItemStack.
@@ -831,15 +919,15 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
         return modify(newStack -> EnchantmentUtil.setEnchantments(enchantments, newStack));
     }
     
-    
-    /**
-     * Gets the level of the given enchantment on the item. Returns 0 if the item doesn't have the given enchantment.
-     */
-    @ZenCodeType.Method
-    default int getEnchantmentLevel(Enchantment enchantment) {
-        
-        return getEnchantments().getOrDefault(enchantment, 0);
-    }
+    //TODO 1.20.5 remove?
+    //    /**
+    //     * Gets the level of the given enchantment on the item. Returns 0 if the item doesn't have the given enchantment.
+    //     */
+    //    @ZenCodeType.Method
+    //    default int getEnchantmentLevel(Enchantment enchantment) {
+    //
+    //        return getEnchantments().getOrDefault(enchantment, 0);
+    //    }
     
     /**
      * Enchants this IItemStack with the given Enchantment.
@@ -856,9 +944,9 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     default IItemStack withEnchantment(Enchantment enchantment, @ZenCodeType.OptionalInt(1) int level) {
         
         return modify(itemStack -> {
-            Map<Enchantment, Integer> enchantments = getEnchantments();
-            enchantments.put(enchantment, level);
-            EnchantmentUtil.setEnchantments(enchantments, itemStack);
+            ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(itemStack.getEnchantments());
+            enchantments.set(enchantment, level);
+            itemStack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
         });
     }
     
@@ -875,9 +963,9 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     default IItemStack removeEnchantment(Enchantment enchantment) {
         
         return modify(itemStack -> {
-            Map<Enchantment, Integer> enchantments = getEnchantments();
-            enchantments.remove(enchantment);
-            EnchantmentUtil.setEnchantments(enchantments, itemStack);
+            ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(itemStack.getEnchantments());
+            enchantments.removeIf(enchantmentHolder -> enchantmentHolder.value() == enchantment);
+            itemStack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
         });
     }
     
@@ -897,10 +985,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
             return Ingredient.EMPTY;
         }
         
-        if(!getInternal().hasTag()) {
-            return Ingredient.of(getImmutableInternal());
-        }
-        return IngredientPartialTag.ingredient(getImmutableInternal());
+        return IngredientIItemStack.ingredient(this);
     }
     
     @ZenCodeType.Method
@@ -917,7 +1002,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
     }
     
     @Override
-    default IItemStack getIngredient() {
+    default IItemStack ingredient() {
         
         return this;
     }
@@ -927,10 +1012,49 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount {
         
         final IData data = IIngredient.super.asIData();
         assert data instanceof MapData;
-        data.put("count", new IntData(this.getAmount()));
+        data.put("count", new IntData(this.amount()));
         return data;
     }
     
+    @Override
+    default IIngredient transform(IIngredientTransformer transformer) {
+        
+        return modifyThis(iItemStack -> iItemStack.transformers().add(transformer));
+    }
+    
+    @Override
+    default IIngredient condition(IIngredientCondition condition) {
+        
+        return modifyThis(iItemStack -> iItemStack.conditions().add(condition));
+    }
+    
     IItemStack modify(Consumer<ItemStack> stackModifier);
+    
+    IItemStack modifyThis(Consumer<IItemStack> modifier);
+    
+    @Override
+    default DataComponentMap getComponents() {
+        
+        return getInternal().getComponents();
+    }
+    
+    @Nullable
+    @Override
+    default <T> T get(DataComponentType<? extends T> type) {
+        
+        return getInternal().get(type);
+    }
+    
+    @Override
+    default <T> T getOrDefault(DataComponentType<? extends T> type, T value) {
+        
+        return getInternal().getOrDefault(type, value);
+    }
+    
+    @Override
+    default boolean has(DataComponentType<?> type) {
+        
+        return getInternal().has(type);
+    }
     
 }

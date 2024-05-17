@@ -111,9 +111,9 @@ public class ExpandServerLevelData {
     }
     
     @ZenCodeType.Getter("allowCommands")
-    public static boolean getAllowCommands(ServerLevelData internal) {
+    public static boolean isAllowCommands(ServerLevelData internal) {
         
-        return internal.getAllowCommands();
+        return internal.isAllowCommands();
     }
     
     @ZenCodeType.Setter("gameType")

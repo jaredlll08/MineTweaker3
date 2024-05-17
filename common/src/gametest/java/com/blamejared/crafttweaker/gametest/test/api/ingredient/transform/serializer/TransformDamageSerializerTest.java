@@ -1,13 +1,12 @@
 package com.blamejared.crafttweaker.gametest.test.api.ingredient.transform.serializer;
 
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.transform.serializer.TransformDamageSerializer;
-import com.blamejared.crafttweaker.api.ingredient.transform.type.TransformDamage;
+import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformDamageSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformDamage;
 import com.blamejared.crafttweaker.gametest.CraftTweakerGameTest;
 import com.blamejared.crafttweaker.gametest.framework.annotation.CraftTweakerGameTestHolder;
 import com.blamejared.crafttweaker.gametest.framework.annotation.TestModifier;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;

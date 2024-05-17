@@ -46,7 +46,7 @@ public class ExpandMobFinalizeSpawnEvent {
         
         return internal.getSpawnType();
     }
-    
+    //TODO expose SpawnGroupData
     //    public static @Nullable SpawnGroupData getSpawnData(MobSpawnEvent.FinalizeSpawn internal) {
     //
     //        return internal.getSpawnData();
@@ -56,21 +56,6 @@ public class ExpandMobFinalizeSpawnEvent {
     //
     //        internal.setSpawnData(data);
     //    }
-    @ZenCodeType.Nullable
-    @ZenCodeType.Getter("spawnTag")
-    public static IData getSpawnTag(MobSpawnEvent.FinalizeSpawn internal) {
-        
-        return TagToDataConverter.convert(internal.getSpawnTag());
-    }
-    
-    @ZenCodeType.Setter("spawnTag")
-    public static void setSpawnTag(MobSpawnEvent.FinalizeSpawn internal, @ZenCodeType.Nullable IData tag) {
-        
-        if(!(tag instanceof MapData map)) {
-            throw new IllegalArgumentException("Unable to set the spawn tag to a non map data type!");
-        }
-        internal.setSpawnTag(map.getInternal());
-    }
     
     @ZenCodeType.Nullable
     @ZenCodeType.Getter("spawner")

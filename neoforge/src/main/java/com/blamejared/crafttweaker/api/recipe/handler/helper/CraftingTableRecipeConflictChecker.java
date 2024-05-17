@@ -53,10 +53,10 @@ public final class CraftingTableRecipeConflictChecker {
     
     private static boolean doShapedShapedConflict(final IShapedRecipe<?> first, final IShapedRecipe<?> second) {
         
-        if(first.getRecipeHeight() != second.getRecipeHeight()) {
+        if(first.getHeight() != second.getHeight()) {
             return false;
         }
-        if(first.getRecipeWidth() != second.getRecipeWidth()) {
+        if(first.getWidth() != second.getWidth()) {
             return false;
         }
         

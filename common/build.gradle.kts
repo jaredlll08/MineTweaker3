@@ -13,4 +13,6 @@ minecraft {
 
 dependencies {
     compileOnly("org.spongepowered:mixin:${Versions.MIXIN}")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.3.5")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")
 }

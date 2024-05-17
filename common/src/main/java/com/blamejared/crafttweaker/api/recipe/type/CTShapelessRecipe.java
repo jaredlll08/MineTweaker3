@@ -5,8 +5,8 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.logging.CommonLoggers;
 import com.blamejared.crafttweaker.api.recipe.fun.RecipeFunction1D;
 import com.blamejared.crafttweaker.api.recipe.serializer.CTShapelessRecipeSerializer;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -92,7 +92,7 @@ public class CTShapelessRecipe extends ShapelessRecipe {
     
     
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
+    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider lookup) {
         
         if(this.function == null) {
             return this.output.getInternal().copy();
@@ -113,7 +113,7 @@ public class CTShapelessRecipe extends ShapelessRecipe {
     }
     
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
+    public ItemStack getResultItem(HolderLookup.Provider lookup) {
         
         return output.getInternal().copy();
     }
@@ -172,6 +172,12 @@ public class CTShapelessRecipe extends ShapelessRecipe {
         for(IIngredient ingredient : this.ctIngredients) {
             ingredients.add(ingredient.asVanillaIngredient());
         }
+        return ingredients;
+    }
+    
+    public NonNullList<IIngredient> getFlatCtIngredients() {
+        NonNullList<IIngredient> ingredients = NonNullList.create();
+        ingredients.addAll(Arrays.asList(this.ctIngredients));
         return ingredients;
     }
     

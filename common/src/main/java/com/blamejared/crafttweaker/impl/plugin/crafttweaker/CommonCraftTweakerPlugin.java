@@ -119,7 +119,7 @@ public final class CommonCraftTweakerPlugin implements ICraftTweakerPlugin {
                 IItemStack.empty(),
                 IItemStack.of(((AccessDyedArmorForEmeralds) trade).crafttweaker$getItem().getDefaultInstance())));
         handler.registerTradeConverter(VillagerTrades.EmeraldForItems.class, trade -> new CTTradeObject(
-                IItemStack.of(((AccessEmeraldForItems) trade).crafttweaker$getItemStack()),
+                IItemStack.of(((AccessEmeraldForItems) trade).crafttweaker$getItemStack().itemStack()),
                 IItemStack.empty(),
                 emerald));
         handler.registerTradeConverter(VillagerTrades.TreasureMapForEmeralds.class, trade -> new CTTradeObject(
@@ -146,7 +146,7 @@ public final class CommonCraftTweakerPlugin implements ICraftTweakerPlugin {
                 IItemStack.ofMutable(((AccessTippedArrowForItemsAndEmeralds) trade).crafttweaker$getToItem())));
         handler.registerTradeConverter(VillagerTrades.ItemsAndEmeraldsToItems.class, trade -> new CTTradeObject(
                 emerald,
-                IItemStack.ofMutable(((AccessItemsAndEmeraldsToItems) trade).crafttweaker$getFromItem()),
+                IItemStack.ofMutable(((AccessItemsAndEmeraldsToItems) trade).crafttweaker$getFromItem().itemStack()),
                 IItemStack.ofMutable(((AccessItemsAndEmeraldsToItems) trade).crafttweaker$getToItem())));
         handler.registerTradeConverter(VillagerTrades.ItemsForEmeralds.class, trade -> new CTTradeObject(
                 emerald,

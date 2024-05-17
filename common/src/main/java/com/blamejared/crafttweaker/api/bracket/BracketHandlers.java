@@ -12,6 +12,7 @@ import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.natives.block.ExpandBlockState;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -348,6 +349,22 @@ public class BracketHandlers {
     public static VillagerType getVillagerType(String tokens) {
         
         return getRegistry(tokens, BuiltInRegistries.VILLAGER_TYPE);
+    }
+    
+    /**
+     * Gets a data component type based on registry name. Throws an exception if it can't find the data component type.
+     *
+     * @param tokens The data component type's resource location
+     *
+     * @return The found data component type
+     *
+     * @docParam tokens "minecraft:max_stack_size"
+     */
+    @ZenCodeType.Method
+    @BracketResolver("componenttype")
+    public static DataComponentType getComponentType(String tokens) {
+        
+        return getRegistry(tokens, BuiltInRegistries.DATA_COMPONENT_TYPE);
     }
     
 }

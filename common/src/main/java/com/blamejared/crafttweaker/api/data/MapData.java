@@ -4,8 +4,10 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
 import com.blamejared.crafttweaker.api.data.visitor.DataVisitor;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.google.common.collect.Iterators;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -192,7 +194,7 @@ public class MapData implements IData {
     @Override
     public @NotNull Iterator<IData> iterator() {
         
-        return getInternal().getAllKeys().stream().map(StringData::new).map(iData -> (IData) iData).toList().iterator();
+        return getInternal().getAllKeys().stream().<IData>map(StringData::new).iterator();
     }
     
     @Override

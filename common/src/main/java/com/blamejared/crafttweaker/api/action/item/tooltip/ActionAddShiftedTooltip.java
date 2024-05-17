@@ -16,7 +16,7 @@ public class ActionAddShiftedTooltip extends ActionTooltipBase {
         
         super(stack);
         this.content = content;
-        this.function = (stack1, tooltip, context) -> {
+        this.function = (stack1, tooltip, context, flag) -> {
             
             final KeyMapping keyBindSneak = Minecraft.getInstance().options.keyShift;
             

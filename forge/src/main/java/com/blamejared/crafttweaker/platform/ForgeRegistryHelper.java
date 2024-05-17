@@ -48,7 +48,7 @@ public class ForgeRegistryHelper implements IRegistryHelper {
             if(Registries.BLOCK.equals(event.getRegistryKey())) {
                 Registry.register(
                         BuiltInRegistries.LOOT_CONDITION_TYPE,
-                        new ResourceLocation(CraftTweakerConstants.MOD_ID, "loot_table_id_regex"),
+                        CraftTweakerConstants.rl("loot_table_id_regex"),
                         LootTableIdRegexCondition.LOOT_TABLE_ID_REGEX
                 );
             } else if(Registries.RECIPE_SERIALIZER.equals(event.getRegistryKey())) {

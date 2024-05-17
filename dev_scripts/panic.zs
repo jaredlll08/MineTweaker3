@@ -1,0 +1,2 @@
+#noload
+panic "test"

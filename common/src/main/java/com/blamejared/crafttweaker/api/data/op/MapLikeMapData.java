@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.data.StringData;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
+import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapLike;
 import org.jetbrains.annotations.Nullable;

@@ -1,6 +1,8 @@
 package com.blamejared.crafttweaker.api.item;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -14,10 +16,21 @@ import java.util.function.Consumer;
 public class MCItemStackMutable implements FabricItemStack {
     
     private final ItemStack internal;
+    private final IngredientConditions conditions;
+    private final IngredientTransformers transformers;
     
     public MCItemStackMutable(ItemStack internal) {
         
         this.internal = internal;
+        this.conditions = new IngredientConditions();
+        this.transformers = new IngredientTransformers();
+    }
+    
+    public MCItemStackMutable(ItemStack internal, IngredientConditions conditions, IngredientTransformers transformers) {
+        
+        this.internal = internal;
+        this.conditions = conditions;
+        this.transformers = transformers;
     }
     
     @Override
@@ -27,9 +40,21 @@ public class MCItemStackMutable implements FabricItemStack {
     }
     
     @Override
+    public IngredientTransformers transformers() {
+        
+        return transformers;
+    }
+    
+    @Override
+    public IngredientConditions conditions() {
+        
+        return conditions;
+    }
+    
+    @Override
     public IItemStack copy() {
         
-        return new MCItemStackMutable(getInternal().copy());
+        return new MCItemStackMutable(getImmutableInternal(), conditions.copy(), transformers.copy());
     }
     
     @Override
@@ -41,7 +66,7 @@ public class MCItemStackMutable implements FabricItemStack {
     @Override
     public IItemStack asImmutable() {
         
-        return new MCItemStack(getInternal().copy());
+        return new MCItemStack(getInternal().copy(), conditions.copy(), transformers.copy());
     }
     
     @Override
@@ -60,6 +85,13 @@ public class MCItemStackMutable implements FabricItemStack {
     public IItemStack modify(Consumer<ItemStack> stackModifier) {
         
         stackModifier.accept(getInternal());
+        return this;
+    }
+    
+    @Override
+    public IItemStack modifyThis(Consumer<IItemStack> modifier) {
+        
+        modifier.accept(this);
         return this;
     }
     
@@ -91,13 +123,15 @@ public class MCItemStackMutable implements FabricItemStack {
             return false;
         }
         
-        return Objects.equals(thisStack.getTag(), thatStack.getTag());
+        //TODO 1.20.5
+//        return Objects.equals(thisStack.getTag(), thatStack.getTag());
+        return true;
     }
     
     @Override
     public int hashCode() {
-        
-        return Objects.hash(getInternal().getCount(), getInternal().getItem(), getInternal().getTag());
+        //TODO 1.20.5
+        return Objects.hash(getInternal().getCount(), getInternal().getItem()/*, getInternal().getTag()*/);
     }
     
     @Override

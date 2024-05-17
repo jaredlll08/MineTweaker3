@@ -27,7 +27,7 @@ public final class CraftTweakerAPI {
     private static final Supplier<ICraftTweakerRegistry> REGISTRY = Suppliers.memoize(Services.BRIDGE::registry);
     private static final Supplier<IScriptRunManager> SCRIPT_RUN_MANAGER = Suppliers.memoize(Services.BRIDGE::scriptRunManager);
     private static final Supplier<ILoggerRegistry> LOGGER_REGISTRY = Suppliers.memoize(Services.BRIDGE::loggerRegistry);
-    private static final Supplier<Path> SCRIPTS_DIRECTORY = Suppliers.memoize(() -> PathUtil.findFromGameDirectory(CraftTweakerConstants.SCRIPTS_DIRECTORY));
+    private static final Supplier<Path> SCRIPTS_DIRECTORY = Suppliers.memoize(CraftTweakerConstants::scriptsDir);
     
     static {
         ParsedExpressionMap.compileOverrides.add(IDataRewrites::rewriteMap);

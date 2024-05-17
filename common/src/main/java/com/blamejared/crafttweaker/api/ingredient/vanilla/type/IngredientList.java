@@ -2,6 +2,7 @@ package com.blamejared.crafttweaker.api.ingredient.vanilla.type;
 
 import com.blamejared.crafttweaker.api.ingredient.vanilla.serializer.IngredientListSerializer;
 import com.blamejared.crafttweaker.platform.Services;
+import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;

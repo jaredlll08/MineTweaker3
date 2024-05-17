@@ -1,6 +1,7 @@
 package com.blamejared.crafttweaker.impl.plugin.core;
 
 import com.blamejared.crafttweaker.api.zencode.IScriptLoader;
+import com.google.common.collect.Collections2;
 
 import java.util.Collection;
 
@@ -11,7 +12,7 @@ record LoaderData(String name, Collection<IScriptLoader> inheritedLoaders) imple
         
         return "%s <- %s".formatted(
                 this.name(),
-                this.allInheritedLoaders().stream().map(IScriptLoader::name).toList()
+                Collections2.transform(this.allInheritedLoaders(), IScriptLoader::name)
         );
     }
     

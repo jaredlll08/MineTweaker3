@@ -1,41 +1,26 @@
 package com.blamejared.crafttweaker.impl.plugin;
 
-import com.blamejared.crafttweaker.CraftTweakerCommon;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
-import com.blamejared.crafttweaker.api.command.CommandUtilities;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.plugin.CraftTweakerPlugin;
-import com.blamejared.crafttweaker.api.plugin.ICommandRegistrationHandler;
 import com.blamejared.crafttweaker.api.plugin.ICraftTweakerPlugin;
-import com.mojang.brigadier.Command;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.common.TierSortingRegistry;
+import com.blamejared.crafttweaker.api.plugin.IVillagerTradeRegistrationHandler;
+import com.blamejared.crafttweaker.api.villager.CTTradeObject;
+import com.blamejared.crafttweaker.mixin.common.access.villager.AccessBasicTrade;
+import net.neoforged.neoforge.common.BasicItemListing;
 
 @CraftTweakerPlugin(CraftTweakerConstants.MOD_ID + ":neoforge")
 @SuppressWarnings("unused") // Autowired
 public class NeoForgeCraftTweakerPlugin implements ICraftTweakerPlugin {
     
     @Override
-    public void registerCommands(ICommandRegistrationHandler handler) {
+    public void registerVillagerTradeConverters(IVillagerTradeRegistrationHandler handler) {
         
-        handler.registerDump("tool_tiers", Component.translatable("crafttweaker.command.description.dump.tool_tiers"), builder -> {
-            builder.executes(context -> {
-                
-                TierSortingRegistry.getSortedTiers().forEach(tier -> {
-                    
-                    Object toLog = TierSortingRegistry.getName(tier);
-                    if(toLog == null) {
-                        toLog = tier;
-                    }
-                    CraftTweakerCommon.logger().info("{}", toLog);
-                });
-                
-                CommandUtilities.send(context.getSource(), CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.tool_tiers")), CommandUtilities.getFormattedLogFile())
-                        .withStyle(ChatFormatting.GREEN)));
-                
-                return Command.SINGLE_SUCCESS;
-            });
-        });
+        ICraftTweakerPlugin.super.registerVillagerTradeConverters(handler);
+        handler.registerTradeConverter(BasicItemListing.class, iTrade -> new CTTradeObject(
+                IItemStack.ofMutable(((AccessBasicTrade) iTrade).crafttweaker$getPrice()),
+                IItemStack.ofMutable(((AccessBasicTrade) iTrade).crafttweaker$getPrice2()),
+                IItemStack.ofMutable(((AccessBasicTrade) iTrade).crafttweaker$getForSale())));
     }
     
 }

@@ -78,8 +78,8 @@ final class BracketDumperInfo implements IBracketDumperInfo {
         this.values().forEach(bepCall -> CommandUtilities.COMMAND_LOGGER.info("- " + bepCall));
         CommandUtilities.send(source, Component.translatable("crafttweaker.command.dump.generated", CommandUtilities.makeNoticeable(this.bepHandlerName))
                 .withStyle(ChatFormatting.GREEN));
-        CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.check.log", CommandUtilities.getFormattedLogFile())
-                .withStyle(ChatFormatting.GREEN)));
+        CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.check.log", CommandUtilities.getFormattedLogFile())
+                .withStyle(ChatFormatting.GREEN));
         return Command.SINGLE_SUCCESS;
     }
     

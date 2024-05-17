@@ -71,22 +71,23 @@ public interface IEventHelper {
     default void applyAttributeModifiers(ItemAttributeModifierBase modifierBase) {
         
         ItemStack stack = modifierBase.getItemStack();
-        if(stack.hasTag()) {
-            CompoundTag crtData = stack.getTagElement(IItemStack.CRAFTTWEAKER_DATA_KEY);
-            if(crtData != null) {
-                AttributeUtil.getAttributeModifiers(stack, modifierBase.getSlotType())
-                        .forEach((attribute, modifiers) -> modifiers.forEach(modifier -> {
-                            // Multimaps are possibly one of the dumbest things I've come across.
-                            // So we have to remove the value before we add the value.
-                            // Override existing attributes
-                            if(modifierBase.getModifiers().containsEntry(attribute, modifier)) {
-                                modifierBase.removeModifier(attribute, modifier);
-                            }
-                            modifierBase.addModifier(attribute, modifier);
-                        }));
-                
-            }
-        }
+        //TODO 1.20.5
+//        if(stack.hasTag()) {
+//            CompoundTag crtData = stack.getTagElement(IItemStack.CRAFTTWEAKER_DATA_KEY);
+//            if(crtData != null) {
+//                AttributeUtil.getAttributeModifiers(stack, modifierBase.getSlotType())
+//                        .forEach((attribute, modifiers) -> modifiers.forEach(modifier -> {
+//                            // Multimaps are possibly one of the dumbest things I've come across.
+//                            // So we have to remove the value before we add the value.
+//                            // Override existing attributes
+//                            if(modifierBase.getModifiers().containsEntry(attribute, modifier)) {
+//                                modifierBase.removeModifier(attribute, modifier);
+//                            }
+//                            modifierBase.addModifier(attribute, modifier);
+//                        }));
+//
+//            }
+//        }
         
         IItemStack keyStack = IItemStack.of(stack);
         for(Map.Entry<IIngredient, List<Consumer<ItemAttributeModifierBase>>> entry : Services.EVENT.getAttributeModifiers()

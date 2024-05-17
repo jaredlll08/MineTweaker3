@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.natives.item.ExpandItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -52,7 +53,7 @@ public interface ILootModifier {
      */
     default ObjectArrayList<ItemStack> doApply(final ObjectArrayList<ItemStack> loot, final LootContext context) {
         
-        return this.modify(loot.stream().map(ExpandItemStack::asIItemStack).collect(Collectors.toList()), context)
+        return this.modify(loot.stream().map(IItemStack::of).collect(Collectors.toList()), context)
                 .stream()
                 .map(IItemStack::getImmutableInternal)
                 .collect(Collectors.toCollection(ObjectArrayList::new));

@@ -7,15 +7,13 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.helper.AccessibleElementsProvider;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ZenRegister
 @Document("vanilla/api/recipe/type/Recipe")
@@ -33,8 +31,7 @@ public class ExpandRecipe {
     @ZenCodeType.Getter("ingredients")
     public static List<IIngredient> getIngredients(Recipe internal) {
         
-        NonNullList<Ingredient> ingredients = internal.getIngredients();
-        return ingredients.stream().map(IngredientConverter::fromIngredient).collect(Collectors.toList());
+        return Lists.transform(internal.getIngredients(), IngredientConverter::fromIngredient);
     }
     
     @ZenCodeType.Method

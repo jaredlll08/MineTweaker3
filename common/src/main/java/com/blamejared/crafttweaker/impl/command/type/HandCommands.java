@@ -10,7 +10,6 @@ import com.blamejared.crafttweaker.api.tag.manager.ITagManager;
 import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
-import com.blamejared.crafttweaker.mixin.common.access.entity.AccessAttributeModifier;
 import com.blamejared.crafttweaker.natives.block.ExpandBlock;
 import com.blamejared.crafttweaker.natives.block.ExpandBlockState;
 import com.blamejared.crafttweaker.natives.entity.attribute.ExpandAttribute;
@@ -20,6 +19,7 @@ import com.mojang.brigadier.Command;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.Tag;
@@ -34,12 +34,14 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -86,12 +88,13 @@ public final class HandCommands {
             CommandSourceStack source = context.getSource();
             final ServerPlayer player = source.getPlayerOrException();
             final ItemStack stack = player.getMainHandItem();
-            if(!stack.hasTag()) {
+            if(!stack.has(DataComponents.CUSTOM_DATA)) {
                 CommandUtilities.send(source, Component.translatable("crafttweaker.command.hand.no.data"));
                 return 0;
             }
             
-            sendCopyingHand(source, Component.translatable("crafttweaker.command.misc.data"), new MapData(stack.getTag()).accept(new DataToTextComponentVisitor(" ", 0))
+            sendCopyingHand(source, Component.translatable("crafttweaker.command.misc.data"), new MapData(stack.get(DataComponents.CUSTOM_DATA)
+                    .getUnsafe()).accept(new DataToTextComponentVisitor(" ", 0))
                     .getString());
             return Command.SINGLE_SUCCESS;
         }));
@@ -119,8 +122,8 @@ public final class HandCommands {
             
             sendBasicVanillaItemInformation(source, stack);
             
-            if(stack.hasTag()) {
-                sendVanillaDataInformation(source, Objects.requireNonNull(stack.getTag()));
+            if(stack.has(DataComponents.CUSTOM_DATA)) {
+                sendVanillaDataInformation(source, stack.get(DataComponents.CUSTOM_DATA).getUnsafe());
             }
             
             if(item instanceof BucketItem && Services.PLATFORM.getBucketContent(((BucketItem) item)) != Fluids.EMPTY) {
@@ -136,18 +139,17 @@ public final class HandCommands {
             final ServerPlayer player = source.getPlayerOrException();
             final ItemStack stack = player.getMainHandItem();
             
-            for(final EquipmentSlot slot : EquipmentSlot.values()) {
-                final Map<Attribute, Collection<AttributeModifier>> modifiers = stack.getAttributeModifiers(slot)
-                        .asMap();
-                if(modifiers.isEmpty()) {
-                    continue;
+            for(EquipmentSlot slot : EquipmentSlot.values()) {
+                String commandString = ExpandEquipmentSlot.getCommandString(slot);
+                Map<Attribute, List<AttributeModifier>> modifiers = new HashMap<>();
+                stack.forEachModifier(slot, (attributeHolder, attributeModifier) -> modifiers.computeIfAbsent(attributeHolder.value(), attribute -> new ArrayList<>())
+                        .add(attributeModifier));
+                if(!modifiers.isEmpty()) {
+                    CommandUtilities.sendCopying(source, Component.translatable("crafttweaker.command.hand.header.attributes")
+                            .append(": ")
+                            .append(Component.literal(commandString).withStyle(ChatFormatting.GREEN))
+                            .withStyle(ChatFormatting.DARK_AQUA), commandString);
                 }
-                final String equipmentCS = ExpandEquipmentSlot.getCommandString(slot);
-                CommandUtilities.sendCopying(source, Component.translatable("crafttweaker.command.hand.header.attributes")
-                        .append(": ")
-                        .append(Component.literal(equipmentCS).withStyle(ChatFormatting.GREEN))
-                        .withStyle(ChatFormatting.DARK_AQUA), equipmentCS);
-                
                 modifiers.forEach((attribute, attributeModifiers) -> {
                     final String attributeCS = ExpandAttribute.getCommandString(attribute);
                     CommandUtilities.sendCopying(source, Component.literal("- ")
@@ -155,11 +157,10 @@ public final class HandCommands {
                             .append(Component.literal(attributeCS).withStyle(ChatFormatting.GREEN)), attributeCS);
                     
                     attributeModifiers.forEach(attributeModifier -> {
-                        
-                        sendAttributePropertyInformation(source, "Name", ((AccessAttributeModifier) attribute).crafttweaker$getName());
-                        sendAttributePropertyInformation(source, "ID", attributeModifier.getId().toString());
-                        sendAttributePropertyInformation(source, "Operation", attributeModifier.getOperation().name());
-                        sendAttributePropertyInformation(source, "Amount", String.valueOf(attributeModifier.getAmount()));
+                        sendAttributePropertyInformation(source, "Name", attributeModifier.name());
+                        sendAttributePropertyInformation(source, "ID", attributeModifier.id().toString());
+                        sendAttributePropertyInformation(source, "Operation", attributeModifier.operation().name());
+                        sendAttributePropertyInformation(source, "Amount", String.valueOf(attributeModifier.amount()));
                         sendAttributePropertyInformation(source, "IData", new MapData(attributeModifier.save()).asString());
                     });
                 });

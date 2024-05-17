@@ -9,6 +9,9 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandlerRegistry;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
@@ -26,7 +29,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -107,61 +110,55 @@ public final class ConflictCommand {
         
         // Cloning the map to avoid /reload messing up with CMEs when looping on it from off-thread
         // Also, this deep copies only the two maps: the recipe type, RL, and recipe objects are not also deep copied
-        final Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> recipes = deepCopy(((AccessRecipeManager) manager).crafttweaker$getRecipes(), filter);
+        final Multimap<RecipeType<?>, RecipeHolder<?>> recipes = copyAndFilter(((AccessRecipeManager) manager).crafttweaker$getByType(), filter);
         CompletableFuture.supplyAsync(() -> computeConflicts(recipes), OFF_THREAD_SERVICE)
                 .thenAcceptAsync(message -> dispatchCompletionTo(message, source), OFF_THREAD_SERVICE)
                 .exceptionallyAsync(exception -> dispatchExceptionTo(exception, source), OFF_THREAD_SERVICE);
     }
     
-    private static Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> deepCopy(final Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> original, final DescriptiveFilter filter) {
+    private static Multimap<RecipeType<?>, RecipeHolder<?>> copyAndFilter(final Multimap<RecipeType<?>, RecipeHolder<?>> original, final DescriptiveFilter filter) {
         
-        final Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> clone = new HashMap<>();
-        
-        original.forEach((type, map) -> {
-            
-            final Map<ResourceLocation, RecipeHolder<?>> cloneMap = clone.computeIfAbsent(type, it -> new HashMap<>());
-            map.entrySet().stream().filter(filter).forEach(it -> cloneMap.put(it.getKey(), it.getValue()));
-        });
+        Multimap<RecipeType<?>, RecipeHolder<?>> build = MultimapBuilder.hashKeys().arrayListValues().build();
+        final Multimap<RecipeType<?>, RecipeHolder<?>> clone = HashMultimap.create();
+        original.asMap().forEach((type, holders) -> build.putAll(type, holders.stream().filter(filter).toList()));
         
         return clone;
     }
     
-    private static String computeConflicts(final Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> recipes) {
+    private static String computeConflicts(final Multimap<RecipeType<?>, RecipeHolder<?>> recipes) {
         
-        return recipes.entrySet()
+        return recipes.asMap()
+                .entrySet()
                 .stream()
                 .flatMap(ConflictCommand::computeConflictsFor)
                 .map(it -> "- " + it)
                 .collect(Collectors.joining("\n"));
     }
     
-    private static Stream<String> computeConflictsFor(final Map.Entry<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> entry) {
+    private static Stream<String> computeConflictsFor(final Map.Entry<RecipeType<?>, Collection<RecipeHolder<?>>> entry) {
         
         final IRecipeManager<?> manager = RecipeTypeBracketHandler.getOrDefault(entry.getKey());
         
         if(manager == null) {
             return Stream.empty();
         }
-        
-        final List<Map.Entry<ResourceLocation, RecipeHolder<?>>> recipes = new ArrayList<>(entry.getValue().entrySet());
+        final List<RecipeHolder<?>> recipes = new ArrayList<>(entry.getValue());
         final RecipeLongIterator iterator = new RecipeLongIterator(recipes.size());
         final int characteristics = Spliterator.ORDERED | Spliterator.SORTED | Spliterator.NONNULL | Spliterator.IMMUTABLE;
         
         return StreamSupport.longStream(Spliterators.spliterator(iterator, iterator.estimateLength(), characteristics), false)
                 .filter(it -> conflictsWith(manager, recipes, it))
-                .mapToObj(it -> Map.entry(recipes.get(RecipeLongIterator.first(it)), recipes.get(RecipeLongIterator.second(it))))
-                .map(it -> Map.entry(it.getKey().getKey(), it.getValue().getKey()))
+                .mapToObj(it -> Map.<RecipeHolder<?>, RecipeHolder<?>> entry(recipes.get(RecipeLongIterator.first(it)), recipes.get(RecipeLongIterator.second(it))))
                 .map(it -> formatConflict(manager, it));
     }
     
     private static boolean conflictsWith(
             final IRecipeManager<?> manager,
-            final List<Map.Entry<ResourceLocation, RecipeHolder<?>>> recipes,
+            final List<RecipeHolder<?>> recipes,
             final long id
     ) {
         
-        return conflictsWith(manager, recipes.get(RecipeLongIterator.first(id))
-                .getValue(), recipes.get(RecipeLongIterator.second(id)).getValue());
+        return conflictsWith(manager, recipes.get(RecipeLongIterator.first(id)), recipes.get(RecipeLongIterator.second(id)));
     }
     
     private static <T extends Recipe<?>> boolean conflictsWith(final IRecipeManager<?> manager, final RecipeHolder<T> first, final RecipeHolder<?> second) {
@@ -172,11 +169,11 @@ public final class ConflictCommand {
     
     private static String formatConflict(
             final IRecipeManager<?> manager,
-            final Map.Entry<ResourceLocation, ResourceLocation> conflictNames
+            final Map.Entry<RecipeHolder<?>, RecipeHolder<?>> conflictNames
     ) {
         
-        final ResourceLocation firstName = conflictNames.getKey();
-        final ResourceLocation secondName = conflictNames.getValue();
+        final ResourceLocation firstName = conflictNames.getKey().id();
+        final ResourceLocation secondName = conflictNames.getValue().id();
         return String.format("Recipes '%s' and '%s' in type '%s' have conflicting inputs", firstName, secondName, manager.getCommandString());
     }
     
@@ -185,8 +182,8 @@ public final class ConflictCommand {
         onMainThread(source, () -> {
             try {
                 CommandUtilities.COMMAND_LOGGER.info(message.isEmpty() ? "No conflicts identified" : message);
-                CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.conflict.complete")
-                        .withStyle(ChatFormatting.GREEN)));
+                CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.conflict.complete")
+                        .withStyle(ChatFormatting.GREEN));
             } catch(final Exception e) {
                 try {
                     CommandUtilities.COMMAND_LOGGER.error("An error occurred while reporting conflicts, hopefully it does not happen again", e);
@@ -203,8 +200,8 @@ public final class ConflictCommand {
         onMainThread(source, () -> {
             try {
                 CommandUtilities.COMMAND_LOGGER.error("Unable to verify for conflicts due to an exception", exception);
-                CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.conflict.error")
-                        .withStyle(ChatFormatting.RED)));
+                CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.conflict.error")
+                        .withStyle(ChatFormatting.RED));
             } catch(final Exception e) {
                 try {
                     CommandUtilities.COMMAND_LOGGER.error("An error occurred while reporting conflicts, hopefully it does not happen again", e);

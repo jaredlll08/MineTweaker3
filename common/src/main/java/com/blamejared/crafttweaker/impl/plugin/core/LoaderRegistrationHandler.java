@@ -2,6 +2,7 @@ package com.blamejared.crafttweaker.impl.plugin.core;
 
 import com.blamejared.crafttweaker.api.plugin.ILoaderRegistrationHandler;
 import com.blamejared.crafttweaker.api.zencode.IScriptLoader;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Arrays;
@@ -75,8 +76,7 @@ final class LoaderRegistrationHandler implements ILoaderRegistrationHandler {
     private void satisfyRequests(final Map<String, LoaderRequest> requests, final Map<String, IScriptLoader> output) {
         
         requests.forEach((id, request) -> {
-            final Collection<IScriptLoader> inherited = request.inheritedLoaders().stream().map(output::get).toList();
-            final IScriptLoader loader = new LoaderData(id, inherited);
+            final IScriptLoader loader = new LoaderData(id, Collections2.transform(request.inheritedLoaders(), output::get));
             output.put(id, loader);
         });
     }

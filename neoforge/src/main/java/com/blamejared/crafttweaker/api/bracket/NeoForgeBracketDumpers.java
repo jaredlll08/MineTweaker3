@@ -4,10 +4,9 @@ package com.blamejared.crafttweaker.api.bracket;
 import com.blamejared.crafttweaker.api.annotation.BracketDumper;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.natives.attachment.ExpandAttachmentType;
-import com.blamejared.crafttweaker.natives.block.ExpandBlock;
 import com.blamejared.crafttweaker.natives.tool.ExpandToolAction;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.core.registries.BuiltInRegistries;
+import com.google.common.collect.Collections2;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.openzen.zencode.java.ZenCodeType;
@@ -24,7 +23,7 @@ public final class NeoForgeBracketDumpers {
     @BracketDumper("toolaction")
     public static Collection<String> getToolActionDump() {
         
-        return ToolAction.getActions().stream().map(ExpandToolAction::getCommandString).toList();
+        return Collections2.transform(ToolAction.getActions(), ExpandToolAction::getCommandString);
     }
     
     @ZenCodeType.Method
@@ -36,4 +35,5 @@ public final class NeoForgeBracketDumpers {
                 .map(ExpandAttachmentType::getCommandString)
                 .collect(Collectors.toSet());
     }
+    
 }

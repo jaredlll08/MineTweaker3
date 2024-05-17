@@ -1,11 +1,11 @@
 package com.blamejared.crafttweaker.natives.food;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.mixin.common.access.food.AccessFoodProperties;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
@@ -22,14 +22,14 @@ public class ExpandFoodProperties {
     @ZenCodeType.StaticExpansionMethod
     public static FoodProperties create(int nutrition, float saturationModifier) {
         
-        return new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturationModifier).build();
+        return new FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturationModifier).build();
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("nutrition")
-    public static int getNutrition(FoodProperties internal) {
+    public static int nutrition(FoodProperties internal) {
         
-        return internal.getNutrition();
+        return internal.nutrition();
     }
     
     @ZenCodeType.Method
@@ -41,9 +41,9 @@ public class ExpandFoodProperties {
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("saturationModifier")
-    public static float getSaturationModifier(FoodProperties internal) {
+    public static float saturation(FoodProperties internal) {
         
-        return internal.getSaturationModifier();
+        return internal.saturation();
     }
     
     @ZenCodeType.Method
@@ -51,20 +51,6 @@ public class ExpandFoodProperties {
     public static FoodProperties setSaturationModifier(FoodProperties internal, float saturationModifier) {
         
         return accessibleModify(internal, accessFoodProperties -> accessFoodProperties.crafttweaker$setSaturationModifier(saturationModifier));
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isMeat")
-    public static boolean isMeat(FoodProperties internal) {
-        
-        return internal.isMeat();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Setter("isMeat")
-    public static FoodProperties setIsMeat(FoodProperties internal, boolean isMeat) {
-        
-        return accessibleModify(internal, accessFoodProperties -> accessFoodProperties.crafttweaker$setIsMeat(isMeat));
     }
     
     @ZenCodeType.Method
@@ -81,25 +67,22 @@ public class ExpandFoodProperties {
         return accessibleModify(internal, accessFoodProperties -> accessFoodProperties.crafttweaker$setCanAlwaysEat(canAlwaysEat));
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isFastFood")
-    public static boolean isFastFood(FoodProperties internal) {
+    @ZenCodeType.Getter("eatSeconds")
+    public static float eatSeconds(FoodProperties internal) {
         
-        return internal.isFastFood();
+        return internal.eatSeconds();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Setter("isFastFood")
-    public static FoodProperties setIsFastFood(FoodProperties internal, boolean fastFood) {
+    @ZenCodeType.Setter("eatSeconds")
+    public static FoodProperties eatSeconds(FoodProperties internal, float eatSeconds) {
         
-        return accessibleModify(internal, accessFoodProperties -> accessFoodProperties.crafttweaker$setFastFood(fastFood));
+        return accessibleModify(internal, accessFoodProperties -> accessFoodProperties.crafttweaker$setEatSeconds(eatSeconds));
     }
     
-    @ZenCodeType.Method
     @ZenCodeType.Getter("effects")
-    public static List<Pair<MobEffectInstance, Float>> getEffects(FoodProperties internal) {
+    public static List<FoodProperties.PossibleEffect> getEffects(FoodProperties internal) {
         
-        return internal.getEffects();
+        return internal.effects();
     }
     
     @ZenCodeType.Method
@@ -122,14 +105,14 @@ public class ExpandFoodProperties {
     
     private static FoodProperties accessibleModify(FoodProperties properties, Consumer<AccessFoodProperties> propertyMutator) {
         
-        FoodProperties copy = AccessFoodProperties.crafttweaker$createFoodProperties(properties.getNutrition(), properties.getSaturationModifier(), properties.isMeat(), properties.canAlwaysEat(), properties.isFastFood(), properties.getEffects());
-        propertyMutator.accept((AccessFoodProperties) copy);
+        FoodProperties copy = new FoodProperties(properties.nutrition(), properties.saturation(), properties.canAlwaysEat(), properties.eatSeconds(), properties.effects());
+        propertyMutator.accept(GenericUtil.uncheck(copy));
         return copy;
     }
     
     private static FoodProperties modify(FoodProperties properties, Consumer<FoodProperties> propertyMutator) {
         
-        FoodProperties copy = AccessFoodProperties.crafttweaker$createFoodProperties(properties.getNutrition(), properties.getSaturationModifier(), properties.isMeat(), properties.canAlwaysEat(), properties.isFastFood(), properties.getEffects());
+        FoodProperties copy = new FoodProperties(properties.nutrition(), properties.saturation(), properties.canAlwaysEat(), properties.eatSeconds(), properties.effects());
         propertyMutator.accept(copy);
         return copy;
     }

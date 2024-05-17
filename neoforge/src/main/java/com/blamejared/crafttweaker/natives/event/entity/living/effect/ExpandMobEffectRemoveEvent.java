@@ -28,7 +28,7 @@ public class ExpandMobEffectRemoveEvent {
     @ZenCodeType.Getter("effect")
     public static MobEffect getEffect(MobEffectEvent.Remove internal) {
         
-        return internal.getEffect();
+        return internal.getEffect().value();
     }
     
 }

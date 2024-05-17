@@ -2,9 +2,12 @@ package com.blamejared.crafttweaker.natives.entity.effect;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.MapData;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.blamejared.crafttweaker_annotations.annotations.NativeConstructor;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,45 +15,14 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @Document("vanilla/api/entity/effect/MobEffectInstance")
-@NativeTypeRegistration(value = MobEffectInstance.class, zenCodeName = "crafttweaker.api.entity.effect.MobEffectInstance", constructors = {
-        @NativeConstructor({
-                @NativeConstructor.ConstructorParameter(type = MobEffect.class, name = "mobEffect", examples = "<mobeffect:minecraft:haste>")
-        }),
-        @NativeConstructor({
-                @NativeConstructor.ConstructorParameter(type = MobEffect.class, name = "mobEffect", examples = "<mobeffect:minecraft:haste>"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "duration", examples = "100"),
-        }),
-        @NativeConstructor({
-                @NativeConstructor.ConstructorParameter(type = MobEffect.class, name = "mobEffect", examples = "<mobeffect:minecraft:haste>"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "duration", examples = "100"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "amplifier", examples = "2"),
-        }),
-        @NativeConstructor({
-                @NativeConstructor.ConstructorParameter(type = MobEffect.class, name = "mobEffect", examples = "<mobeffect:minecraft:haste>"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "duration", examples = "100"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "amplifier", examples = "2"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "ambient", examples = "true"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "visible", examples = "false"),
-        }),
-        @NativeConstructor({
-                @NativeConstructor.ConstructorParameter(type = MobEffect.class, name = "mobEffect", examples = "<mobeffect:minecraft:haste>"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "duration", examples = "100"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "amplifier", examples = "2"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "ambient", examples = "true"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "visible", examples = "false"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "showIcon", examples = "false"),
-        }),
-        @NativeConstructor({
-                @NativeConstructor.ConstructorParameter(type = MobEffect.class, name = "mobEffect", examples = "<mobeffect:minecraft:haste>"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "duration", examples = "100"),
-                @NativeConstructor.ConstructorParameter(type = int.class, name = "amplifier", examples = "2"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "ambient", examples = "true"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "visible", examples = "false"),
-                @NativeConstructor.ConstructorParameter(type = boolean.class, name = "showIcon", examples = "false"),
-                @NativeConstructor.ConstructorParameter(type = MobEffectInstance.class, name = "hiddenEffect", examples = "new MobEffectInstance(<mobeffect:minecraft:haste>, 200, 3)"),
-        })
-})
+@NativeTypeRegistration(value = MobEffectInstance.class, zenCodeName = "crafttweaker.api.entity.effect.MobEffectInstance")
 public class ExpandMobEffectInstance {
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static MobEffectInstance of(MobEffect mobEffect, @ZenCodeType.OptionalInt int duration, @ZenCodeType.OptionalInt int amplifier, @ZenCodeType.OptionalBoolean boolean ambient, @ZenCodeType.OptionalBoolean(true) boolean visible, @ZenCodeType.OptionalBoolean(true) boolean showIcon, @ZenCodeType.Optional @ZenCodeType.Nullable MobEffectInstance hiddenEffect) {
+        
+        return new MobEffectInstance(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, mobEffect), duration, amplifier, ambient, visible, showIcon, hiddenEffect);
+    }
     
     @ZenCodeType.Method
     public static boolean update(MobEffectInstance internal, MobEffectInstance instance) {
@@ -62,7 +34,7 @@ public class ExpandMobEffectInstance {
     @ZenCodeType.Getter("effect")
     public static MobEffect getEffect(MobEffectInstance internal) {
         
-        return internal.getEffect();
+        return internal.getEffect().value();
     }
     
     @ZenCodeType.Method
@@ -117,12 +89,13 @@ public class ExpandMobEffectInstance {
     }
     
     @ZenCodeType.Method
-    public static MapData save(MobEffectInstance internal, @ZenCodeType.Optional @ZenCodeType.Nullable MapData data) {
+    public static MapData save(MobEffectInstance internal) {
         
-        if(data == null) {
-            data = new MapData();
+        Tag save = internal.save();
+        if(save instanceof CompoundTag ct) {
+            return new MapData(ct);
         }
-        return new MapData(internal.save(data.getInternal()));
+        throw new IllegalStateException("MobEffectInstance#save returned something other than a CompoundTag! " + save);
     }
     
     @ZenCodeType.StaticExpansionMethod

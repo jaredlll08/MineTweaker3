@@ -10,7 +10,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 
 public final class LootModifierManagerReloadListener extends SimplePreparableReloadListener<Void> implements IdentifiableResourceReloadListener {
     
-    public static final ResourceLocation RELOAD_LISTENER_ID = new ResourceLocation(CraftTweakerConstants.MOD_ID, "loot_modifiers");
+    public static final ResourceLocation RELOAD_LISTENER_ID = CraftTweakerConstants.rl("loot_modifiers");
     
     @Override
     public ResourceLocation getFabricId() {

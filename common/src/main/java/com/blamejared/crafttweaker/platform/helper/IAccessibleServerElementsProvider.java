@@ -3,6 +3,7 @@ package com.blamejared.crafttweaker.platform.helper;
 import com.blamejared.crafttweaker.mixin.common.access.server.AccessReloadableServerResources;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 
 // TODO("Better package")
 public interface IAccessibleServerElementsProvider {

@@ -10,6 +10,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -53,7 +54,7 @@ public interface IClientHelper {
         return TOOLTIPS;
     }
     
-    default void applyTooltips(ItemStack stack, TooltipFlag context, List<Component> lines) {
+    default void applyTooltips(ItemStack stack, Item.TooltipContext context, TooltipFlag flag, List<Component> lines) {
         
         IItemStack ctStack = IItemStack.of(stack);
         for(IIngredient ingredient : Services.CLIENT.getTooltips().keySet()) {
@@ -62,7 +63,7 @@ public interface IClientHelper {
             }
             Services.CLIENT.getTooltips().get(ingredient).forEach(function -> {
                 try {
-                    function.apply(ctStack, lines, context);
+                    function.apply(ctStack, lines,context, flag);
                 } catch(final Exception exception) {
                     CommonLoggers.api().error(
                             "Unable to run one of the tooltip functions for {} on {} due to an error (for experts, refer to {})",

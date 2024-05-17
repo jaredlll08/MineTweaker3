@@ -3,7 +3,8 @@ package com.blamejared.crafttweaker.api.command;
 
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.logging.CommonLoggers;
-import com.blamejared.crafttweaker.impl.network.message.MessageCopy;
+import com.blamejared.crafttweaker.impl.network.packet.ClientBoundCopyPacket;
+import com.blamejared.crafttweaker.impl.network.packet.ClientBoundSendOpenFileMessagePacket;
 import com.blamejared.crafttweaker.platform.Services;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -12,10 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.player.Player;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.file.Path;
 
 public final class CommandUtilities {
     
@@ -45,17 +43,43 @@ public final class CommandUtilities {
     public static void copy(final CommandSourceStack source, final String toCopy) {
         
         if(source.isPlayer()) {
-            Services.NETWORK.sendCopyMessage(source.getPlayer(), new MessageCopy(toCopy));
+            Services.NETWORK.sendPacket(source.getPlayer(), new ClientBoundCopyPacket(toCopy));
         }
     }
     
-    public static void open(final CommandSourceStack source, final Path path) {
+    public static void open(final CommandSourceStack source, final String path) {
         
-        MutableComponent component = Component.translatable("crafttweaker.command.click.open", Component.literal(path.toString())
+        MutableComponent component = Component.translatable("crafttweaker.command.click.open", Component.literal(path)
                 .withStyle(ChatFormatting.GOLD));
-        send(source, component.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, component.copy()))
-                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path.toString()))));
+        open(source, component, component, path);
     }
+    
+    public static void openLogFile(final CommandSourceStack source, final Component chat, final Component hover) {
+        
+        open(source, chat, hover, CraftTweakerConstants.LOG_PATH);
+    }
+    
+    public static void openLogFile(final CommandSourceStack source, final Component chat) {
+        
+        MutableComponent hover = Component.translatable("crafttweaker.command.click.open", Component.literal(CraftTweakerConstants.LOG_PATH)
+                .withStyle(ChatFormatting.GOLD));
+        open(source, chat, hover, CraftTweakerConstants.LOG_PATH);
+    }
+    
+    public static void openLogfile(final CommandSourceStack source) {
+        
+        open(source, CraftTweakerConstants.LOG_PATH);
+    }
+    
+    public static void open(final CommandSourceStack source, final Component chat, final Component hover, String path) {
+        
+        if(source.isPlayer()) {
+            Services.NETWORK.sendPacket(source.getPlayer(), new ClientBoundSendOpenFileMessagePacket(chat, hover, path));
+        } else {
+            send(source, chat);
+        }
+    }
+    
     
     public static Component copy(MutableComponent base, String toCopy) {
         
@@ -63,15 +87,6 @@ public final class CommandUtilities {
         style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("crafttweaker.command.click.copy", Component.literal(toCopy)
                 .withStyle(ChatFormatting.GOLD))));
         style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, toCopy));
-        return base.setStyle(style);
-    }
-    
-    public static Component open(MutableComponent base, String path) {
-        
-        Style style = base.getStyle();
-        style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("crafttweaker.command.click.open", Component.literal(path)
-                .withStyle(ChatFormatting.GOLD))));
-        style = style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path));
         return base.setStyle(style);
     }
     
@@ -92,19 +107,6 @@ public final class CommandUtilities {
                 .withStyle(ChatFormatting.GOLD));
         return base.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, component))
                 .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
-    }
-    
-    public static Component openingFile(MutableComponent base, String path) {
-        
-        MutableComponent component = Component.translatable("crafttweaker.command.click.open", Component.literal(path)
-                .withStyle(ChatFormatting.GOLD));
-        return base.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, component))
-                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path)));
-    }
-    
-    public static Component openingLogFile(MutableComponent base) {
-        
-        return openingFile(base, CraftTweakerConstants.LOG_PATH);
     }
     
     public static MutableComponent getFormattedLogFile() {

@@ -13,7 +13,7 @@ public class ActionAddTooltip extends ActionTooltipBase {
         
         super(stack);
         this.content = content;
-        this.function = (stack1, tooltip, context) -> {
+        this.function = (stack1, tooltip, context, flag) -> {
             tooltip.add(content);
         };
         

@@ -46,9 +46,9 @@ public class ExpandAttributeModifier {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("id")
-    public static String getId(AttributeModifier internal) {
+    public static String id(AttributeModifier internal) {
         
-        return internal.getId().toString();
+        return internal.id().toString();
     }
     
     /**
@@ -58,9 +58,9 @@ public class ExpandAttributeModifier {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("name")
-    public static String getName(AttributeModifier internal) {
+    public static String name(AttributeModifier internal) {
         
-        return ((AccessAttributeModifier) internal).crafttweaker$getName();
+        return internal.name();
     }
     
     /**
@@ -70,9 +70,9 @@ public class ExpandAttributeModifier {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("amount")
-    public static double getAmount(AttributeModifier internal) {
+    public static double amount(AttributeModifier internal) {
         
-        return internal.getAmount();
+        return internal.amount();
     }
     
     /**
@@ -82,9 +82,9 @@ public class ExpandAttributeModifier {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("operation")
-    public static AttributeModifier.Operation getOperation(AttributeModifier internal) {
+    public static AttributeModifier.Operation operation(AttributeModifier internal) {
         
-        return internal.getOperation();
+        return internal.operation();
     }
     
 }

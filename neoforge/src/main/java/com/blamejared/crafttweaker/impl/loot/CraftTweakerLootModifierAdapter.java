@@ -2,6 +2,7 @@ package com.blamejared.crafttweaker.impl.loot;
 
 import com.blamejared.crafttweaker.api.loot.modifier.ILootModifier;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -28,7 +29,7 @@ final class CraftTweakerLootModifierAdapter implements IGlobalLootModifier {
     }
     
     @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
+    public MapCodec<? extends IGlobalLootModifier> codec() {
         
         throw new UnsupportedOperationException("Data generation of loot modifiers is not supported");
     }

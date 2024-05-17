@@ -1,7 +1,7 @@
 package com.blamejared.crafttweaker.gametest.test.api.ingredient.vanilla.serializer;
 
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
-import com.blamejared.crafttweaker.api.ingredient.transform.type.TransformReuse;
+import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformReuse;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.serializer.IngredientTransformedSerializer;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientTransformed;

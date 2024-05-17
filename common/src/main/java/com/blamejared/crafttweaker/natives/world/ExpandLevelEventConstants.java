@@ -122,8 +122,6 @@ public class ExpandLevelEventConstants {
     @ZenCodeType.Field
     public static final int PARTICLES_MOBBLOCK_SPAWN = LevelEvent.PARTICLES_MOBBLOCK_SPAWN;
     @ZenCodeType.Field
-    public static final int PARTICLES_PLANT_GROWTH = LevelEvent.PARTICLES_PLANT_GROWTH;
-    @ZenCodeType.Field
     public static final int PARTICLES_DRAGON_FIREBALL_SPLASH = LevelEvent.PARTICLES_DRAGON_FIREBALL_SPLASH;
     @ZenCodeType.Field
     public static final int PARTICLES_INSTANT_POTION_SPLASH = LevelEvent.PARTICLES_INSTANT_POTION_SPLASH;
@@ -153,8 +151,6 @@ public class ExpandLevelEventConstants {
     public static final int PARTICLES_AND_SOUND_BRUSH_BLOCK_COMPLETE = LevelEvent.PARTICLES_AND_SOUND_BRUSH_BLOCK_COMPLETE;
     @ZenCodeType.Field
     public static final int PARTICLES_EGG_CRACK = LevelEvent.PARTICLES_EGG_CRACK;
-    @ZenCodeType.Field
-    public static final int PARTICLES_GUST_DUST = LevelEvent.PARTICLES_GUST_DUST;
     @ZenCodeType.Field
     public static final int PARTICLES_TRIAL_SPAWNER_SPAWN = LevelEvent.PARTICLES_TRIAL_SPAWNER_SPAWN;
     @ZenCodeType.Field

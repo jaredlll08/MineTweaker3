@@ -7,7 +7,7 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id("crafttweaker.modloader-conventions")
-    id("net.neoforged.gradle.userdev") version ("7.0.81")
+    id("net.neoforged.gradle.userdev") version ("7.0.107")
 }
 
 minecraft {
@@ -22,7 +22,7 @@ runs {
             modSource(project(it).sourceSets.main.get())
         }
         if(!this.name.equals("gameTestServer")) {
-            environmentVariables(mapOf("crafttweaker.logger.forward_to_latest_log" to "true"))
+            environmentVariables(mapOf("crafttweaker.logger.forward_to_latest_log" to "true", "crafttweaker.scripts.directory" to rootProject.file("dev_scripts").absolutePath))
         }
         systemProperty("forge.enabledGameTestNamespaces", Properties.MOD_ID)
     }
@@ -47,7 +47,7 @@ runs {
 dependencies {
     implementation("net.neoforged:neoforge:${Versions.NEO_FORGE}")
     compileOnly(project(":common"))
-    localOnlyRuntime("dev.architectury:architectury-neoforge:11.0.11")
+    localOnlyRuntime("dev.architectury:architectury-neoforge:12.0.28")
     implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
 
 }

@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
@@ -39,8 +40,9 @@ public class ExpandEntity {
     @ZenCodeType.Method
     public static void updateCustomEntityTag(Entity internal, Level level, @ZenCodeType.Nullable Player player, MapData data) {
         
-        EntityType.updateCustomEntityTag(level, player, internal, data.getInternal());
+        EntityType.updateCustomEntityTag(level, player, internal, CustomData.of(data.getInternal()));
     }
+    
     @ZenCodeType.Method
     public static boolean isColliding(Entity internal, BlockPos pos, BlockState state) {
         
@@ -161,20 +163,13 @@ public class ExpandEntity {
         internal.lavaHurt();
     }
     
-    @ZenCodeType.Method
-    public static void setSecondsOnFire(Entity internal, int seconds) {
-        
-        internal.setSecondsOnFire(seconds);
-    }
-    
-    @ZenCodeType.Method
+    @ZenCodeType.Setter("fireTicks")
     public static void setRemainingFireTicks(Entity internal, int ticks) {
         
         internal.setRemainingFireTicks(ticks);
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("remainingFireTicks")
+    @ZenCodeType.Getter("fireTicks")
     public static int getRemainingFireTicks(Entity internal) {
         
         return internal.getRemainingFireTicks();
@@ -499,34 +494,6 @@ public class ExpandEntity {
     public static int getDimensionChangingDelay(Entity internal) {
         
         return internal.getDimensionChangingDelay();
-    }
-    
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("handSlots")
-    public static Iterable<ItemStack> getHandSlots(Entity internal) {
-        
-        return internal.getHandSlots();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("armorSlots")
-    public static Iterable<ItemStack> getArmorSlots(Entity internal) {
-        
-        return internal.getArmorSlots();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("allSlots")
-    public static Iterable<ItemStack> getAllSlots(Entity internal) {
-        
-        return internal.getAllSlots();
-    }
-    
-    @ZenCodeType.Method
-    public static void setItemSlot(Entity internal, EquipmentSlot slot, ItemStack stack) {
-        
-        internal.setItemSlot(slot, stack);
     }
     
     @ZenCodeType.Method
@@ -998,11 +965,10 @@ public class ExpandEntity {
         return internal.blockPosition();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("feetBlockState")
-    public static BlockState getFeetBlockState(Entity internal) {
+    @ZenCodeType.Getter("inBlockState")
+    public static BlockState getInBlockState(Entity internal) {
         
-        return internal.getFeetBlockState();
+        return internal.getInBlockState();
     }
     
     @ZenCodeType.Method

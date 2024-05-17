@@ -1,10 +1,15 @@
 package com.blamejared.crafttweaker.natives.entity;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
@@ -30,11 +34,39 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @ZenRegister
 @Document("vanilla/api/entity/LivingEntity")
 @NativeTypeRegistration(value = LivingEntity.class, zenCodeName = "crafttweaker.api.entity.LivingEntity")
 public class ExpandLivingEntity {
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("handSlots")
+    public static Iterable<ItemStack> getHandSlots(LivingEntity internal) {
+        
+        return internal.getHandSlots();
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("armorSlots")
+    public static Iterable<ItemStack> getArmorSlots(LivingEntity internal) {
+        
+        return internal.getArmorSlots();
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("allSlots")
+    public static Iterable<ItemStack> getAllSlots(LivingEntity internal) {
+        
+        return internal.getAllSlots();
+    }
+    
+    @ZenCodeType.Method
+    public static void setItemSlot(LivingEntity internal, EquipmentSlot slot, ItemStack stack) {
+        
+        internal.setItemSlot(slot, stack);
+    }
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("canBreatheUnderwater")
@@ -191,23 +223,28 @@ public class ExpandLivingEntity {
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Getter("activeEFfectsMap")
+    @ZenCodeType.Getter("activeEffectsMap")
     public static Map<MobEffect, MobEffectInstance> getActiveEffectsMap(LivingEntity internal) {
         
-        return internal.getActiveEffectsMap();
+        return internal.getActiveEffectsMap()
+                .entrySet()
+                .stream()
+                .map(holderMobEffectInstanceEntry -> Map.entry(holderMobEffectInstanceEntry.getKey()
+                        .value(), holderMobEffectInstanceEntry.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
     
     @ZenCodeType.Method
     public static boolean hasEffect(LivingEntity internal, MobEffect effect) {
         
-        return internal.hasEffect(effect);
+        return internal.hasEffect(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static MobEffectInstance getEffect(LivingEntity internal, MobEffect effect) {
         
-        return internal.getEffect(effect);
+        return internal.getEffect(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Method
@@ -241,17 +278,16 @@ public class ExpandLivingEntity {
         return internal.isInvertedHealAndHarm();
     }
     
-    @ZenCodeType.Nullable
     @ZenCodeType.Method
-    public static MobEffectInstance removeEffectNoUpdate(LivingEntity internal, @ZenCodeType.Nullable MobEffect effect) {
+    public static MobEffectInstance removeEffectNoUpdate(LivingEntity internal, MobEffect effect) {
         
-        return internal.removeEffectNoUpdate(effect);
+        return internal.removeEffectNoUpdate(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Method
     public static boolean removeEffect(LivingEntity internal, MobEffect effect) {
         
-        return internal.removeEffect(effect);
+        return internal.removeEffect(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Method
@@ -305,7 +341,7 @@ public class ExpandLivingEntity {
     @ZenCodeType.Getter("lootTable")
     public static ResourceLocation getLootTable(LivingEntity internal) {
         
-        return internal.getLootTable();
+        return internal.getLootTable().location();
     }
     
     /**
@@ -399,26 +435,19 @@ public class ExpandLivingEntity {
     @ZenCodeType.Method
     public static AttributeInstance getAttribute(LivingEntity internal, Attribute attribute) {
         
-        return internal.getAttribute(attribute);
+        return internal.getAttribute(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute));
     }
     
     @ZenCodeType.Method
     public static double getAttributeValue(LivingEntity internal, Attribute attribute) {
         
-        return internal.getAttributeValue(attribute);
+        return internal.getAttributeValue(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute));
     }
     
     @ZenCodeType.Method
     public static double getAttributeBaseValue(LivingEntity internal, Attribute attribute) {
         
-        return internal.getAttributeBaseValue(attribute);
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("mobType")
-    public static MobType getMobType(LivingEntity internal) {
-        
-        return internal.getMobType();
+        return internal.getAttributeBaseValue(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute));
     }
     
     @ZenCodeType.Method

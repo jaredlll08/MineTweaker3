@@ -9,7 +9,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.phys.Vec3;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -21,12 +20,6 @@ import org.openzen.zencode.java.ZenCodeType;
                 @NativeConstructor.ConstructorParameter(name = "z", type = int.class, description = "The z value of the blockpos", examples = "2")
         }, description = "Creates a new BlockPos using the provided values."),
         @NativeConstructor(value = {
-                @NativeConstructor.ConstructorParameter(name = "vector", type = Vec3.class, description = "The vector to copy the values of.", examples = "new Vec3(0, 1, 2)"),
-        }, description = "Creates a new BlockPos using the values of the given vector. Note, the values will be floored down, providing 0.85 is the same as providing 0."),
-        @NativeConstructor(value = {
-                @NativeConstructor.ConstructorParameter(name = "position", type = Position.class, description = "The position to copy the values of.", examples = "new Vec3(0, 1, 2)"),
-        }, description = "Creates a new BlockPos using the values of the given position. Note, the values will be floored down, providing 0.85 is the same as providing 0."),
-        @NativeConstructor(value = {
                 @NativeConstructor.ConstructorParameter(name = "vector", type = Vec3i.class, description = "The vector to copy the values of.", examples = "new BlockPos(0, 1, 2)"),
         }, description = "Creates a new BlockPos using the values of the given vector.")
 })
@@ -37,6 +30,12 @@ public class ExpandBlockPos {
     public static BlockPos containing(double x, double y, double z) {
         
         return BlockPos.containing(x, y, z);
+    }
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static BlockPos containing(Position position) {
+        
+        return BlockPos.containing(position);
     }
     
     @ZenCodeType.Method

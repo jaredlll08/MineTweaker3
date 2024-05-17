@@ -1,7 +1,7 @@
 package com.blamejared.crafttweaker.gametest.test.api.ingredient.transform.serializer;
 
-import com.blamejared.crafttweaker.api.ingredient.transform.serializer.IIngredientTransformerSerializer;
-import com.blamejared.crafttweaker.api.ingredient.transform.serializer.TransformReuseSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformerSerializer;
+import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformReuseSerializer;
 import com.blamejared.crafttweaker.gametest.CraftTweakerGameTest;
 import com.blamejared.crafttweaker.gametest.framework.annotation.CraftTweakerGameTestHolder;
 import com.blamejared.crafttweaker.gametest.framework.annotation.TestModifier;

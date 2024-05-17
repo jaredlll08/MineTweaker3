@@ -14,12 +14,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(value = ItemStack.class, priority = 1001)
 public class MixinItemStackAttributes {
     
-    @ModifyVariable(method = "getAttributeModifiers(Lnet/minecraft/world/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    public Multimap<Attribute, AttributeModifier> crafttweaker$getAttributeModifiers$modifyAttributes(Multimap<Attribute, AttributeModifier> multimap, EquipmentSlot slot) {
-        
-        FabricItemAttributeModifier modifierBase = new FabricItemAttributeModifier((ItemStack) (Object) this, slot, multimap);
-        Services.EVENT.applyAttributeModifiers(modifierBase);
-        return modifierBase.getModifiers();
-    }
+    //TODO 1.20.5
+//    @ModifyVariable(method = "getAttributeModifiers(Lnet/minecraft/world/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
+//    public Multimap<Attribute, AttributeModifier> crafttweaker$getAttributeModifiers$modifyAttributes(Multimap<Attribute, AttributeModifier> multimap, EquipmentSlot slot) {
+//
+//        FabricItemAttributeModifier modifierBase = new FabricItemAttributeModifier((ItemStack) (Object) this, slot, multimap);
+//        Services.EVENT.applyAttributeModifiers(modifierBase);
+//        return modifierBase.getModifiers();
+//    }
     
 }

@@ -1,13 +1,15 @@
 package com.blamejared.crafttweaker.api.fluid;
 
-import com.blamejared.crafttweaker.api.data.*;
-import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
+import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.impl.fluid.SimpleFluidStack;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 import org.openzen.zencode.java.ZenCodeType;
 
-import java.util.Objects;
+import java.util.function.Consumer;
 
 public class MCFluidStackMutable implements IFluidStack {
     
@@ -52,32 +54,56 @@ public class MCFluidStackMutable implements IFluidStack {
     @Override
     public IFluidStack withTag(IData tag) {
         
-        if(tag != null) {
-            MapData map = new MapData(tag.asMap());
-            getInternal().tag(map.getInternal());
-        } else {
-            getInternal().tag(null);
-        }
-        
+        //TODO 1.20.5
+        //        if(tag != null) {
+        //            MapData map = new MapData(tag.asMap());
+        //            getInternal().components(map.getInternal());
+        //        } else {
+        //            getInternal().components(null);
+        //        }
+        //
         return this;
     }
     
     @Override
-    public boolean hasTag() {
+    public Codec<IFluidStack> codec() {
         
-        return getInternal().tag() != null;
+        return SimpleFluidStack.CODEC.xmap(IFluidStack::ofMutable, IFluidStack::getInternal);
+    }
+    
+    @Override
+    public PatchedDataComponentMap getComponents() {
+        
+        return getInternal().getComponents();
+    }
+    
+    @Override
+    public <T> IFluidStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value) {
+        
+        getInternal().set(type, value);
+        return this;
+    }
+    
+    @Override
+    public <T> IFluidStack remove(DataComponentType<T> type) {
+        
+        getInternal().remove(type);
+        return this;
     }
     
     @Override
     public CompoundTag getInternalTag() {
         
-        return getInternal().tag();
+        //TODO 1.20.5
+        //        return getInternal().components();
+        return null;
     }
     
     @Override
-    public IData getTag() {
+    public IFluidStack modifyThis(Consumer<IFluidStack> modifier) {
         
-        return TagToDataConverter.convert(getInternal().tag());
+        modifier.accept(this);
+        return this;
     }
     
     @Override
@@ -92,39 +118,40 @@ public class MCFluidStackMutable implements IFluidStack {
         return stack.copy();
     }
     
-    @Override
-    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
-    public boolean equals(Object o) {
-        
-        if(this == o) {
-            return true;
-        }
-        if(o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        
-        final SimpleFluidStack thatStack = ((MCFluidStackMutable) o).getInternal();
-        final SimpleFluidStack thisStack = getInternal();
-        
-        if(thisStack.isEmpty()) {
-            return thatStack.isEmpty();
-        }
-        
-        if(thisStack.amount() != thatStack.amount()) {
-            return false;
-        }
-        
-        if(!Objects.equals(thisStack.fluid(), thatStack.fluid())) {
-            return false;
-        }
-        
-        return Objects.equals(thisStack.tag(), thatStack.tag());
-    }
-    
-    @Override
-    public int hashCode() {
-        
-        return Objects.hash(getInternal().amount(), getInternal().fluid(), getInternal().tag());
-    }
+    //TODO 1.20.5
+    //    @Override
+    //    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
+    //    public boolean equals(Object o) {
+    //
+    //        if(this == o) {
+    //            return true;
+    //        }
+    //        if(o == null || getClass() != o.getClass()) {
+    //            return false;
+    //        }
+    //
+    //        final SimpleFluidStack thatStack = ((MCFluidStackMutable) o).getInternal();
+    //        final SimpleFluidStack thisStack = getInternal();
+    //
+    //        if(thisStack.isEmpty()) {
+    //            return thatStack.isEmpty();
+    //        }
+    //
+    //        if(thisStack.amount() != thatStack.amount()) {
+    //            return false;
+    //        }
+    //
+    //        if(!Objects.equals(thisStack.fluid(), thatStack.fluid())) {
+    //            return false;
+    //        }
+    //
+    //        return Objects.equals(thisStack.components(), thatStack.components());
+    //    }
+    //
+    //    @Override
+    //    public int hashCode() {
+    //
+    //        return Objects.hash(getInternal().amount(), getInternal().fluid(), getInternal().components());
+    //    }
     
 }

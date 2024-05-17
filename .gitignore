@@ -35,3 +35,5 @@ fabric-game-tests.html
 secrets.json
 changelog.md
 CraftTweaker-Annotation-Processors
+dev_scripts/private/*
+!dev_scripts/private/.gitkeep

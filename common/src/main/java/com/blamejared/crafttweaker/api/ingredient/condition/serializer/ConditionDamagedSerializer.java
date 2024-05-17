@@ -1,40 +1,39 @@
 package com.blamejared.crafttweaker.api.ingredient.condition.serializer;
 
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientConditionSerializer;
 import com.blamejared.crafttweaker.api.ingredient.condition.type.ConditionDamaged;
-import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-public class ConditionDamagedSerializer implements IIngredientConditionSerializer<ConditionDamaged<?>> {
+public class ConditionDamagedSerializer implements IIngredientConditionSerializer<ConditionDamaged> {
     
     public static final ConditionDamagedSerializer INSTANCE = new ConditionDamagedSerializer();
     
-    public static final Codec<ConditionDamaged<?>> CODEC = Codec.unit(ConditionDamaged.INSTANCE_RAW);
+    public static final MapCodec<ConditionDamaged> CODEC = MapCodec.unit(ConditionDamaged.INSTANCE);
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, ConditionDamaged> STREAM_CODEC = StreamCodec.unit(ConditionDamaged.INSTANCE);
     
     private ConditionDamagedSerializer() {}
     
     @Override
-    public ConditionDamaged<?> fromNetwork(FriendlyByteBuf buffer) {
-        
-        return ConditionDamaged.INSTANCE_RAW;
-    }
-    
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, ConditionDamaged<?> ingredient) {
-    
-    }
-    
-    @Override
-    public Codec<ConditionDamaged<?>> codec() {
+    public MapCodec<ConditionDamaged> codec() {
         
         return CODEC;
     }
     
     @Override
+    public StreamCodec<RegistryFriendlyByteBuf, ConditionDamaged> streamCodec() {
+        
+        return STREAM_CODEC;
+    }
+    
+    @Override
     public ResourceLocation getType() {
         
-        return new ResourceLocation(CraftTweakerConstants.MOD_ID, "only_damaged");
+        return CraftTweakerConstants.rl("only_damaged");
     }
     
 }

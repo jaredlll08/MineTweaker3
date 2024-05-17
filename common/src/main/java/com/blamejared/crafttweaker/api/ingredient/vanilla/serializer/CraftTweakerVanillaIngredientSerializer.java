@@ -2,17 +2,18 @@ package com.blamejared.crafttweaker.api.ingredient.vanilla.serializer;
 
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.CraftTweakerVanillaIngredient;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 public interface CraftTweakerVanillaIngredientSerializer<T extends CraftTweakerVanillaIngredient> {
     
     ResourceLocation getId();
     
-    Codec<T> codec();
+    MapCodec<T> codec();
     
-    T decode(FriendlyByteBuf buf);
-    
-    void encode(FriendlyByteBuf buf, T ingredient);
+    StreamCodec<RegistryFriendlyByteBuf, T> streamCodec();
     
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.function.Predicate;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CraftTweakerConstants.MOD_ID)
+@EventBusSubscriber(value = Dist.CLIENT, modid = CraftTweakerConstants.MOD_ID)
 public class CTClientEventHandler {
     
     @SubscribeEvent
@@ -31,7 +32,7 @@ public class CTClientEventHandler {
     @SubscribeEvent
     public static void handleTooltips(ItemTooltipEvent e) {
         
-        Services.CLIENT.applyTooltips(e.getItemStack(), e.getFlags(), e.getToolTip());
+        Services.CLIENT.applyTooltips(e.getItemStack(), e.getContext(), e.getFlags(), e.getToolTip());
     }
     
     @SubscribeEvent

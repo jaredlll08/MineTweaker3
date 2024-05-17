@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -945,6 +946,12 @@ final class SystemLogger implements Logger {
     public <MF extends MessageFactory> MF getMessageFactory() {
         
         return this.mainLogger.getMessageFactory();
+    }
+    
+    @Override
+    public FlowMessageFactory getFlowMessageFactory() {
+        
+        return this.mainLogger.getFlowMessageFactory();
     }
     
     @Override

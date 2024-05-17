@@ -1,7 +1,6 @@
 package com.blamejared.crafttweaker.api.action.brewing;
 
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 
 import java.util.ArrayList;
@@ -35,7 +34,8 @@ public class ActionRemoveBrewingRecipeByInput extends ActionBrewingBase {
     @Override
     public void undo() {
         
-        removedRecipes.forEach(BrewingRecipeRegistry::addRecipe);
+        //TODO 1.20.5
+//        removedRecipes.forEach(BrewingRecipeRegistry::addRecipe);
     }
     
     @Override

@@ -3,6 +3,8 @@ package com.blamejared.crafttweaker.natives.loot.condition;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.predicates.ConditionReference;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -16,7 +18,7 @@ public final class ExpandConditionReference {
     @ZenCodeType.StaticExpansionMethod
     public static LootItemCondition.Builder create(final ResourceLocation name) {
         
-        return ConditionReference.conditionReference(name);
+        return ConditionReference.conditionReference(ResourceKey.create(Registries.PREDICATE, name));
     }
     
     @ZenCodeType.StaticExpansionMethod

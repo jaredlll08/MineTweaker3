@@ -9,8 +9,10 @@ import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import com.blamejared.crafttweaker.impl.script.recipefs.RecipeFileSystemProvider;
 import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
 import com.blamejared.crafttweaker.platform.Services;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -68,15 +70,15 @@ public class RecipeManagerScriptLoader {
         
         fixRecipeManager(manager);
         
-        final Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> allRecipes = ((AccessRecipeManager) manager).crafttweaker$getRecipes();
-        final Map<ResourceLocation, RecipeHolder<?>> recipes = allRecipes.remove(ScriptRecipeType.INSTANCE); // Why keep them around?
+        final Multimap<RecipeType<?>, RecipeHolder<?>> allRecipes = ((AccessRecipeManager) manager).crafttweaker$getByType();
+        final Collection<RecipeHolder<?>> recipes = allRecipes.removeAll(ScriptRecipeType.INSTANCE); // Why keep them around?
         
-        if(recipes == null || recipes.isEmpty()) {
+        if(recipes.isEmpty()) {
             
             // The server does not have any scripts, so don't reload scripts!
             return;
         }
-        final Collection<ScriptRecipe> scriptRecipes = recipes.values()
+        final Collection<ScriptRecipe> scriptRecipes = recipes
                 .stream()
                 .map(RecipeHolder::value)
                 .map(ScriptRecipe.class::cast)
@@ -98,11 +100,8 @@ public class RecipeManagerScriptLoader {
     
     private static void fixRecipeManager(final RecipeManager manager) {
         
-        //ImmutableMap of ImmutableMaps. Nice.
         final AccessRecipeManager accessRecipeManager = (AccessRecipeManager) manager;
-        accessRecipeManager.crafttweaker$setRecipes(new HashMap<>(accessRecipeManager.crafttweaker$getRecipes()));
-        accessRecipeManager.crafttweaker$getRecipes()
-                .replaceAll((k, v) -> new HashMap<>(accessRecipeManager.crafttweaker$getRecipes().get(k)));
+        accessRecipeManager.crafttweaker$setByType(HashMultimap.create(accessRecipeManager.crafttweaker$getByType()));
         accessRecipeManager.crafttweaker$setByName(new HashMap<>(accessRecipeManager.crafttweaker$getByName()));
         CraftTweakerAPI.getAccessibleElementsProvider().recipeManager(manager);
     }

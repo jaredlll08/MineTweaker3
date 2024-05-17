@@ -8,6 +8,7 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.natives.block.ExpandBlock;
+import com.blamejared.crafttweaker.natives.component.ExpandDataComponentType;
 import com.blamejared.crafttweaker.natives.entity.ExpandEntityType;
 import com.blamejared.crafttweaker.natives.entity.attribute.ExpandAttribute;
 import com.blamejared.crafttweaker.natives.entity.effect.ExpandMobEffect;
@@ -137,6 +138,15 @@ public class BracketDumpers {
                 .allStrategyNames()
                 .stream()
                 .map("<targetingstrategy:%s>"::formatted)
+                .collect(Collectors.toList());
+    }
+    
+    @BracketDumper("componenttype")
+    public static Collection<String> getComponentTypes() {
+        
+        return BuiltInRegistries.DATA_COMPONENT_TYPE
+                .stream()
+                .map(ExpandDataComponentType::getCommandString)
                 .collect(Collectors.toList());
     }
     

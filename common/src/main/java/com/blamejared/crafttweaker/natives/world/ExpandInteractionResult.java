@@ -13,25 +13,22 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:world/interactionresult")
 public class ExpandInteractionResult {
     
-    @ZenCodeType.Method
     @ZenCodeType.Getter("consumesAction")
     public static boolean consumesAction(InteractionResult internal) {
         
         return internal.consumesAction();
     }
     
-    @ZenCodeType.Method
     @ZenCodeType.Getter("shouldSwing")
     public static boolean shouldSwing(InteractionResult internal) {
         
         return internal.shouldSwing();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("shouldAwardStats")
-    public static boolean shouldAwardStats(InteractionResult internal) {
+    @ZenCodeType.Getter("indicateItemUse")
+    public static boolean indicateItemUse(InteractionResult internal) {
         
-        return internal.shouldAwardStats();
+        return internal.indicateItemUse();
     }
     
     /**

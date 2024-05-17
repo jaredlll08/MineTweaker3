@@ -2,15 +2,18 @@ package com.blamejared.crafttweaker.api.villager.trade.type;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import org.openzen.zencode.java.ZenCodeType;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.villager.trade.type.BasicTradeListing")
@@ -57,7 +60,10 @@ public class BasicTradeListing implements VillagerTrades.ItemListing, IBasicItem
     @Override
     public MerchantOffer getOffer(Entity trader, RandomSource rand) {
         
-        return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
+        ItemCost priceCost = new ItemCost(price.getItemHolder(), price.getCount(), DataComponentPredicate.allOf(price.getComponents()), price);
+        ItemCost price2Cost = new ItemCost(price2.getItemHolder(), price2.getCount(), DataComponentPredicate.allOf(price2.getComponents()), price2);
+        
+        return new MerchantOffer(priceCost, Optional.of(price2Cost), forSale, maxTrades, xp, priceMult);
     }
     
     @ZenCodeType.Method

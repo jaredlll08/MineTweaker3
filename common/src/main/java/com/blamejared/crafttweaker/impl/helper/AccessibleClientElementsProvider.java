@@ -3,6 +3,7 @@ package com.blamejared.crafttweaker.impl.helper;
 import com.blamejared.crafttweaker.platform.helper.IAccessibleClientElementsProvider;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -12,6 +13,7 @@ public final class AccessibleClientElementsProvider implements IAccessibleClient
     private static final Supplier<AccessibleClientElementsProvider> INSTANCE = Suppliers.memoize(AccessibleClientElementsProvider::new);
     
     private RegistryAccess registryAccess;
+    private PotionBrewing potionBrewing;
     
     private AccessibleClientElementsProvider() {
         

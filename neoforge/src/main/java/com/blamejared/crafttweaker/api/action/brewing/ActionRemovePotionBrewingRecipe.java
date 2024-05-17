@@ -1,15 +1,12 @@
 package com.blamejared.crafttweaker.api.action.brewing;
 
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.mixin.common.access.brewing.AccessPotionBrewing;
 import com.blamejared.crafttweaker.natives.item.alchemy.ExpandPotion;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ActionRemovePotionBrewingRecipe extends ActionBrewingBase {
@@ -30,38 +27,40 @@ public class ActionRemovePotionBrewingRecipe extends ActionBrewingBase {
     
     @Override
     public void apply() {
-        
-        Iterator<PotionBrewing.Mix<Potion>> vanillaIterator = AccessPotionBrewing.crafttweaker$getPOTION_MIXES()
-                .iterator();
-        while(vanillaIterator.hasNext()) {
-            PotionBrewing.Mix<Potion> mix = vanillaIterator.next();
-            
-            Potion potionInput = mix.from;
-            Potion potionOutput = mix.to;
-            Ingredient reagent = mix.ingredient;
-            
-            if(potionInput == null || potionOutput == null || reagent == null) {
-                throw new RuntimeException("Error getting potion from mix: " + mix + "! Please make an issue on the issue tracker!");
-            }
-            
-            if(potionInput == input && potionOutput == output && reagent.test(reagentStack.getInternal())) {
-                removed.add(mix);
-                vanillaIterator.remove();
-            }
-        }
+        //TODO 1.20.5
+//
+//        Iterator<PotionBrewing.Mix<Potion>> vanillaIterator = AccessPotionBrewing.crafttweaker$getPOTION_MIXES()
+//                .iterator();
+//        while(vanillaIterator.hasNext()) {
+//            PotionBrewing.Mix<Potion> mix = vanillaIterator.next();
+//
+//            Potion potionInput = mix.from;
+//            Potion potionOutput = mix.to;
+//            Ingredient reagent = mix.ingredient;
+//
+//            if(potionInput == null || potionOutput == null || reagent == null) {
+//                throw new RuntimeException("Error getting potion from mix: " + mix + "! Please make an issue on the issue tracker!");
+//            }
+//
+//            if(potionInput == input && potionOutput == output && reagent.test(reagentStack.getInternal())) {
+//                removed.add(mix);
+//                vanillaIterator.remove();
+//            }
+//        }
         
     }
     
     @Override
     public void undo() {
         
-        for(PotionBrewing.Mix<Potion> potion : removed) {
-            Potion potionInput = potion.from;
-            Ingredient itemReagent = potion.ingredient;
-            Potion potionOutput = potion.to;
-            
-            AccessPotionBrewing.crafttweaker$callAddMix(potionInput, itemReagent.getItems()[0].getItem(), potionOutput);
-        }
+        //TODO 1.20.5
+//        for(PotionBrewing.Mix<Potion> potion : removed) {
+//            Potion potionInput = potion.from;
+//            Ingredient itemReagent = potion.ingredient;
+//            Potion potionOutput = potion.to;
+//
+//            AccessPotionBrewing.crafttweaker$callAddMix(potionInput, itemReagent.getItems()[0].getItem(), potionOutput);
+//        }
     }
     
     @Override

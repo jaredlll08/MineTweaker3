@@ -1,6 +1,5 @@
 package com.blamejared.crafttweaker.api.action.recipe;
 
-
 import com.blamejared.crafttweaker.api.action.base.IRuntimeAction;
 import com.blamejared.crafttweaker.api.action.internal.CraftTweakerAction;
 import com.blamejared.crafttweaker.api.recipe.RecipeList;
@@ -8,10 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-
-import java.util.Map;
 
 public abstract class ActionRecipeBase<T extends Recipe<?>> extends CraftTweakerAction implements IRuntimeAction {
     
@@ -25,19 +21,6 @@ public abstract class ActionRecipeBase<T extends Recipe<?>> extends CraftTweaker
     public IRecipeManager<T> getManager() {
         
         return manager;
-    }
-    
-    /**
-     * Gets the recipes for the manager type.
-     * This should only be used to view recipes, if you need to change the map, use {@link #getRecipeMutator()}
-     *
-     * In the future this method will either be removed or made to return an immutable map.
-     *
-     * @return A map of name to recipe for the manager type.
-     */
-    public Map<ResourceLocation, RecipeHolder<T>> getRecipes() {
-        
-        return this.getManager().getRecipes();
     }
     
     /**

@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.natives.block.entity;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
@@ -36,7 +37,7 @@ public class ExpandBlockEntity {
     @ZenCodeType.Getter("data")
     public static IData getData(BlockEntity internal) {
         
-        return new MapData(internal.saveWithoutMetadata());
+        return new MapData(CraftTweakerAPI.getAccessibleElementsProvider().registryAccess(internal::saveWithoutMetadata));
     }
     
     @ZenCodeType.Method
@@ -44,7 +45,7 @@ public class ExpandBlockEntity {
     public static void setData(BlockEntity internal, IData data) {
         
         if(data instanceof MapData map) {
-            internal.load(map.getInternal());
+            internal.loadWithComponents(map.getInternal(), CraftTweakerAPI.getAccessibleElementsProvider().registryAccess());
         } else {
             throw new IllegalArgumentException("Invalid data provided, expected MapData, received: '%s'".formatted(data));
         }
@@ -55,7 +56,7 @@ public class ExpandBlockEntity {
         
         if(data instanceof MapData) {
             MapData mergedData = (MapData) getData(internal).merge(data);
-            internal.load(mergedData.getInternal());
+            internal.loadWithComponents(mergedData.getInternal(), CraftTweakerAPI.getAccessibleElementsProvider().registryAccess());
         } else {
             throw new IllegalArgumentException("Invalid data provided, expected MapData, received: '%s'".formatted(data));
         }

@@ -14,7 +14,6 @@ import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
-import com.blamejared.crafttweaker.api.data.visitor.DataToJsonStringVisitor;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.logging.CommonLoggers;
@@ -22,11 +21,8 @@ import com.blamejared.crafttweaker.api.recipe.RecipeList;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.NameUtil;
 import com.blamejared.crafttweaker.api.zencode.util.PositionUtil;
-import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.common.collect.Lists;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,13 +35,16 @@ import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
 import org.openzen.zencode.shared.CodePosition;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Default interface for Registry based handlers as they can all remove recipes by ResourceLocation.
@@ -78,10 +77,10 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         final ResourceLocation recipeTypeKey = this.getBracketResourceLocation();
         
         final IData requestedSerializer = mapData.getAt("type");
-        final ResourceLocation serializerKey = requestedSerializer == null? recipeTypeKey : Util.make(() -> {
+        final ResourceLocation serializerKey = requestedSerializer == null ? recipeTypeKey : Util.make(() -> {
             try {
                 return new ResourceLocation(requestedSerializer.getAsString());
-            } catch (final ClassCastException | IllegalStateException | ResourceLocationException ex) {
+            } catch(final ClassCastException | IllegalStateException | ResourceLocationException ex) {
                 throw new IllegalArgumentException("Expected 'type' field to be a valid resource location", ex);
             }
         });
@@ -89,21 +88,24 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         final RecipeSerializer<T> serializer = BuiltInRegistries.RECIPE_SERIALIZER.getOptional(serializerKey)
                 .map(GenericUtil::<RecipeSerializer<T>>uncheck)
                 .orElseThrow(() -> {
-                    if (requestedSerializer == null) {
+                    if(requestedSerializer == null) {
                         return new IllegalArgumentException(
                                 "Recipe Type '%s' does not have a Recipe Serializer of the same ID. Please specify a serializer manually using the 'type' field in the JSON object"
                                         .formatted(recipeTypeKey)
                         );
                     }
-
+                    
                     return new IllegalArgumentException("Recipe Serializer '%s' does not exist.".formatted(requestedSerializer));
                 });
         
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
-        final T recipe = Util.getOrThrow(serializer.codec().parse(IDataOps.INSTANCE, mapData), IllegalArgumentException::new);
+        final T recipe = serializer.codec()
+                .codec()
+                .parse(IDataOps.INSTANCE, mapData)
+                .getOrThrow(IllegalStateException::new);
         
         final RecipeType<?> recipeType = recipe.getType();
-        if (recipeType != this.getRecipeType()) {
+        if(recipeType != this.getRecipeType()) {
             throw new IllegalArgumentException(
                     "Recipe Serializer \"%s\" resulted in Recipe Type \"%s\" but expected Recipe Type \"%s\""
                             .formatted(
@@ -137,11 +139,10 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         return getRecipeList().getRecipesMatching(predicate);
     }
     
-    @ZenCodeType.Method
     @ZenCodeType.Getter("allRecipes")
     default List<RecipeHolder<T>> getAllRecipes() {
         
-        return getRecipeList().getAllRecipes();
+        return new ArrayList<>(getRecipeList().getRecipes());
     }
     
     /**
@@ -153,7 +154,7 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
     @ZenCodeType.Getter("recipeMap")
     default Map<ResourceLocation, RecipeHolder<T>> getRecipeMap() {
         
-        return getRecipeList().getRecipes();
+        return getRecipeList().getByName();
     }
     
     /**
@@ -280,14 +281,12 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
      *
      * @return A map of name to recipe for the manager type.
      */
-    default Map<ResourceLocation, RecipeHolder<T>> getRecipes() {
+    default Collection<RecipeHolder<T>> getRecipes() {
         
-        return GenericUtil.uncheck(
-                CraftTweakerAPI.getAccessibleElementsProvider()
-                        .accessibleRecipeManager()
-                        .crafttweaker$getRecipes()
-                        .computeIfAbsent(getRecipeType(), key -> new HashMap<>())
-        );
+        return GenericUtil.uncheck(CraftTweakerAPI.getAccessibleElementsProvider()
+                .accessibleRecipeManager()
+                .crafttweaker$getByType()
+                .get(getRecipeType()));
     }
     
     /**

@@ -11,7 +11,7 @@ public class ActionClearTooltip extends ActionTooltipBase {
     public ActionClearTooltip(IIngredient stack, boolean leaveName) {
         
         super(stack);
-        this.function = (stack1, tooltip, context) -> {
+        this.function = (stack1, tooltip, context, flag) -> {
             if(leaveName) {
                 tooltip.subList(1, tooltip.size()).clear();
             } else {

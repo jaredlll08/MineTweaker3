@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -16,6 +17,6 @@ import java.util.List;
 public interface ITooltipFunction {
     
     @ZenCodeType.Method
-    void apply(IItemStack stack, List<Component> tooltip, TooltipFlag flag);
+    void apply(IItemStack stack, List<Component> tooltip, Item.TooltipContext context, TooltipFlag flag);
     
 }

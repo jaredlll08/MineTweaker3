@@ -17,7 +17,7 @@ version = GMUtils.updatingVersion(Versions.MOD)
 
 tasks.wrapper {
     //Define wrapper values here to not have to always do so when updating gradlew.properties
-    gradleVersion = "8.5"
+    gradleVersion = "8.6"
     distributionType = Wrapper.DistributionType.BIN
 }
 
@@ -36,7 +36,7 @@ tasks.create("gameTest") {
 
 tasks.create("postDiscord") {
     val taskName = "publishCurseForge"
-    dependsOn(":fabric:${taskName}", ":forge:${taskName}", ":neoforge:${taskName}")
+    dependsOn(":fabric:${taskName}", /*":forge:${taskName}",*/ ":neoforge:${taskName}")
     doLast {
         try {
 
@@ -52,13 +52,13 @@ tasks.create("postDiscord") {
             val embed = Embed()
             val downloadSources = StringJoiner("\n")
 
-            mapOf(Pair("fabric", "<:fabric:932163720568782878>"), Pair("forge", "<:forge:932163698003443804>"), Pair("neoforge", "<:neoforged:1184738260371644446>"))
+            mapOf(Pair("fabric", "<:fabric:932163720568782878>"), /*Pair("forge", "<:forge:932163698003443804>"),*/ Pair("neoforge", "<:neoforged:1184738260371644446>"))
                     .filter {
                         project(":${it.key}").ext.has("curse_file_url")
                     }.map { "${it.value} [${it.key.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.ENGLISH) else char.toString() }}](${project(":${it.key}").ext.get("curse_file_url")})" }
                     .forEach { downloadSources.add(it) }
 
-            listOf("common", "fabric", "forge", "neoforge")
+            listOf("common", "fabric",/* "forge",*/ "neoforge")
                     .map { project(":${it}") }
                     .map { "<:maven:932165250738970634> `\"${it.group}:${it.base.archivesName.get()}:${it.version}\"`" }
                     .forEach { downloadSources.add(it) }

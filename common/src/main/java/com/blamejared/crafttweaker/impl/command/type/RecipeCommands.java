@@ -93,8 +93,8 @@ public final class RecipeCommands {
         
         dumpRecipes(source, it -> true);
         
-        CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.recipes.list")), CommandUtilities.getFormattedLogFile())
-                .withStyle(ChatFormatting.GREEN)));
+        CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.recipes.list")), CommandUtilities.getFormattedLogFile())
+                .withStyle(ChatFormatting.GREEN));
         return Command.SINGLE_SUCCESS;
     }
     
@@ -105,8 +105,8 @@ public final class RecipeCommands {
         final RecipeType<?> type = manager.getRecipeType();
         dumpRecipes(source, it -> Objects.equals(it, type));
         
-        CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.recipes.list")), CommandUtilities.getFormattedLogFile())
-                .withStyle(ChatFormatting.GREEN)));
+        CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.recipes.list")), CommandUtilities.getFormattedLogFile())
+                .withStyle(ChatFormatting.GREEN));
         return Command.SINGLE_SUCCESS;
     }
     
@@ -130,23 +130,25 @@ public final class RecipeCommands {
             
             CommandUtilities.COMMAND_LOGGER.info("Dumping all recipes that output {}!", ItemStackUtil.getCommandString(workingStack.getInternal()));
             
-            ((AccessRecipeManager) source.getLevel().getRecipeManager()).crafttweaker$getRecipes()
-                    .forEach((recipeType, map) ->
-                            dumpRecipe(recipeType, map.values(), it -> workingStack.matches(IItemStack.of(AccessibleElementsProvider.get()
+            ((AccessRecipeManager) source.getLevel().getRecipeManager()).crafttweaker$getByType()
+                    .asMap()
+                    .forEach((recipeType, recipes) ->
+                            dumpRecipe(recipeType, recipes, it -> workingStack.matches(IItemStack.of(AccessibleElementsProvider.get()
                                     .registryAccess(it.value()::getResultItem))), true));
         }
-        CommandUtilities.send(source, CommandUtilities.openingLogFile(Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.recipes.list")), CommandUtilities.getFormattedLogFile())
-                .withStyle(ChatFormatting.GREEN)));
+        CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.recipes.list")), CommandUtilities.getFormattedLogFile())
+                .withStyle(ChatFormatting.GREEN));
         return Command.SINGLE_SUCCESS;
     }
     
     private static void dumpRecipes(final CommandSourceStack source, final Predicate<RecipeType<?>> typeFilter) {
         
-        ((AccessRecipeManager) source.getLevel().getRecipeManager()).crafttweaker$getRecipes()
+        ((AccessRecipeManager) source.getLevel().getRecipeManager()).crafttweaker$getByType()
+                .asMap()
                 .entrySet()
                 .stream()
                 .filter(it -> typeFilter.test(it.getKey()))
-                .forEach(it -> dumpRecipe(it.getKey(), it.getValue().values(), recipe -> true, false));
+                .forEach(it -> dumpRecipe(it.getKey(), it.getValue(), recipe -> true, false));
     }
     
     private static void dumpRecipe(final RecipeType<?> type, final Collection<RecipeHolder<?>> recipes, final Predicate<RecipeHolder<?>> filter, final boolean hideEmpty) {

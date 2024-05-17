@@ -1,13 +1,15 @@
 package com.blamejared.crafttweaker.natives.entity.effect;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.AttributeModifierTemplate;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.openzen.zencode.java.ZenCodeType;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 @ZenRegister
@@ -81,13 +84,15 @@ public class ExpandMobEffect {
     @ZenCodeType.Method
     public static MobEffect addAttributeModifier(MobEffect internal, Attribute attribute, String name, double value, AttributeModifier.Operation operation) {
         
-        return internal.addAttributeModifier(attribute, name, value, operation);
+        return internal.addAttributeModifier(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute), name, value, operation);
     }
     
     @ZenCodeType.Method
-    public static Map<Attribute, AttributeModifierTemplate> getAttributeModifiers(MobEffect internal) {
+    public static Map<Attribute, AttributeModifier> getAttributeModifiers(MobEffect internal, int amplifier) {
         
-        return internal.getAttributeModifiers();
+        Map<Attribute, AttributeModifier> attributes = new HashMap<>();
+        internal.createModifiers(amplifier, (attributeHolder, attributeModifier) -> attributes.put(attributeHolder.value(), attributeModifier));
+        return attributes;
     }
     
     //TODO when we have attributemap

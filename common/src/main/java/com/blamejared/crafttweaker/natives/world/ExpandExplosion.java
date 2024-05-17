@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeConstructor;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
@@ -23,7 +24,7 @@ import java.util.Map;
         constructors = {
                 @NativeConstructor(value = {
                         @NativeConstructor.ConstructorParameter(name = "level", type = Level.class, description = "The level to spawn the explosion in", examples = "level"),
-                        @NativeConstructor.ConstructorParameter(name = "entity", type = Level.class, description = "The entity that spawned the explosion", examples = "player"),
+                        @NativeConstructor.ConstructorParameter(name = "entity", type = Entity.class, description = "The entity that spawned the explosion", examples = "player"),
                         @NativeConstructor.ConstructorParameter(name = "x", type = double.class, description = "The x position.", examples = "0"),
                         @NativeConstructor.ConstructorParameter(name = "y", type = double.class, description = "The y position.", examples = "0"),
                         @NativeConstructor.ConstructorParameter(name = "z", type = double.class, description = "The z position.", examples = "0"),

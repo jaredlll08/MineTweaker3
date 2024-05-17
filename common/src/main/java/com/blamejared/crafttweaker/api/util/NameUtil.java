@@ -116,8 +116,7 @@ public final class NameUtil {
         }
         
         try {
-            // Specifically not using CraftTweakerConstants.MOD_ID as that may change
-            new ResourceLocation(CraftTweakerConstants.MOD_ID, fixed); // Initializing it for side effects
+            CraftTweakerConstants.rl(fixed); // Initializing it for side effects
             if(!mistakes.isEmpty()) {
                 mistakeHandler.accept(fixed, mistakes);
             }

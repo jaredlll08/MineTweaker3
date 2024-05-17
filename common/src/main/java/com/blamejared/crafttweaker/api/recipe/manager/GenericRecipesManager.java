@@ -124,7 +124,7 @@ public class GenericRecipesManager {
                 .orElseThrow(() -> new IllegalArgumentException("Recipe Serializer '%s' does not exist.".formatted(requestedSerializer)));
         
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
-        final Recipe<?> recipe = Util.getOrThrow(serializer.codec().parse(IDataOps.INSTANCE, data), IllegalArgumentException::new);
+        final Recipe<?> recipe = serializer.codec().codec().parse(IDataOps.INSTANCE, data).getOrThrow(IllegalArgumentException::new);
         
         final IRecipeManager<?> manager = RecipeTypeBracketHandler.getOrDefault(recipe.getType());
         final RecipeHolder<?> holder = new RecipeHolder<>(recipeName, recipe);

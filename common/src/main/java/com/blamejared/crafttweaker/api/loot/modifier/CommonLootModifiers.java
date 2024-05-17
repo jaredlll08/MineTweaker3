@@ -150,7 +150,7 @@ public final class CommonLootModifiers {
                 loot.add(stack.copy());
             } else {
                 final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, tool.getInternal());
-                final int oldAmount = stack.getAmount();
+                final int oldAmount = stack.amount();
                 final int newAmount = enchantmentLevel <= 0 ? oldAmount : oldAmount * Math.max(0, context.getRandom()
                         .nextInt(enchantmentLevel + 2) - 1) + 1;
                 loot.add(stack.copy().setAmount(newAmount));
@@ -203,7 +203,7 @@ public final class CommonLootModifiers {
                     loot.add(stack.copy());
                 } else {
                     final RandomSource source = context.getRandom();
-                    final int oldAmount = stack.getAmount();
+                    final int oldAmount = stack.amount();
                     
                     int additional = 0;
                     for(int i = 0, s = enchantmentLevel + extra; i < s; ++i) {
@@ -261,7 +261,7 @@ public final class CommonLootModifiers {
                 if(enchantmentLevel <= 0) {
                     loot.add(stack.copy());
                 } else {
-                    final int oldAmount = stack.getAmount();
+                    final int oldAmount = stack.amount();
                     final int newAmount = oldAmount + context.getRandom().nextInt(multiplier * enchantmentLevel + 1);
                     loot.add(stack.copy().setAmount(newAmount));
                 }
@@ -492,8 +492,8 @@ public final class CommonLootModifiers {
     @ZenCodeType.Method
     public static ILootModifier replaceStackWith(final IIngredientWithAmount target, final IItemStack replacement) {
         
-        final IIngredient ingredient = target.getIngredient();
-        final int amount = target.getAmount();
+        final IIngredient ingredient = target.ingredient();
+        final int amount = target.amount();
         
         if(ingredient.isEmpty()) {
             return ILootModifier.DEFAULT;
@@ -504,7 +504,7 @@ public final class CommonLootModifiers {
         }
         
         if(replacement.isEmpty()) { // TODO("Unless we want some form of 'remove carrots but only if they're a multiple of 2'")
-            return remove(target.getIngredient());
+            return remove(target.ingredient());
         }
         
         return (loot, context) -> {
@@ -514,7 +514,7 @@ public final class CommonLootModifiers {
             for(final IItemStack stack : loot) {
                 if(hasFound) {
                     final int stackAmount;
-                    if(ingredient.matches(stack) && (stackAmount = stack.getAmount()) >= amount) {
+                    if(ingredient.matches(stack) && (stackAmount = stack.amount()) >= amount) {
                         final int newAmount = stackAmount / amount;
                         final int oldAmount = stackAmount % amount;
                         
@@ -527,7 +527,7 @@ public final class CommonLootModifiers {
                     }
                 } else {
                     final int stackAmount;
-                    if(ingredient.matches(stack) && (stackAmount = stack.getAmount()) >= amount) {
+                    if(ingredient.matches(stack) && (stackAmount = stack.amount()) >= amount) {
                         hasFound = true;
                         newList = new ArrayList<>();
                         
@@ -616,8 +616,8 @@ public final class CommonLootModifiers {
     @ZenCodeType.Method
     public static ILootModifier removeExactly(final IIngredientWithAmount target) {
         
-        final IIngredient ingredient = target.getIngredient();
-        final int amount = target.getAmount();
+        final IIngredient ingredient = target.ingredient();
+        final int amount = target.amount();
         
         if (ingredient.isEmpty() || amount <= 0) {
             return ILootModifier.DEFAULT;
@@ -636,7 +636,7 @@ public final class CommonLootModifiers {
                 
                 // We have to remove this item, so there can only be two options: either the entire stack needs to
                 // be removed or only part of it
-                final int stackQuantity = stack.getAmount();
+                final int stackQuantity = stack.amount();
                 rollingAmount -= stackQuantity;
                 
                 // We have three possibilities:

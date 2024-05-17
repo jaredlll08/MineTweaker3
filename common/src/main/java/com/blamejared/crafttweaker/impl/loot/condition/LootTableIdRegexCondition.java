@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
@@ -19,7 +20,9 @@ import java.util.regex.Pattern;
 
 public record LootTableIdRegexCondition(Pattern regex) implements LootItemCondition {
     
-    public static final Codec<LootTableIdRegexCondition> CODEC = ExtraCodecs.PATTERN.xmap(LootTableIdRegexCondition::new, LootTableIdRegexCondition::regex);
+    public static final MapCodec<LootTableIdRegexCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ExtraCodecs.PATTERN.fieldOf("pattern").forGetter(LootTableIdRegexCondition::regex)
+    ).apply(instance, LootTableIdRegexCondition::new));
     
     public static final LootItemConditionType LOOT_TABLE_ID_REGEX = new LootItemConditionType(CODEC);
     

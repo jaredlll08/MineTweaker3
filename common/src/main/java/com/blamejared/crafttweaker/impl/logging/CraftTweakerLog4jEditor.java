@@ -79,7 +79,7 @@ public final class CraftTweakerLog4jEditor {
         
         final LoggerConfig loggerConfig = LoggerConfig.createLogger(
                 false,
-                Level.INFO,
+                Services.PLATFORM.isDevelopmentEnvironment() ? Level.DEBUG : Level.INFO,
                 CraftTweakerConstants.LOG_NAME,
                 "true",
                 refs,

@@ -38,12 +38,6 @@ tasks {
         from(project(":common").sourceSets.getByName("gametest").resources)
     }
 
-    if (project.name == "forge") {
-        withType(Jar::class.java) {
-            finalizedBy("reobfJar")
-        }
-    }
-
 }
 
 versionTracker {

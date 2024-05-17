@@ -14,15 +14,14 @@ import org.openzen.zencode.java.ZenCodeType;
 public class ExpandAttributeOperation {
     
     /**
-     * Gets the value of this operation.
+     * Gets the id of this operation.
      *
-     * @return The value of this operation.
+     * @return The id of this operation.
      */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("value")
-    public static int getValue(AttributeModifier.Operation internal) {
+    @ZenCodeType.Getter("id")
+    public static int id(AttributeModifier.Operation internal) {
         
-        return internal.toValue();
+        return internal.id();
     }
     
 }

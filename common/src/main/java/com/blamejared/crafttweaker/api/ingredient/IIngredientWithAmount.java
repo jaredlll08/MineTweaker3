@@ -20,7 +20,7 @@ public interface IIngredientWithAmount extends CommandStringDisplayable {
      * The backing ingredient
      */
     @ZenCodeType.Getter("ingredient")
-    IIngredient getIngredient();
+    IIngredient ingredient();
     
     /**
      * Gets the amount of Items in the ItemStack
@@ -28,13 +28,13 @@ public interface IIngredientWithAmount extends CommandStringDisplayable {
      * @return ItemStack's amount
      */
     @ZenCodeType.Getter("amount")
-    int getAmount();
+    int amount();
     
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     default IData asIData() {
-        IData data = this.getIngredient().asMapData();
-        data.put("count", new IntData(this.getAmount()));
+        IData data = this.ingredient().asMapData();
+        data.put("count", new IntData(this.amount()));
         return data;
     }
     

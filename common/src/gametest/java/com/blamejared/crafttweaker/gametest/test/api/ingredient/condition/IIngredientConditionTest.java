@@ -21,7 +21,7 @@ public class IIngredientConditionTest implements CraftTweakerGameTest {
     @TestModifier(implicitSuccession = true)
     public void testCodecEncode(GameTestHelper helper) {
         
-        DataResult<JsonElement> encodeResult = encode(IIngredientCondition.CODEC, ConditionAnyDamage.INSTANCE_RAW);
+        DataResult<JsonElement> encodeResult = encode(IIngredientCondition.CODEC, ConditionAnyDamage.getInstance());
         JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
         assertThat(jsonResult.isJsonObject(), is(true));
         JsonObject jsonObject = jsonResult.getAsJsonObject();

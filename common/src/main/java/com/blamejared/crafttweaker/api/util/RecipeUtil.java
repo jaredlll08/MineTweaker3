@@ -8,6 +8,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,29 @@ import java.util.Map;
 import java.util.Set;
 
 public class RecipeUtil {
+    
+    public static IIngredient[][] inflate(final List<IIngredient> flattened, final int width, final int height) {
+        
+        final IIngredient[][] inflated = new IIngredient[height][width];
+        int ingredientIndex = 0;
+        for(int row = 0; row < height; row++) {
+            for(int col = 0; col < width; col++, ingredientIndex++) {
+                inflated[row][col] = flattened.get(ingredientIndex);
+            }
+        }
+        
+        return inflated;
+    }
+    
+    public static List<IIngredient> flatten(final IIngredient[][] ingredients, final int width, final int height) {
+        
+        final int size;
+        final List<IIngredient> flattened = Arrays.asList(new IIngredient[size = width * height]);
+        for(int i = 0; i < size; ++i) {
+            flattened.set(i, ingredients[i / width][i % width]);
+        }
+        return flattened;
+    }
     
     public static ShapedRecipePattern createPattern(IIngredient[][] ingredients) {
         

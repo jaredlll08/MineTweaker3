@@ -13,15 +13,15 @@ public class ActionModifyShiftedTooltip extends ActionTooltipBase {
     public ActionModifyShiftedTooltip(IIngredient stack, ITooltipFunction shiftedFunction, ITooltipFunction unshiftedFunction) {
         
         super(stack);
-        this.function = (stack1, tooltip, context) -> {
+        this.function = (stack1, tooltip, context, flag) -> {
             
             final KeyMapping keyBindSneak = Minecraft.getInstance().options.keyShift;
             
             if(Services.CLIENT.isKeyDownExtra(keyBindSneak)) {
-                shiftedFunction.apply(stack1, tooltip, context);
+                shiftedFunction.apply(stack1, tooltip, context, flag);
             } else {
                 if(unshiftedFunction != null) {
-                    unshiftedFunction.apply(stack1, tooltip, context);
+                    unshiftedFunction.apply(stack1, tooltip, context, flag);
                 }
             }
             
