@@ -98,6 +98,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
@@ -750,7 +751,12 @@ public class CraftTweakerMC {
     }
     
     public static IWorld getWorldByID(int id) {
-        return new MCWorld(DimensionManager.getWorld(id));
+        WorldServer world = DimensionManager.getWorld(id);
+        if (world == null) {
+            DimensionManager.initDimension(id);
+            world = DimensionManager.getWorld(id);
+        }
+        return getIWorld(world);
     }
     
     public static IWorld getIWorld(World world) {
