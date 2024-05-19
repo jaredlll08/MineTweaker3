@@ -299,22 +299,17 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
                 .append(">");
         
         DataComponentPatch.SplitResult split = getComponents().asPatch().split();
-        
         split.added().filter(Predicate.not(DataComponentType::isTransient)).forEach(typedDataComponent -> {
-            builder.append(".with(")
+            builder.append(".withJsonComponent(")
                     .append(ExpandDataComponentType.getCommandString(typedDataComponent.type()))
                     .append(", ")
                     .append(typedDataComponent.encodeValue(IDataOps.INSTANCE).getOrThrow())
                     .append(")");
         });
-//        if(hasTag()) {
-//            IData data = getTag().copyInternal();
-//            if(!data.isEmpty()) {
-//                builder.append(".withTag(");
-//                builder.append(data.asString());
-//                builder.append(")");
-//            }
-//        }
+        split.removed()
+                .forEach(dataComponentType -> builder.append(".remove(")
+                        .append(ExpandDataComponentType.getCommandString(dataComponentType))
+                        .append(")"));
         
         if(!isEmpty()) {
             if(getAmount() != 1) {
@@ -329,11 +324,29 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
     @ZenCodeType.Method
     <T> IFluidStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value);
     
-    //TODO 1.20.5 add all the relevant method
+    @Override
+    <T> IFluidStack without(DataComponentType<T> type);
+    
+    @ZenCodeType.Method
+    IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value);
+    
+    @ZenCodeType.Method
+    IFluidStack withJsonComponents(IData value);
+    
     @ZenCodeType.Method
     <T> IFluidStack remove(DataComponentType<T> type);
     
-    CompoundTag getInternalTag();
+    @ZenCodeType.Method
+    <T, U> IFluidStack update(DataComponentType<T> type, T defaultValue, U data, BiFunction<T, U, T> operator);
+    
+    @ZenCodeType.Method
+    <T> IFluidStack update(DataComponentType<T> type, T defaultValue, UnaryOperator<T> operator);
+    
+    @ZenCodeType.Method
+    IFluidStack applyComponents(DataComponentMap map);
+    
+    @ZenCodeType.Method
+    IFluidStack applyComponents(DataComponentPatch patch);
     
     /**
      * Gets the internal FluidStack that this IFluidStack is based on.

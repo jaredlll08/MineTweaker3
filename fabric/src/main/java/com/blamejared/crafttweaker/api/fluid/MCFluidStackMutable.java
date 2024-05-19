@@ -1,15 +1,20 @@
 package com.blamejared.crafttweaker.api.fluid;
 
 import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.impl.fluid.SimpleFluidStack;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.PatchedDataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 import org.openzen.zencode.java.ZenCodeType;
 
-import java.util.function.Consumer;
+import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 
 public class MCFluidStackMutable implements IFluidStack {
     
@@ -85,6 +90,31 @@ public class MCFluidStackMutable implements IFluidStack {
     }
     
     @Override
+    public <T> IFluidStack without(DataComponentType<T> type) {
+        
+        getInternal().remove(type);
+        return this;
+    }
+    
+    @Override
+    public IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
+        
+        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE, value);
+        Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
+        getInternal().applyComponents(pair.getFirst());
+        return this;
+    }
+    
+    @Override
+    public IFluidStack withJsonComponents(IData value) {
+        
+        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE, value);
+        Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
+        getInternal().applyComponents(pair.getFirst());
+        return this;
+    }
+    
+    @Override
     public <T> IFluidStack remove(DataComponentType<T> type) {
         
         getInternal().remove(type);
@@ -92,17 +122,30 @@ public class MCFluidStackMutable implements IFluidStack {
     }
     
     @Override
-    public CompoundTag getInternalTag() {
+    public <T, U> IFluidStack update(DataComponentType<T> type, T defaultValue, U data, BiFunction<T, U, T> operator) {
         
-        //TODO 1.20.5
-        //        return getInternal().components();
-        return null;
+        getInternal().update(type, defaultValue, data, operator);
+        return this;
     }
     
     @Override
-    public IFluidStack modifyThis(Consumer<IFluidStack> modifier) {
+    public <T> IFluidStack update(DataComponentType<T> type, T defaultValue, UnaryOperator<T> operator) {
         
-        modifier.accept(this);
+        getInternal().update(type, defaultValue, operator);
+        return this;
+    }
+    
+    @Override
+    public IFluidStack applyComponents(DataComponentMap map) {
+        
+        getInternal().applyComponents(map);
+        return this;
+    }
+    
+    @Override
+    public IFluidStack applyComponents(DataComponentPatch patch) {
+        
+        getInternal().applyComponents(patch);
         return this;
     }
     
