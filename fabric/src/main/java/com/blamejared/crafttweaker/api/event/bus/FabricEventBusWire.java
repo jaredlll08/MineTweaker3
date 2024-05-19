@@ -70,16 +70,12 @@ public final class FabricEventBusWire<E, S> implements IEventBusWire {
             if (method.isDefault()) {
                 return InvocationHandler.invokeDefault(proxy, method, args);
             }
-            if ("equals".equals(methodName)) {
-                return this.$equals(proxy, args[0]);
-            }
-            if ("toString".equals(methodName)) {
-                return this.$toString(proxy);
-            }
-            if ("hashCode".equals(methodName)) {
-                return this.$hashCode(proxy);
-            }
-            throw new IllegalArgumentException("Unknown method to proxy " + methodName);
+            return switch(methodName) {
+                case "equals" -> this.$equals(proxy, args[0]);
+                case "toString" -> this.$toString(proxy);
+                case "hashCode" -> this.$hashCode(proxy);
+                default -> throw new IllegalArgumentException("Unknown method to proxy " + methodName);
+            };
         }
         
         private boolean $equals(final Object $this, final Object other) {
