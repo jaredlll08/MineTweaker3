@@ -29,11 +29,11 @@ import java.util.regex.Pattern;
 public class IItemStackArgument implements ArgumentType<IItemStack> {
     
     public static final ResourceLocation ID = CraftTweakerConstants.rl("item");
-    private static final Collection<String> EXAMPLES = Lists.newArrayList("<item:minecraft:apple>", "<item:minecraft:iron_ingot>.withTag({display: {Name: \"wow\" as string}})");
+    private static final Collection<String> EXAMPLES = Lists.newArrayList("<item:minecraft:apple>", "<item:minecraft:diamond_pickaxe>.withJsonComponents({\"minecraft:max_stack_size\": 5, \"!minecraft:tool\": {}})");
     private static final DynamicCommandExceptionType MALFORMED_DATA = new DynamicCommandExceptionType(o -> new LiteralMessage(((ParseException) o).message));
     private static final DynamicCommandExceptionType UNKNOWN_ITEM = new DynamicCommandExceptionType(o -> new LiteralMessage("Unknown item: " + o));
     private static final SimpleCommandExceptionType INVALID_STRING = new SimpleCommandExceptionType(new LiteralMessage("invalid string"));
-    private static final Pattern ITEM_PATTERN = Pattern.compile("^<item:(\\w+:\\w+)>(\\.withTag\\((\\{.*})\\))?(\\s*\\*\s*(\\d+))?");
+    private static final Pattern ITEM_PATTERN = Pattern.compile("^<item:(\\w+:\\w+)>(\\.withJsonComponents\\((\\{.*})\\))?(\\s*\\*\s*(\\d+))?");
     
     @Override
     public IItemStack parse(StringReader reader) throws CommandSyntaxException {
@@ -48,7 +48,7 @@ public class IItemStackArgument implements ArgumentType<IItemStack> {
             reader.setCursor(reader.getCursor() + matcher.group(0).length());
             return stack;
         } catch(ParseException e) {
-            reader.setCursor(reader.getCursor() + itemLocation.length() + "<item:>.withTag(".length() + e.position.getFromLineOffset());
+            reader.setCursor(reader.getCursor() + itemLocation.length() + "<item:>.withJsonComponents(".length() + e.position.getFromLineOffset());
             throw MALFORMED_DATA.createWithContext(reader, e);
         } catch(IllegalArgumentException e) {
             reader.setCursor(reader.getCursor() + matcher.group(0).length());
@@ -70,15 +70,15 @@ public class IItemStackArgument implements ArgumentType<IItemStack> {
         return EXAMPLES;
     }
     
-    private static IItemStack getItem(String location, String tag, String amount) throws ParseException, IllegalArgumentException {
+    private static IItemStack getItem(String location, String components, String amount) throws ParseException, IllegalArgumentException {
         
         IItemStack stack = BracketHandlers.getItem(location).asMutable();
-        if(tag != null) {
-            IData data = StringConverter.convert(tag);
+        if(components != null) {
+            IData data = StringConverter.convert(components);
             if(data instanceof MapData map) {
-                stack.withTag(map);
+                stack.withJsonComponents(map);
             } else {
-                throw new IllegalArgumentException("Given tag: '%s' was not of type MapData!".formatted(tag));
+                throw new IllegalArgumentException("Given components: '%s' was not of type MapData!".formatted(components));
             }
             
         }
@@ -87,7 +87,7 @@ public class IItemStackArgument implements ArgumentType<IItemStack> {
                 int stackAmount = Integer.parseInt(amount);
                 stack.setAmount(stackAmount);
             } catch(NumberFormatException e) {
-                throw new IllegalArgumentException("Given amount: '%s' was not a valid integer!".formatted(tag));
+                throw new IllegalArgumentException("Given amount: '%s' was not a valid integer!".formatted(components));
             }
         }
         return stack;

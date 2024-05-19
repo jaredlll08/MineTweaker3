@@ -212,6 +212,16 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     }
     
     @ZenCodeType.Method
+    default IItemStack withJsonComponents(IData value) {
+        
+        return modify(itemStack -> {
+            DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE, value);
+            Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
+            itemStack.applyComponents(pair.getFirst());
+        });
+    }
+    
+    @ZenCodeType.Method
     default <T, U> IItemStack update(DataComponentType<T> type, T defaultValue, U data, BiFunction<T, U, T> operator) {
         
         return modify(itemStack -> {
