@@ -2,6 +2,7 @@ package com.blamejared.crafttweaker.api.item;
 
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.component.ComponentAccess;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.IntData;
 import com.blamejared.crafttweaker.api.data.MapData;
@@ -65,7 +66,7 @@ import java.util.function.UnaryOperator;
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.item.IItemStack")
 @Document("vanilla/api/item/IItemStack")
-public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComponentHolder {
+public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComponentHolder, ComponentAccess<IItemStack> {
     //TODO 1.20.5 redo all of this and the comments!!!
     //TODO 1.20.5 with<Type>(<component:minecraft:food>, new Food()));
     
@@ -196,7 +197,14 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         });
     }
     
-    //TODO 1.20.5 do we want to change this name?
+    @ZenCodeType.Method
+    default <T> IItemStack without(DataComponentType<T> type) {
+        
+        return modify(itemStack -> {
+            itemStack.remove(type);
+        });
+    }
+    
     @ZenCodeType.Method
     default IItemStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
         
@@ -265,7 +273,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default IItemStack applyComponentsAndValidate(DataComponentPatch patch) {
         
         return modify(itemStack -> {
-            itemStack.applyComponents(patch);
+            itemStack.applyComponentsAndValidate(patch);
         });
     }
     
@@ -281,21 +289,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         return getInternal().getMaxStackSize();
     }
     //TODO 1.20.5 make setters for these type of things?
-    
-    /**
-     * Sets the max stacksize of the ItemStack
-     *
-     * @param newMaxStackSize The new max stack size of the Item.
-     *
-     * @docParam newMaxStackSize 16
-     */
-    @ZenCodeType.Method
-    default IItemStack withMaxStackSize(int newMaxStackSize) {
-        
-        return modify(itemStack -> {
-            itemStack.set(DataComponents.MAX_STACK_SIZE, newMaxStackSize);
-        });
-    }
     
     /**
      * Returns the rarity of the Item in the ItemStack
@@ -478,19 +471,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default boolean isStackable() {
         
         return getInternal().isStackable();
-    }
-    
-    /**
-     * Sets the damage of the ItemStack
-     *
-     * @param damage the new damage value
-     *
-     * @docParam damage 10
-     */
-    @ZenCodeType.Method
-    default IItemStack withDamage(int damage) {
-        
-        return modify(itemStack -> itemStack.setDamageValue(damage));
     }
     
     /**
@@ -803,18 +783,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default FoodProperties getFood() {
         
         return getInternal().get(DataComponents.FOOD);
-    }
-    
-    @ZenCodeType.Method
-    default IItemStack withFood(@ZenCodeType.Nullable FoodProperties food) {
-        
-        return modify(itemStack -> {
-            if(food == null) {
-                getInternal().remove(DataComponents.FOOD);
-            } else {
-                getInternal().set(DataComponents.FOOD, food);
-            }
-        });
     }
     
     @ZenCodeType.Getter("burnTime")
