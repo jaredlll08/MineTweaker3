@@ -1,8 +1,11 @@
 package com.blamejared.crafttweaker.natives.component;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import com.mojang.serialization.DataResult;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -36,6 +39,14 @@ public class ExpandDataComponentHolder {
     public static <T> T getComponent(DataComponentHolder internal, Class<T> tClass, DataComponentType<T> type) {
         
         return internal.get(type);
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Nullable
+    public static IData getJsonComponent(DataComponentHolder internal, DataComponentType type) {
+        
+        DataResult<IData> result = type.codecOrThrow().encodeStart(IDataOps.INSTANCE, type);
+        return result.getOrThrow();
     }
     
 }

@@ -17,13 +17,11 @@ import com.blamejared.crafttweaker.api.mod.PlatformMod;
 import com.blamejared.crafttweaker.api.recipe.handler.helper.CraftingTableRecipeConflictChecker;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
-import com.blamejared.crafttweaker.api.villager.CTTradeObject;
 import com.blamejared.crafttweaker.api.villager.trade.type.IBasicItemListing;
 import com.blamejared.crafttweaker.impl.loot.CraftTweakerPrivilegedLootModifierMap;
 import com.blamejared.crafttweaker.impl.loot.NeoForgeLootModifierMapAdapter;
 import com.blamejared.crafttweaker.impl.mod.NeoForgeMod;
 import com.blamejared.crafttweaker.mixin.common.access.entity.AccessFakePlayerFactory;
-import com.blamejared.crafttweaker.mixin.common.access.food.AccessFoodPropertiesNeoForge;
 import com.blamejared.crafttweaker.mixin.common.access.loot.AccessLootModifierManager;
 import com.blamejared.crafttweaker.mixin.common.access.neoforge.AccessNeoForgeInternalHandler;
 import com.blamejared.crafttweaker.mixin.common.access.villager.AccessBasicTrade;
@@ -32,7 +30,6 @@ import com.blamejared.crafttweaker.platform.services.IPlatformHelper;
 import com.google.common.base.Suppliers;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
@@ -41,12 +38,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -56,7 +49,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.BasicItemListing;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifierManager;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -209,34 +201,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public String findMappedMethodName(final Class<?> clazz, final String methodName, final Class<?> returnType,
-                                       final Class<?>... parameterTypes) {
-        //TODO 1.20.5 confirm and make this default?
-        return methodName;
-    }
-    
-    @Override
-    public String findMappedFieldName(final Class<?> clazz, final String fieldName, final Class<?> fieldType) {
-        //TODO 1.20.5 confirm and make this default?
-        return fieldName;
-    }
-    
-    @Override
-    public void registerCustomTradeConverters(
-            Map<Class<? extends VillagerTrades.ItemListing>, Function<VillagerTrades.ItemListing, CTTradeObject>> classFunctionMap) {
-        
-        classFunctionMap.put(BasicItemListing.class, iTrade -> {
-            if(iTrade instanceof BasicItemListing) {
-                return new CTTradeObject(
-                        IItemStack.ofMutable(((AccessBasicTrade) iTrade).crafttweaker$getPrice()),
-                        IItemStack.ofMutable(((AccessBasicTrade) iTrade).crafttweaker$getPrice2()),
-                        IItemStack.ofMutable(((AccessBasicTrade) iTrade).crafttweaker$getForSale()));
-            }
-            throw new IllegalArgumentException("Invalid trade passed to trade function! Given: " + iTrade.getClass());
-        });
-    }
-    
-    @Override
     public Map<ResourceLocation, ILootModifier> getLootModifiersMap() {
         
         try {
@@ -329,30 +293,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public CompoundTag getPersistentData(ServerPlayer player) {
         
         return player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
-    }
-    
-    @Override
-    public void addFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect, float probability) {
-        
-        //TODO 1.20.5 confirm this uncheck call works
-        GenericUtil.<AccessFoodPropertiesNeoForge> uncheck(internal)
-                .crafttweaker$getEffects()
-                .add(Pair.of(() -> effect, probability));
-    }
-    
-    @Override
-    public void removeFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect) {
-        //TODO 1.20.5 confirm this uncheck call works
-        GenericUtil.<AccessFoodPropertiesNeoForge> uncheck(internal).crafttweaker$getEffects()
-                .removeIf(pair -> pair.getFirst() != null && pair.getFirst().get().equals(effect));
-    }
-    
-    @Override
-    public void removeFoodPropertiesEffect(FoodProperties internal, MobEffect effect) {
-        
-        //TODO 1.20.5 confirm this uncheck call works
-        GenericUtil.<AccessFoodPropertiesNeoForge> uncheck(internal).crafttweaker$getEffects()
-                .removeIf(pair -> pair.getFirst() != null && pair.getFirst().get().getEffect() == effect);
     }
     
     @Override

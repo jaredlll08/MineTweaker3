@@ -41,15 +41,15 @@ public class ExpandCustomData {
     }
     
     @ZenCodeType.Method
-    public static boolean matchedBy(CustomData internal, CompoundTag tag) {
+    public static boolean matchedBy(CustomData internal, MapData tag) {
         
-        return internal.matchedBy(tag);
+        return internal.matchedBy(tag.getInternal());
     }
     
     @ZenCodeType.Method
-    public static CustomData update(CustomData internal, Consumer<CompoundTag> updater) {
+    public static CustomData update(CustomData internal, Consumer<MapData> updater) {
         
-        return internal.update(updater);
+        return internal.update(compoundTag -> updater.accept(new MapData(compoundTag)));
     }
     
     @ZenCodeType.Getter("isEmpty")

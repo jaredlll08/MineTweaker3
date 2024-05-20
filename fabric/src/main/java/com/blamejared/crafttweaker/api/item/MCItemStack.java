@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.openzen.zencode.java.ZenCodeType;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 @ZenRegister
@@ -114,33 +113,16 @@ public class MCItemStack implements FabricItemStack {
             return false;
         }
         
-        //Implemented manually instead of using ItemStack.areItemStacksEqual to ensure it
-        // stays the same as hashCode even if MC's impl would change
         final ItemStack thatStack = ((MCItemStack) o).getInternal();
         final ItemStack thisStack = getInternal();
         
-        if(thisStack.isEmpty()) {
-            return thatStack.isEmpty();
-        }
-        
-        if(thisStack.getCount() != thatStack.getCount()) {
-            return false;
-        }
-        
-        if(!Objects.equals(thisStack.getItem(), thatStack.getItem())) {
-            return false;
-        }
-        
-        //TODO 1.20.5
-        //        return Objects.equals(thisStack.getTag(), thatStack.getTag());
-        return true;
+        return ItemStack.matches(thisStack, thatStack);
     }
     
     @Override
     public int hashCode() {
         
-        //TODO 1.20.5
-        return Objects.hash(getInternal().getCount(), getInternal().getItem()/*, getInternal().getTag()*/);
+        return ItemStack.hashItemAndComponents(getInternal());
     }
     
     @Override

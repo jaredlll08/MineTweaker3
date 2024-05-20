@@ -13,6 +13,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -115,6 +116,34 @@ public class SimpleFluidStack implements DataComponentHolder {
     public void applyComponents(DataComponentMap components) {
         
         this.components.setAll(components);
+    }
+    
+    public static boolean matches(SimpleFluidStack first, SimpleFluidStack second) {
+        
+        if(first == second) {
+            return true;
+        } else {
+            return first.amount() == second.amount() && isSameFluidSameComponents(first, second);
+        }
+    }
+    
+    public static boolean isSameFluidSameComponents(SimpleFluidStack first, SimpleFluidStack second) {
+        
+        if(first.fluid() != second.fluid()) {
+            return false;
+        } else {
+            return first.isEmpty() && second.isEmpty() || Objects.equals(first.components, second.components);
+        }
+    }
+    
+    public static int hashFluidAndComponents(@Nullable SimpleFluidStack stack) {
+        
+        if(stack != null) {
+            int i = 31 + stack.fluid().hashCode();
+            return 31 * i + stack.getComponents().hashCode();
+        } else {
+            return 0;
+        }
     }
     
 }

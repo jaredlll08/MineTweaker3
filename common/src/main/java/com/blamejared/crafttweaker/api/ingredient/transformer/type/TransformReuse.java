@@ -2,7 +2,6 @@ package com.blamejared.crafttweaker.api.ingredient.transformer.type;
 
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
 import com.blamejared.crafttweaker.api.ingredient.transformer.serializer.TransformReuseSerializer;
 import com.blamejared.crafttweaker.api.item.IItemStack;
@@ -21,7 +20,7 @@ public class TransformReuse implements IIngredientTransformer {
     @Override
     public IItemStack transform(IItemStack stack) {
         
-        return stack.copy().setAmount(1);
+        return stack.copy().withAmount(1);
     }
     
     @Override

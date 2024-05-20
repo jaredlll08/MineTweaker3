@@ -59,21 +59,6 @@ public class MCFluidStack implements IFluidStack {
     }
     
     @Override
-    public IFluidStack withTag(@ZenCodeType.Nullable IData tag) {
-        
-        final FluidStack copy = getInternal().copy();
-        //TODO 1.20.5 rename method?
-        //        if (tag != null) {
-        //            MapData map = new MapData(tag.asMap());
-        //            copy.setTag(map.getInternal());
-        //        } else {
-        //            copy.setTag(null);
-        //        }
-        
-        return IFluidStack.of(copy);
-    }
-    
-    @Override
     public FluidStack getInternal() {
         
         return stack;
@@ -112,14 +97,15 @@ public class MCFluidStack implements IFluidStack {
         copy.set(type, value);
         return IFluidStack.of(copy);
     }
-
+    
     @Override
     public <T> IFluidStack without(DataComponentType<T> type) {
+        
         final FluidStack copy = getInternal().copy();
         copy.remove(type);
         return IFluidStack.of(copy);
     }
-
+    
     @Override
     public IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
         
@@ -184,41 +170,26 @@ public class MCFluidStack implements IFluidStack {
         return IFluidStack.of(copy);
     }
     
-    //TODO 1.20.5
-    //    @Override
-    //    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
-    //    public boolean equals(Object o) {
-    //
-    //        if (this == o) {
-    //            return true;
-    //        }
-    //        if (o == null || getClass() != o.getClass()) {
-    //            return false;
-    //        }
-    //
-    //        final FluidStack thatStack = ((MCFluidStack) o).getInternal();
-    //        final FluidStack thisStack = getInternal();
-    //
-    //        if (thisStack.isEmpty()) {
-    //            return thatStack.isEmpty();
-    //        }
-    //
-    //        if (thisStack.getAmount() != thatStack.getAmount()) {
-    //            return false;
-    //        }
-    //
-    //        if (!Objects.equals(thisStack.getFluid(), thatStack.getFluid())) {
-    //            return false;
-    //        }
-    //
-    //        return Objects.equals(thisStack.getTag(), thatStack.getTag());
-    //    }
+    @Override
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
+    public boolean equals(Object o) {
+        
+        if(this == o) {
+            return true;
+        }
+        if(o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        
+        final FluidStack thatStack = ((MCFluidStack) o).getInternal();
+        final FluidStack thisStack = getInternal();
+        return FluidStack.matches(thisStack, thatStack);
+    }
     
-    //TODO 1.20.5
-    //    @Override
-    //    public int hashCode() {
-    //
-    //        return Objects.hash(getInternal().getAmount(), getInternal().getFluid(), getInternal().getTag());
-    //    }
+    @Override
+    public int hashCode() {
+        
+        return getInternal().getAmount() * 31 + FluidStack.hashFluidAndComponents(this.getInternal());
+    }
     
 }

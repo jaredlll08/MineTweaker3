@@ -10,7 +10,6 @@ import com.blamejared.crafttweaker.api.util.RecipeUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -181,7 +180,7 @@ public class CTShapedRecipe extends ShapedRecipe {
                     continue;
                 }
                 final int slotIndex = (rowIndex + rowOffset) * container.getWidth() + columnIndex + columnOffset;
-                stacks[rowIndex][columnIndex] = IItemStack.of(container.getItem(slotIndex)).setAmount(1);
+                stacks[rowIndex][columnIndex] = IItemStack.of(container.getItem(slotIndex)).withAmount(1);
             }
         }
         return function.process(this.output, stacks).getImmutableInternal();

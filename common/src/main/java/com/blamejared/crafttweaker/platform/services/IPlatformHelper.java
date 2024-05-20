@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 public interface IPlatformHelper {
     
     /**
-     * Fabric doesn't have a MC formatting sanitizer.
+     * Fabric doesn't have an MC formatting sanitizer.
      */
     default String getLogFormat() {
         
@@ -99,12 +99,12 @@ public interface IPlatformHelper {
             final Predicate<Either<T, Map<String, Object>>> annotationFilter
     );
     
-    String findMappedMethodName(final Class<?> clazz, final String methodName, final Class<?> returnType, final Class<?>... parameterTypes);
+    default String findMappedMethodName(final Class<?> clazz, final String methodName, final Class<?> returnType, final Class<?>... parameterTypes) {
+        return methodName;
+    }
     
-    String findMappedFieldName(final Class<?> clazz, final String fieldName, final Class<?> fieldType);
-    
-    default void registerCustomTradeConverters(Map<Class<? extends VillagerTrades.ItemListing>, Function<VillagerTrades.ItemListing, CTTradeObject>> classFunctionMap) {
-        // no-op
+    default String findMappedFieldName(final Class<?> clazz, final String fieldName, final Class<?> fieldType) {
+        return fieldName;
     }
     
     Map<ResourceLocation, ILootModifier> getLootModifiersMap();
@@ -118,12 +118,6 @@ public interface IPlatformHelper {
     CompoundTag getCustomData(Entity entity);
     
     CompoundTag getPersistentData(ServerPlayer player);
-    
-    void addFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect, float probability);
-    
-    void removeFoodPropertiesEffect(FoodProperties internal, MobEffectInstance effect);
-    
-    void removeFoodPropertiesEffect(FoodProperties internal, MobEffect effect);
     
     boolean doesIngredientRequireTesting(Ingredient ingredient);
     

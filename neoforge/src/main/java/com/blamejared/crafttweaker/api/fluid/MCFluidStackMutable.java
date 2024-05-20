@@ -57,20 +57,6 @@ public class MCFluidStackMutable implements IFluidStack {
     }
     
     @Override
-    public IFluidStack withTag(IData tag) {
-        
-        //TODO 1.20.5
-        //        if (tag != null) {
-        //            MapData map = new MapData(tag.asMap());
-        //            getInternal().setTag(map.getInternal());
-        //        } else {
-        //            getInternal().setTag(null);
-        //        }
-        
-        return this;
-    }
-    
-    @Override
     public Codec<IFluidStack> codec() {
         
         return FluidStack.CODEC.xmap(IFluidStack::ofMutable, IFluidStack::getInternal);
@@ -161,40 +147,26 @@ public class MCFluidStackMutable implements IFluidStack {
         return stack.copy();
     }
     
-    //TODO 1.20.5
-    //    @Override
-    //    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
-    //    public boolean equals(Object o) {
-    //
-    //        if(this == o) {
-    //            return true;
-    //        }
-    //        if(o == null || getClass() != o.getClass()) {
-    //            return false;
-    //        }
-    //
-    //        final FluidStack thatStack = ((MCFluidStackMutable) o).getInternal();
-    //        final FluidStack thisStack = getInternal();
-    //
-    //        if(thisStack.isEmpty()) {
-    //            return thatStack.isEmpty();
-    //        }
-    //
-    //        if(thisStack.getAmount() != thatStack.getAmount()) {
-    //            return false;
-    //        }
-    //
-    //        if(!Objects.equals(thisStack.getFluid(), thatStack.getFluid())) {
-    //            return false;
-    //        }
-    //
-    //        return Objects.equals(thisStack.getTag(), thatStack.getTag());
-    //    }
-    //
-    //    @Override
-    //    public int hashCode() {
-    //
-    //        return Objects.hash(getInternal().getAmount(), getInternal().getFluid(), getInternal().getTag());
-    //    }
-    //
+    @Override
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
+    public boolean equals(Object o) {
+        
+        if(this == o) {
+            return true;
+        }
+        if(o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        
+        final FluidStack thatStack = ((MCFluidStackMutable) o).getInternal();
+        final FluidStack thisStack = getInternal();
+        return FluidStack.matches(thisStack, thatStack);
+    }
+    
+    @Override
+    public int hashCode() {
+        
+        return getInternal().getAmount() * 31 + FluidStack.hashFluidAndComponents(this.getInternal());
+    }
+    
 }

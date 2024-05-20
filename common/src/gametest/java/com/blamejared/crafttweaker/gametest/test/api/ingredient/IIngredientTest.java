@@ -88,7 +88,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
                         .expected(true),
                 Arguments.Builder.named("item matches item with bigger amount")
                         .input(IItemStack.of(Items.APPLE))
-                        .other(IItemStack.of(Items.APPLE).setAmount(2))
+                        .other(IItemStack.of(Items.APPLE).withAmount(2))
                         .expected(true),
                 Arguments.Builder.named("item matches item with data")
                         .input(IItemStack.of(Items.APPLE))
@@ -100,7 +100,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
                         .other(IItemStack.of(Items.APPLE))
                         .expected(false),
                 Arguments.Builder.named("item does not match item with smaller amount")
-                        .input(IItemStack.of(Items.APPLE).setAmount(2))
+                        .input(IItemStack.of(Items.APPLE).withAmount(2))
                         .other(IItemStack.of(Items.APPLE))
                         .expected(false),
                 Arguments.Builder.named("item with data does not match item without data")
@@ -118,7 +118,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
                         .input(IItemStack.of(Items.AIR))
                         .expected(true),
                 Arguments.Builder.named("stack with 0 count is empty")
-                        .input(IItemStack.of(Items.APPLE).setAmount(0))
+                        .input(IItemStack.of(Items.APPLE).withAmount(0))
                         .expected(true),
                 Arguments.Builder.named("empty stack is empty")
                         .input(IItemStack.empty())

@@ -59,21 +59,6 @@ public class MCFluidStack implements IFluidStack {
     }
     
     @Override
-    public IFluidStack withTag(@ZenCodeType.Nullable IData tag) {
-        
-        final SimpleFluidStack copy = getInternal().copy();
-        //TODO 1.20.5
-        //        if(tag != null) {
-        //            MapData map = new MapData(tag.asMap());
-        //            copy.components(map.getInternal());
-        //        } else {
-        //            copy.components(null);
-        //        }
-        
-        return IFluidStack.of(copy);
-    }
-    
-    @Override
     public SimpleFluidStack getInternal() {
         
         return stack;
@@ -185,41 +170,26 @@ public class MCFluidStack implements IFluidStack {
         return IFluidStack.of(copy);
     }
     
-    //TODO 1.20.5
-    //    @Override
-    //    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
-    //    public boolean equals(Object o) {
-    //
-    //        if(this == o) {
-    //            return true;
-    //        }
-    //        if(o == null || getClass() != o.getClass()) {
-    //            return false;
-    //        }
-    //
-    //        final SimpleFluidStack thatStack = ((MCFluidStack) o).getInternal();
-    //        final SimpleFluidStack thisStack = getInternal();
-    //
-    //        if(thisStack.isEmpty()) {
-    //            return thatStack.isEmpty();
-    //        }
-    //
-    //        if(thisStack.amount() != thatStack.amount()) {
-    //            return false;
-    //        }
-    //
-    //        if(!Objects.equals(thisStack.fluid(), thatStack.fluid())) {
-    //            return false;
-    //        }
-    //
-    //        return Objects.equals(thisStack.components(), thatStack.components());
-    //    }
+    @Override
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
+    public boolean equals(Object o) {
+        
+        if(this == o) {
+            return true;
+        }
+        if(o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        
+        final SimpleFluidStack thatStack = ((MCFluidStack) o).getInternal();
+        final SimpleFluidStack thisStack = getInternal();
+        return SimpleFluidStack.matches(thisStack, thatStack);
+    }
     
-    //TODO 1.20.5
-    //    @Override
-    //    public int hashCode() {
-    //
-    //        return Objects.hash(getInternal().amount(), getInternal().fluid(), getInternal().components());
-    //    }
+    @Override
+    public int hashCode() {
+        
+        return Long.hashCode(getInternal().amount()) + SimpleFluidStack.hashFluidAndComponents(this.getInternal());
+    }
     
 }

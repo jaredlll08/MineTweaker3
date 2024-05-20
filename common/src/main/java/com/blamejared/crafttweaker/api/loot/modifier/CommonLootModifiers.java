@@ -153,7 +153,7 @@ public final class CommonLootModifiers {
                 final int oldAmount = stack.amount();
                 final int newAmount = enchantmentLevel <= 0 ? oldAmount : oldAmount * Math.max(0, context.getRandom()
                         .nextInt(enchantmentLevel + 2) - 1) + 1;
-                loot.add(stack.copy().setAmount(newAmount));
+                loot.add(stack.copy().withAmount(newAmount));
             }
             
             return loot;
@@ -213,7 +213,7 @@ public final class CommonLootModifiers {
                     }
                     
                     final int newAmount = oldAmount + additional;
-                    loot.add(stack.copy().setAmount(newAmount));
+                    loot.add(stack.copy().withAmount(newAmount));
                 }
             }
             
@@ -263,7 +263,7 @@ public final class CommonLootModifiers {
                 } else {
                     final int oldAmount = stack.amount();
                     final int newAmount = oldAmount + context.getRandom().nextInt(multiplier * enchantmentLevel + 1);
-                    loot.add(stack.copy().setAmount(newAmount));
+                    loot.add(stack.copy().withAmount(newAmount));
                 }
             }
             
@@ -385,7 +385,7 @@ public final class CommonLootModifiers {
         
         return (loot, context) -> {
             final int amount = context.getRandom().nextInt(min, max);
-            loot.add(stack.copy().setAmount(amount));
+            loot.add(stack.copy().withAmount(amount));
             return loot;
         };
     }
@@ -518,9 +518,9 @@ public final class CommonLootModifiers {
                         final int newAmount = stackAmount / amount;
                         final int oldAmount = stackAmount % amount;
                         
-                        newList.add(replacement.copy().setAmount(newAmount));
+                        newList.add(replacement.copy().withAmount(newAmount));
                         if(oldAmount > 0) {
-                            newList.add(stack.setAmount(oldAmount));
+                            newList.add(stack.withAmount(oldAmount));
                         }
                     } else {
                         newList.add(stack);
@@ -541,9 +541,9 @@ public final class CommonLootModifiers {
                         final int newAmount = stackAmount / amount;
                         final int oldAmount = stackAmount % amount;
                         
-                        newList.add(replacement.copy().setAmount(newAmount));
+                        newList.add(replacement.copy().withAmount(newAmount));
                         if(oldAmount > 0) {
-                            newList.add(stack.setAmount(oldAmount));
+                            newList.add(stack.withAmount(oldAmount));
                         }
                     }
                 }
@@ -654,7 +654,7 @@ public final class CommonLootModifiers {
                     // Due to how Math works, we know that the current negative quantity is the amount of items that
                     // should be kept in the drop list. This means we can simply change the original stack's quantity
                     // to -rollingAmount, and we have completed our job.
-                    stack.asMutable().setAmount(-rollingAmount);
+                    stack.asMutable().withAmount(-rollingAmount);
                 }
                 
                 if (rollingAmount <= 0) {

@@ -126,7 +126,7 @@ public final class RecipeCommands {
                 return Command.SINGLE_SUCCESS;
             }
             
-            final IItemStack workingStack = IItemStack.of(stack.copy()).setAmount(1);
+            final IItemStack workingStack = IItemStack.of(stack.copy()).withAmount(1);
             
             CommandUtilities.COMMAND_LOGGER.info("Dumping all recipes that output {}!", ItemStackUtil.getCommandString(workingStack.getInternal()));
             

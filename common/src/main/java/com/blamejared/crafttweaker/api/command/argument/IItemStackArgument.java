@@ -85,7 +85,7 @@ public class IItemStackArgument implements ArgumentType<IItemStack> {
         if(amount != null) {
             try {
                 int stackAmount = Integer.parseInt(amount);
-                stack.setAmount(stackAmount);
+                stack.withAmount(stackAmount);
             } catch(NumberFormatException e) {
                 throw new IllegalArgumentException("Given amount: '%s' was not a valid integer!".formatted(components));
             }

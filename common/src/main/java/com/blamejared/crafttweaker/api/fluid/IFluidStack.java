@@ -13,12 +13,11 @@ import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
@@ -231,40 +230,6 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
     @ZenCodeType.Caster(implicit = true)
     Fluid getFluid();
     
-    /**
-     * Returns the {@link CustomData} attached to this stack.
-     *
-     * @return the custom data attached to this stack.
-     */
-    @ZenCodeType.Getter("customData")
-    default CustomData getCustomData() {
-        
-        return getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-    }
-    
-    /**
-     * Sets the tag for the FluidStack.
-     *
-     * @param tag The tag to set.
-     *
-     * @return This FluidStack if it is mutable, a new one with the changed property otherwise
-     *
-     * @docParam tag {Display: {lore: ["Hello"]}}
-     */
-    @ZenCodeType.Method
-    IFluidStack withTag(@ZenCodeType.Nullable IData tag);
-    
-    /**
-     * Returns true if this stack has {@link CustomData}.
-     *
-     * @return true if this stack has {@link CustomData}.
-     */
-    @ZenCodeType.Getter("hasCustomData")
-    default boolean hasCustomData() {
-        
-        return this.has(DataComponents.CUSTOM_DATA);
-    }
-    
     @ZenCodeType.Caster(implicit = true)
     default CTFluidIngredient asFluidIngredient() {
         
@@ -324,7 +289,7 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
     @ZenCodeType.Method
     <T> IFluidStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value);
     
-    @Override
+    @ZenCodeType.Method
     <T> IFluidStack without(DataComponentType<T> type);
     
     @ZenCodeType.Method
@@ -370,5 +335,28 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
      */
     <T> T getImmutableInternal();
     
+    @Override
+    default <U> IFluidStack _without(DataComponentType<U> componentType) {
+        
+        return without(componentType);
+    }
+    
+    @Override
+    default <U> IFluidStack _with(DataComponentType<U> componentType, @Nullable U value) {
+        
+        return with(componentType, value);
+    }
+    
+    @Override
+    default <U> U _get(DataComponentType<? extends U> componentType) {
+        
+        return get(componentType);
+    }
+    
+    @Override
+    default <U> boolean _has(DataComponentType<U> componentType) {
+        
+        return has(componentType);
+    }
     
 }

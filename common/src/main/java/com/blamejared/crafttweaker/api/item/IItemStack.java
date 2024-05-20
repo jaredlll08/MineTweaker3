@@ -6,7 +6,6 @@ import com.blamejared.crafttweaker.api.component.ComponentAccess;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.IntData;
 import com.blamejared.crafttweaker.api.data.MapData;
-import com.blamejared.crafttweaker.api.data.converter.tag.TagToDataConverter;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
@@ -15,7 +14,6 @@ import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions
 import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
 import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientIItemStack;
-import com.blamejared.crafttweaker.api.util.EnchantmentUtil;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.blamejared.crafttweaker.mixin.common.access.item.AccessItem;
@@ -29,32 +27,24 @@ import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +58,6 @@ import java.util.function.UnaryOperator;
 @Document("vanilla/api/item/IItemStack")
 public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComponentHolder, ComponentAccess<IItemStack> {
     //TODO 1.20.5 redo all of this and the comments!!!
-    //TODO 1.20.5 with<Type>(<component:minecraft:food>, new Food()));
     
     ResourceLocation INGREDIENT_ID = CraftTweakerConstants.rl("iitemstack");
     
@@ -192,17 +181,14 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     @ZenCodeType.Method
     default <T> IItemStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value) {
         
-        return modify(itemStack -> {
-            itemStack.set(type, value);
-        });
+        return modify(itemStack -> itemStack.set(type, value));
     }
     
+    // The same as remove but with a better name for chaining
     @ZenCodeType.Method
     default <T> IItemStack without(DataComponentType<T> type) {
         
-        return modify(itemStack -> {
-            itemStack.remove(type);
-        });
+        return remove(type);
     }
     
     @ZenCodeType.Method
@@ -240,99 +226,31 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     @ZenCodeType.Method
     default <T> IItemStack update(DataComponentType<T> type, T defaultValue, UnaryOperator<T> operator) {
         
-        return modify(itemStack -> {
-            itemStack.update(type, defaultValue, operator);
-        });
+        return modify(itemStack -> itemStack.update(type, defaultValue, operator));
     }
     
     @ZenCodeType.Method
     default <T> IItemStack remove(DataComponentType<T> type) {
         
-        return modify(itemStack -> {
-            itemStack.remove(type);
-        });
+        return modify(itemStack -> itemStack.remove(type));
     }
     
     @ZenCodeType.Method
     default IItemStack applyComponents(DataComponentMap map) {
         
-        return modify(itemStack -> {
-            itemStack.applyComponents(map);
-        });
+        return modify(itemStack -> itemStack.applyComponents(map));
     }
     
     @ZenCodeType.Method
     default IItemStack applyComponents(DataComponentPatch patch) {
         
-        return modify(itemStack -> {
-            itemStack.applyComponents(patch);
-        });
+        return modify(itemStack -> itemStack.applyComponents(patch));
     }
     
     @ZenCodeType.Method
     default IItemStack applyComponentsAndValidate(DataComponentPatch patch) {
         
-        return modify(itemStack -> {
-            itemStack.applyComponentsAndValidate(patch);
-        });
-    }
-    
-    /**
-     * Returns the max stack size of the Item in the ItemStack
-     *
-     * @return Max stack size of the Item.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("maxStackSize")
-    default int getMaxStackSize() {
-        
-        return getInternal().getMaxStackSize();
-    }
-    //TODO 1.20.5 make setters for these type of things?
-    
-    /**
-     * Returns the rarity of the Item in the ItemStack
-     *
-     * @return Rarity of the Item.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("rarity")
-    default Rarity getRarity() {
-        
-        return getInternal().getRarity();
-    }
-    
-    /**
-     * Sets the rarity of the Item.
-     *
-     * @param newRarity The new rarity of the Item.
-     *
-     * @docParam newRarity Rarity.UNCOMMON
-     */
-    @ZenCodeType.Method
-    default void setRarity(Rarity newRarity) {
-        
-        getInternal().set(DataComponents.RARITY, newRarity);
-    }
-    
-    
-    /**
-     * Sets the lore of the ItemStack
-     *
-     * @param lore the new Lore of the ItemStack.
-     *
-     * @docParam lore [crafttweaker.api.text.Component.literal("I am the lore I speak for the trees")];
-     */
-    @ZenCodeType.Method
-    default IItemStack withLore(@ZenCodeType.Nullable Component[] lore) {
-        
-        return modify(itemStack -> {
-            if(lore == null) {
-                itemStack.remove(DataComponents.LORE);
-            } else {
-                itemStack.set(DataComponents.LORE, new ItemLore(Arrays.asList(lore)));
-            }
-        });
+        return modify(itemStack -> itemStack.applyComponentsAndValidate(patch));
     }
     
     /**
@@ -344,19 +262,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default Component getDisplayName() {
         
         return getInternal().getDisplayName();
-    }
-    
-    /**
-     * Sets the display name of the ItemStack
-     *
-     * @param name New name of the stack.
-     *
-     * @docParam name "totally not dirt"
-     */
-    @ZenCodeType.Method
-    default IItemStack withDisplayName(Component name) {
-        
-        return modify(itemStack -> itemStack.set(DataComponents.ITEM_NAME, name));
     }
     
     /**
@@ -397,17 +302,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     }
     
     /**
-     * Is this ItemStack enchanted?
-     *
-     * @return true if this ItemStack is enchanted.
-     */
-    @ZenCodeType.Getter("isEnchanted")
-    default boolean isEnchanted() {
-        
-        return getInternal().isEnchanted();
-    }
-    
-    /**
      * Gets the amount of Items in the ItemStack
      *
      * @return ItemStack's amount
@@ -426,7 +320,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
      * @docParam amount 3
      */
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
-    default IItemStack setAmount(int amount) {
+    default IItemStack withAmount(int amount) {
         
         return modify(itemStack -> itemStack.setCount(amount));
     }
@@ -443,7 +337,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     @ZenCodeType.Method
     default IItemStack grow(@ZenCodeType.OptionalInt(1) int amount) {
         
-        return setAmount(amount() + amount);
+        return withAmount(amount() + amount);
     }
     
     /**
@@ -458,7 +352,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     @ZenCodeType.Method
     default IItemStack shrink(@ZenCodeType.OptionalInt(1) int amount) {
         
-        return setAmount(amount() - amount);
+        return withAmount(amount() - amount);
     }
     
     /**
@@ -647,21 +541,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     }
     
     /**
-     * Sets the max damage of the ItemStack.
-     *
-     * Setting the damage to `0` will make the item unbreakable.
-     *
-     * @param newMaxDamage The new max damage of the ItemStack
-     *
-     * @docParam maxDamage 5
-     */
-    @ZenCodeType.Method
-    default IItemStack setMaxDamage(int newMaxDamage) {
-        
-        return modify(itemStack -> itemStack.set(DataComponents.MAX_DAMAGE, newMaxDamage));
-    }
-    
-    /**
      * Returns the unlocalized Name of the Item in the ItemStack
      *
      * @return the unlocalized name.
@@ -671,76 +550,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         
         return getInternal().getDescriptionId();
     }
-    
-    /**
-     * Sets the tag for the ItemStack.
-     *
-     * @param tag The tag to set.
-     *
-     * @return This itemStack if it is mutable, a new one with the changed property otherwise
-     *
-     * @docParam tag {Display: {lore: ["Hello"]}}
-     */
-    @ZenCodeType.Method
-    default IItemStack withTag(MapData tag) {
-        
-        return modify(itemStack -> itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag.getInternal())));
-    }
-    
-    /**
-     * Removes the tag from this ItemStack.
-     *
-     * @return This itemStack if it is mutable, a new one with the changed property otherwise
-     */
-    @ZenCodeType.Method
-    default IItemStack withoutTag() {
-        
-        return modify(itemStack -> itemStack.remove(DataComponents.CUSTOM_DATA));
-    }
-    
-    //TODO 1.20.5 do we want this?
-    
-    /**
-     * Returns true if this ItemStack has a Tag
-     *
-     * @return true if tag is present.
-     */
-    @ZenCodeType.Getter("hasTag")
-    default boolean hasTag() {
-        
-        return getInternal().has(DataComponents.CUSTOM_DATA);
-    }
-    
-    /**
-     * Returns the NBT tag attached to this ItemStack.
-     *
-     * @return MapData of the ItemStack NBT Tag, null if it doesn't exist.
-     */
-    @ZenCodeType.Nullable
-    @ZenCodeType.Getter("tag")
-    default IData getTag() {
-        
-        CustomData customData = getInternal().get(DataComponents.CUSTOM_DATA);
-        if(customData == null) {
-            return null;
-        }
-        //noinspection deprecation
-        return TagToDataConverter.convert(customData.getUnsafe());
-    }
-    
-    //TODO 1.20.5, have this just return an empty CustomData, not set it?
-    //    /**
-    //     * Returns the NBT tag attached to this ItemStack or makes a new tag.
-    //     *
-    //     * @return MapData of the ItemStack NBT Tag, empty tag if it doesn't exist.
-    //     */
-    //    @ZenCodeType.Method
-    //    default IData getOrCreateTag() {
-    //        if(getInternal().getTag() == null) {
-    //            getInternal().setTag(new CompoundTag());
-    //        }
-    //        return getTag();
-    //    }
     
     @Override
     default boolean matches(IItemStack stack) {
@@ -777,44 +586,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         return getInternal().useOnRelease();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("food")
-    @ZenCodeType.Nullable
-    default FoodProperties getFood() {
-        
-        return getInternal().get(DataComponents.FOOD);
-    }
-    
     @ZenCodeType.Getter("burnTime")
     default int getBurnTime() {
         
         return Services.EVENT.getBurnTime(this);
-    }
-    
-    /**
-     * Checks if this IItemStack burns when thrown into fire / lava or damaged by fire.
-     *
-     * @return True if this IItemStack is immune to fire. False otherwise.
-     */
-    @ZenCodeType.Getter("fireResistant")
-    default boolean isFireResistant() {
-        
-        return getInternal().has(DataComponents.FIRE_RESISTANT);
-    }
-    
-    /**
-     * Sets if this IItemStack is immune to fire / lava.
-     *
-     * If true, the item will not burn when thrown into fire or lava.
-     *
-     * @param fireResistant Should the item be immune to fire.
-     *
-     * @docParam immuneToFire true
-     */
-    @ZenCodeType.Method
-    default IItemStack setFireResistant(boolean fireResistant) {
-        
-        return modify(itemStack -> itemStack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE));
     }
     
     @ZenCodeType.Method
@@ -823,12 +598,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         
         return new Percentaged<>(this, percentage / 100.0D, iItemStack -> iItemStack.getCommandString() + " % " + percentage);
     }
-    
-    //    @ZenCodeType.Method
-    //    default WeightedEntry.Wrapper<IItemStack> weight(double weight) {
-    //
-    //        return new WeightedEntry.Wrapper<>(this, Weight.of(weight));
-    //    }
     
     @ZenCodeType.Caster(implicit = true)
     default Percentaged<IItemStack> asWeightedItemStack() {
@@ -866,85 +635,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default boolean isMutable() {
         
         return !isImmutable();
-    }
-    
-    
-    @ZenCodeType.Getter("damage")
-    default int getDamage() {
-        
-        return getInternal().getDamageValue();
-    }
-    
-    //TODO 1.20.5 make this return ItemEnchantments? I think it solves a lot of our issues
-    //    @ZenCodeType.Method
-    //    @ZenCodeType.Getter("enchantments")
-    //    default Map<Enchantment, Integer> getEnchantments() {
-    //
-    //        return EnchantmentHelper.getEnchantments(getInternal());
-    //    }
-    
-    /**
-     * Sets the enchantments on this IItemStack.
-     *
-     * @param enchantments The new enchantments
-     *
-     * @return This itemStack if it is mutable, a new one with the enchantments otherwise
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Setter("enchantments")
-    default IItemStack setEnchantments(Map<Enchantment, Integer> enchantments) {
-        
-        return modify(newStack -> EnchantmentUtil.setEnchantments(enchantments, newStack));
-    }
-    
-    //TODO 1.20.5 remove?
-    //    /**
-    //     * Gets the level of the given enchantment on the item. Returns 0 if the item doesn't have the given enchantment.
-    //     */
-    //    @ZenCodeType.Method
-    //    default int getEnchantmentLevel(Enchantment enchantment) {
-    //
-    //        return getEnchantments().getOrDefault(enchantment, 0);
-    //    }
-    
-    /**
-     * Enchants this IItemStack with the given Enchantment.
-     *
-     * @param enchantment The enchantment to add.
-     * @param level       The level of the enchantment
-     *
-     * @return This itemStack if it is mutable, a new one with the enchantment added otherwise
-     *
-     * @docParam enchantment <enchantment:minecraft:riptide>
-     * @docParam level 2
-     */
-    @ZenCodeType.Method
-    default IItemStack withEnchantment(Enchantment enchantment, @ZenCodeType.OptionalInt(1) int level) {
-        
-        return modify(itemStack -> {
-            ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(itemStack.getEnchantments());
-            enchantments.set(enchantment, level);
-            itemStack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
-        });
-    }
-    
-    /**
-     * Removes the given enchantment from this IItemStack.
-     *
-     * @param enchantment The enchantment to remove.
-     *
-     * @return This itemStack if it is mutable, a new one with the enchantment removed otherwise
-     *
-     * @docParam enchantment <enchantment:minecraft:riptide>
-     */
-    @ZenCodeType.Method
-    default IItemStack removeEnchantment(Enchantment enchantment) {
-        
-        return modify(itemStack -> {
-            ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(itemStack.getEnchantments());
-            enchantments.removeIf(enchantmentHolder -> enchantmentHolder.value() == enchantment);
-            itemStack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
-        });
     }
     
     /**
@@ -1011,28 +701,52 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     IItemStack modifyThis(Consumer<IItemStack> modifier);
     
     @Override
-    default DataComponentMap getComponents() {
+    default @NotNull DataComponentMap getComponents() {
         
         return getInternal().getComponents();
     }
     
-    @Nullable
+    // Does not need to be exposed
     @Override
-    default <T> T get(DataComponentType<? extends T> type) {
+    default <T> T get(@NotNull DataComponentType<? extends T> type) {
         
         return getInternal().get(type);
     }
     
     @Override
-    default <T> T getOrDefault(DataComponentType<? extends T> type, T value) {
+    default <T> @NotNull T getOrDefault(@NotNull DataComponentType<? extends T> type, @NotNull T value) {
         
         return getInternal().getOrDefault(type, value);
     }
     
     @Override
-    default boolean has(DataComponentType<?> type) {
+    default boolean has(@NotNull DataComponentType<?> type) {
         
         return getInternal().has(type);
+    }
+    
+    @Override
+    default <U> IItemStack _without(DataComponentType<U> componentType) {
+        
+        return without(componentType);
+    }
+    
+    @Override
+    default <U> IItemStack _with(DataComponentType<U> componentType, @Nullable U value) {
+        
+        return with(componentType, value);
+    }
+    
+    @Override
+    default <U> U _get(DataComponentType<? extends U> componentType) {
+        
+        return get(componentType);
+    }
+    
+    @Override
+    default <U> boolean _has(DataComponentType<U> componentType) {
+        
+        return has(componentType);
     }
     
 }
