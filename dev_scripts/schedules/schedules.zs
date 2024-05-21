@@ -21,6 +21,7 @@ import crafttweaker.api.world.Level;
 import crafttweaker.api.world.ServerLevel;
 import crafttweaker.api.data.BoolData;
 import crafttweaker.api.entity.type.projectile.FireworkRocketEntity;
+import crafttweaker.api.item.component.FireworkExplosion;
 
 // The following snippet will run a sequence when an empty cauldron is interacted with while the player is holding a dirt block
 // The sequence that is ran will check if the block has redstone power, if it does not, it will tell the player that it needs
@@ -53,7 +54,15 @@ cauldron.addEmptyInteraction(<item:minecraft:dirt>, (blockState, cLevel, bPos, p
                 // Run immediately ('then' is an alias for 'run', you can use whichever sounds better and is easier to read)
                 .then(level => {
                     // Fireworks require an item to provide the data
-                    var rocketItem = <item:minecraft:firework_rocket>.withTag({Fireworks: {Flight: 0, Explosions: [{Type: 2, Trail: 1, Colors: [14188952, 6719955, 15790320], Flicker: 1, FadeColors: [14188952, 6719955, 15790320]}]}});
+                    val fireworkExplosions = [
+                        FireworkExplosion.of(<constant:minecraft:firework_explosion/shape:star>,
+                        [14188952, 6719955, 15790320] as int?[], //this is the colours array, in decimal format. Converting this to RGB might lead to usable values.
+                        [14188952, 6719955, 15790320] as int?[], //this is the fade colours array. In this example, it has the same colours as the original firework.
+                        true, //we want our firework to have a trail
+                        true) //we want our firework to flicker/twinkle
+                    ];
+                    val flightDuration = 0;
+                    var rocketItem = <item:minecraft:firework_rocket>.withFireworks(flightDuration, fireworkExplosions);
                     // Spawn a firework rocket above the cauldron.
                     var rocketEntity = new FireworkRocketEntity(level, pos.x + 0.5, pos.y + 1, pos.z + 0.5, rocketItem);
                     level.addFreshEntity(rocketEntity);
@@ -237,8 +246,15 @@ cauldron.addEmptyInteraction(<item:minecraft:stick>, (blockState, cLevel, bPos, 
                 })
                 // Run immediately ('then' is an alias for 'run', you can use whichever sounds better and is easier to read)
                 .then(level => {
-                    // Fireworks require an item to provide the data
-                    var rocketItem = <item:minecraft:firework_rocket>.withTag({Fireworks: {Flight: 0, Explosions: [{Type: 2, Trail: 1, Colors: [14188952, 6719955, 15790320], Flicker: 1, FadeColors: [14188952, 6719955, 15790320]}]}});
+                    val fireworkExplosions = [
+                        FireworkExplosion.of(<constant:minecraft:firework_explosion/shape:star>,
+                        [14188952, 6719955, 15790320] as int?[], //this is the colours array, in decimal format. Converting this to RGB might lead to usable values.
+                        [14188952, 6719955, 15790320] as int?[], //this is the fade colours array. In this example, it has the same colours as the original firework.
+                        true, //we want our firework to have a trail
+                        true) //we want our firework to flicker/twinkle
+                    ];
+                    val flightDuration = 0;
+                    var rocketItem = <item:minecraft:firework_rocket>.withFireworks(flightDuration, fireworkExplosions);
                     // Spawn a firework rocket above the cauldron.
                     var rocketEntity = new FireworkRocketEntity(level, pos.x + 0.5, pos.y + 1, pos.z + 0.5, rocketItem);
                     level.addFreshEntity(rocketEntity);

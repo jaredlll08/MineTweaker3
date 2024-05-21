@@ -29,7 +29,7 @@ loot.modifiers.register(
    "sands",
    LootConditions.only(LootTableIdLootCondition.create(<resource:minecraft:blocks/sand>)),
    (stacks, context) => {
-       stacks.add(<item:minecraft:dirt>.withDisplayName("from loot.zs"));
+       stacks.add(<item:minecraft:dirt>.withCustomName("from loot.zs"));
        return stacks;
    }
 );
