@@ -99,14 +99,6 @@ public class MCFluidStack implements IFluidStack {
     }
     
     @Override
-    public <T> IFluidStack without(DataComponentType<T> type) {
-        
-        final FluidStack copy = getInternal().copy();
-        copy.remove(type);
-        return IFluidStack.of(copy);
-    }
-    
-    @Override
     public IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
         
         final FluidStack copy = getInternal().copy();

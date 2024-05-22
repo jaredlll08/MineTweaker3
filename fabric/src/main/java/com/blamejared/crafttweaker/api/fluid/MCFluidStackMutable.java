@@ -76,13 +76,6 @@ public class MCFluidStackMutable implements IFluidStack {
     }
     
     @Override
-    public <T> IFluidStack without(DataComponentType<T> type) {
-        
-        getInternal().remove(type);
-        return this;
-    }
-    
-    @Override
     public IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
         
         DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE, value);

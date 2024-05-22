@@ -290,7 +290,10 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
     <T> IFluidStack with(DataComponentType<T> type, @ZenCodeType.Nullable T value);
     
     @ZenCodeType.Method
-    <T> IFluidStack without(DataComponentType<T> type);
+    default <T> IFluidStack without(DataComponentType<T> type) {
+        
+        return remove(type);
+    }
     
     @ZenCodeType.Method
     IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value);
