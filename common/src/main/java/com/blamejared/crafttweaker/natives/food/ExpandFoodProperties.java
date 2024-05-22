@@ -1,6 +1,7 @@
 package com.blamejared.crafttweaker.natives.food;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.world.effect.MobEffect;
@@ -86,7 +87,7 @@ public class ExpandFoodProperties {
     public static FoodProperties withEffect(FoodProperties internal, MobEffectInstance effect, float probability) {
         
         ArrayList<FoodProperties.PossibleEffect> possibleEffects = new ArrayList<>(internal.effects());
-        possibleEffects.add(new FoodProperties.PossibleEffect(effect, probability));
+        possibleEffects.add(Services.PLATFORM.createPossibleEffect(effect, probability));
         return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), possibleEffects);
     }
     
@@ -180,7 +181,7 @@ public class ExpandFoodProperties {
         @ZenCodeType.StaticExpansionMethod
         public static FoodProperties.PossibleEffect of(MobEffectInstance effect, float probability) {
             
-            return new FoodProperties.PossibleEffect(effect, probability);
+            return Services.PLATFORM.createPossibleEffect(effect, probability);
         }
         
         @ZenCodeType.Getter("effect")

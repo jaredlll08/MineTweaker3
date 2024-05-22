@@ -9,7 +9,6 @@ import com.blamejared.crafttweaker.api.loot.modifier.ILootModifier;
 import com.blamejared.crafttweaker.api.mod.Mod;
 import com.blamejared.crafttweaker.api.mod.PlatformMod;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
-import com.blamejared.crafttweaker.api.villager.CTTradeObject;
 import com.blamejared.crafttweaker.api.villager.trade.type.IBasicItemListing;
 import com.blamejared.crafttweaker.mixin.common.access.item.AccessIngredient;
 import com.blamejared.crafttweaker.platform.helper.inventory.IInventoryWrapper;
@@ -22,10 +21,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BucketItem;
@@ -42,7 +39,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -100,10 +96,12 @@ public interface IPlatformHelper {
     );
     
     default String findMappedMethodName(final Class<?> clazz, final String methodName, final Class<?> returnType, final Class<?>... parameterTypes) {
+        
         return methodName;
     }
     
     default String findMappedFieldName(final Class<?> clazz, final String fieldName, final Class<?> fieldType) {
+        
         return fieldName;
     }
     
@@ -183,5 +181,7 @@ public interface IPlatformHelper {
         
         throw new UnsupportedOperationException("Unable to get priceMult for '%s'".formatted(internal));
     }
+    
+    FoodProperties.PossibleEffect createPossibleEffect(MobEffectInstance effect, float probability);
     
 }

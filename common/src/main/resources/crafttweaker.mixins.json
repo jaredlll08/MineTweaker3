@@ -13,7 +13,6 @@
     "common.access.entity.AccessAttributeModifier",
     "common.access.entity.AccessFallingBlockEntity",
     "common.access.entity.AccessLightningBolt",
-    "common.access.food.AccessFoodProperties",
     "common.access.item.AccessIngredient",
     "common.access.item.AccessItem",
     "common.access.level.AccessExplosion",

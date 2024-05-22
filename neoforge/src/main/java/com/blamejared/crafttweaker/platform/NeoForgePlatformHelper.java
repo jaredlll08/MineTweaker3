@@ -38,8 +38,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -402,6 +404,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
             return abt.crafttweaker$getPriceMult();
         }
         return IPlatformHelper.super.getBasicTradePriceMult(internal);
+    }
+    
+    @Override
+    public FoodProperties.PossibleEffect createPossibleEffect(MobEffectInstance effect, float probability) {
+        
+        return new FoodProperties.PossibleEffect(() -> effect, probability);
     }
     
 }
