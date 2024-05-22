@@ -49,7 +49,7 @@ public class OnEat {
 }
 
 OnEat.listen();
-OnEat.register(<item:minecraft:potion>.withTag({Potion: "minecraft:water"}), <item:minecraft:blue_dye>);
+OnEat.register(<item:minecraft:potion>.withPotionContents(<potion:minecraft:water>), <item:minecraft:blue_dye>);
 OnEat.register(<item:minecraft:carrot>, (player) => {
     var effect = MobEffectInstance.of(<mobeffect:minecraft:night_vision>, 2000, 2000);
     player.addEffect(effect);
