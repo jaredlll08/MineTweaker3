@@ -57,12 +57,6 @@ public class CTCommonEventHandler {
         }
     }
     
-    @SubscribeEvent
-    public static void attribute(ItemAttributeModifierEvent e) {
-        
-        Services.EVENT.applyAttributeModifiers((ItemAttributeModifierBase) e);
-    }
-    
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void wanderingTradesTweaker(WandererTradesEvent e) {
         
