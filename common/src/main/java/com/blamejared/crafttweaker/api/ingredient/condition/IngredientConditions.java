@@ -1,6 +1,13 @@
 package com.blamejared.crafttweaker.api.ingredient.condition;
 
 import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.google.common.base.Predicates;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +17,18 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public final class IngredientConditions implements Predicate<IItemStack> {
+    
+    public static final Codec<IngredientConditions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            IIngredientCondition.CODEC.listOf()
+                    .fieldOf("conditions")
+                    .forGetter(IngredientConditions::conditions)
+    ).apply(instance, IngredientConditions::new));
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, IngredientConditions> STREAM_CODEC = StreamCodec.composite(
+            IIngredientCondition.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            IngredientConditions::conditions,
+            IngredientConditions::new
+    );
     
     public static IngredientConditions EMPTY = new IngredientConditions();
     private final List<IIngredientCondition> conditions;
@@ -40,6 +59,14 @@ public final class IngredientConditions implements Predicate<IItemStack> {
     public boolean test(IItemStack stack) {
         
         return conditions.stream().allMatch(iIngredientCondition -> iIngredientCondition.matches(stack));
+    }
+    
+    public Predicate<DataComponentType<?>> componentFilter() {
+        
+        return this.conditions()
+                .stream()
+                .map(IIngredientCondition::componentFilter)
+                .reduce(Predicates.alwaysTrue(), Predicate::and);
     }
     
     public String getCommandString(String base) {

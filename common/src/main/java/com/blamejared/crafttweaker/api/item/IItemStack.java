@@ -438,7 +438,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     @Override
     default boolean matches(IItemStack stack) {
         
-        return ItemStackUtil.areStacksTheSame(this.getInternal(), stack.getInternal(), true) && this.conditions()
+        return ItemStackUtil.areStacksTheSame(this.getInternal(), stack.getInternal(), this.conditions()) && this.conditions()
                 .test(stack);
     }
     

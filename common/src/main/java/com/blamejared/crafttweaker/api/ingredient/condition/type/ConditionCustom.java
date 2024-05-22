@@ -59,12 +59,6 @@ public class ConditionCustom implements IIngredientCondition {
         return "%s.onlyIf('%s')".formatted(base, uid);
     }
     
-    @Override
-    public boolean ignoresDamage() {
-        // Give people a clean slate, mojang really made damage annoying to deal with in 1.14+, so this way if someone wants to ignore the damage they can
-        return true;
-    }
-    
     public String getUid() {
         
         return uid;

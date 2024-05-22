@@ -7,7 +7,11 @@ import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition
 import com.blamejared.crafttweaker.api.ingredient.condition.serializer.ConditionDamagedSerializer;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import org.openzen.zencode.java.ZenCodeType;
+
+import java.util.function.Predicate;
 
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.ingredient.condition.type.ConditionDamaged")
@@ -25,9 +29,9 @@ public class ConditionDamaged implements IIngredientCondition {
     }
     
     @Override
-    public boolean ignoresDamage() {
+    public Predicate<DataComponentType<?>> componentFilter() {
         
-        return true;
+        return dataComponentType -> dataComponentType != DataComponents.DAMAGE;
     }
     
     @Override
