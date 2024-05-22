@@ -32,24 +32,10 @@ public final class ItemStackUtil {
                     .append(typedDataComponent.encodeValue(IDataOps.INSTANCE).getOrThrow())
                     .append(")");
         });
-        split.removed().forEach(dataComponentType -> sb.append(".remove(").append(ExpandDataComponentType.getCommandString(dataComponentType)).append(")"));
-        //TODO 1.20.5 fix all of this
-        //        final CompoundTag tag;
-        //        if((tag = stack.getTag()) != null) {
-        //
-        //            final IData data = Objects.requireNonNull(TagToDataConverter.convert(tag)).copyInternal();
-        //
-        //            //Damage is special case, if we have more special cases we can handle them here.
-        //            if(stack.getItem().canBeDepleted()) {
-        //
-        //                data.remove("Damage");
-        //            }
-        //            if(!data.isEmpty()) {
-        //
-        //                sb.append(".withTag(").append(data.asString()).append(')');
-        //            }
-        //        }
-        
+        split.removed()
+                .forEach(dataComponentType -> sb.append(".remove(")
+                        .append(ExpandDataComponentType.getCommandString(dataComponentType))
+                        .append(")"));
         if(stack.getDamageValue() > 0) {
             
             sb.append(".withDamage(").append(stack.getDamageValue()).append(')');
