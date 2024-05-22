@@ -71,7 +71,7 @@ public interface IEventHelper {
         if(BLOCK_INFO_PLAYERS.contains(player)) {
             if(!world.isClientSide() && hand == InteractionHand.MAIN_HAND) {
                 BlockState state = world.getBlockState(pos);
-                sendAndLog(player, Component.translatable("crafttweaker.command.info.block.name", BuiltInRegistries.BLOCK.getKey(state.getBlock())));
+                sendAndLog(player, Component.translatable("crafttweaker.command.info.block.name", BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString()));
                 String blockCS = ExpandBlock.getCommandString(state.getBlock());
                 String blockStateCS = ExpandBlockState.getCommandString(state);
                 CommandUtilities.sendCopying(player.createCommandSourceStack(), Component.translatable("crafttweaker.command.misc.block")
