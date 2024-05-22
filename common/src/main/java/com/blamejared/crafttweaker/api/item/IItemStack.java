@@ -64,14 +64,17 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     Codec<IItemStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ItemStack.CODEC.fieldOf("item").forGetter(IItemStack::getInternal),
             Codec.BOOL.fieldOf("mutable").forGetter(IItemStack::isMutable),
+            IngredientConditions.CODEC.fieldOf("conditions").forGetter(IItemStack::conditions),
             IngredientTransformers.CODEC.fieldOf("transformers").forGetter(IItemStack::transformers)
-    ).apply(instance, IItemStack::of));
+            ).apply(instance, IItemStack::of));
     
     StreamCodec<RegistryFriendlyByteBuf, IItemStack> STREAM_CODEC = StreamCodec.composite(
             ItemStack.STREAM_CODEC,
             IItemStack::getInternal,
             ByteBufCodecs.BOOL,
             IItemStack::isMutable,
+            IngredientConditions.STREAM_CODEC,
+            IItemStack::conditions,
             IngredientTransformers.STREAM_CODEC,
             IItemStack::transformers,
             IItemStack::of
@@ -91,7 +94,6 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         return IItemStackConstants.EMPTY_STACK.get();
     }
     
-    //TODO 1.20.5 clean these up and fix
     static IItemStack of(final ItemLike item) {
         
         return of(new ItemStack(item));
@@ -122,9 +124,9 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
         return Services.PLATFORM.createItemStackMutable(stack, conditions, transformers);
     }
     
-    static IItemStack of(final ItemStack stack, final boolean mutable, final IngredientTransformers transformers) {
+    static IItemStack of(final ItemStack stack, final boolean mutable, final IngredientConditions conditions, final IngredientTransformers transformers) {
         
-        return mutable ? ofMutable(stack) : of(stack);
+        return mutable ? ofMutable(stack, conditions, transformers) : of(stack, conditions, transformers);
     }
     
     /**
