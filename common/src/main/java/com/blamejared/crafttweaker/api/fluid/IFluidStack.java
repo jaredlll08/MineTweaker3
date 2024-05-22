@@ -272,7 +272,7 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
                     .append(")");
         });
         split.removed()
-                .forEach(dataComponentType -> builder.append(".remove(")
+                .forEach(dataComponentType -> builder.append(".without(")
                         .append(ExpandDataComponentType.getCommandString(dataComponentType))
                         .append(")"));
         

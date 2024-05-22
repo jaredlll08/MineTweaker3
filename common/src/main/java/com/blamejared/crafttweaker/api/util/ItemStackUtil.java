@@ -33,13 +33,9 @@ public final class ItemStackUtil {
                     .append(")");
         });
         split.removed()
-                .forEach(dataComponentType -> sb.append(".remove(")
+                .forEach(dataComponentType -> sb.append(".without(")
                         .append(ExpandDataComponentType.getCommandString(dataComponentType))
                         .append(")"));
-        if(stack.getDamageValue() > 0) {
-            
-            sb.append(".withDamage(").append(stack.getDamageValue()).append(')');
-        }
         
         if(!stack.isEmpty() && stack.getCount() != 1) {
             
