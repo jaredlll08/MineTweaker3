@@ -4,9 +4,12 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.trading.ItemCost;
 import org.openzen.zencode.java.ZenCodeType;
+
+import java.util.function.UnaryOperator;
 
 @ZenRegister
 @Document("vanilla/api/villager/ItemCost")
@@ -19,19 +22,18 @@ public class ExpandItemCost {
         return new ItemCost(stack.asItemLike(), stack.amount());
     }
     
-    //TODO 1.20.5 do a data component predicate version
-//    @ZenCodeType.StaticExpansionMethod
-//    public static ItemCost of(IItemStack stack) {
-//
-//        return new ItemCost(stack.asItemLike());
-//    }
+    @ZenCodeType.StaticExpansionMethod
+    public static ItemCost of(IItemStack stack, DataComponentPredicate predicate) {
+        
+        //noinspection deprecation
+        return new ItemCost(stack.asItemLike().asItem().builtInRegistryHolder(), stack.amount(), predicate);
+    }
     
-    
-    //TODO 1.20.5 expose!
-    //    public static ItemCost withComponents(UnaryOperator<DataComponentPredicate.Builder> $$0) {
-    //
-    //        return internal.withComponents($$0);
-    //    }
+    @ZenCodeType.Method
+    public static ItemCost withComponents(ItemCost internal, UnaryOperator<DataComponentPredicate.Builder> operator) {
+        
+        return internal.withComponents(operator);
+    }
     
     @ZenCodeType.Method
     public static boolean test(ItemCost internal, IItemStack stack) {
@@ -39,11 +41,12 @@ public class ExpandItemCost {
         return internal.test(stack.getInternal());
     }
     
-    //TODO 1.20.5 expose!
-    //    public static DataComponentPredicate components() {
-    //
-    //        return internal.components();
-    //    }
+    @ZenCodeType.Method
+    public static DataComponentPredicate components(ItemCost internal) {
+        
+        return internal.components();
+    }
+    
     @ZenCodeType.Getter("count")
     public static int count(ItemCost internal) {
         
