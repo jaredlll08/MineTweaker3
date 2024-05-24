@@ -11,6 +11,12 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = TooltipFlag.class, zenCodeName = "crafttweaker.api.tooltip.TooltipFlag")
 public class ExpandTooltipFlag {
     
+    @ZenCodeType.StaticExpansionMethod
+    public static TooltipFlag of(boolean advanced, boolean creative) {
+        
+        return new TooltipFlag.Default(advanced, creative);
+    }
+    
     @ZenCodeType.Getter("advanced")
     public static boolean isAdvanced(TooltipFlag internal) {
         
