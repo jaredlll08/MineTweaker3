@@ -269,9 +269,10 @@ public final class CraftTweakerTagRegistry {
                         }
                         results.add(new TagManager.LoadResult<>(registryEntry.key(), new HashMap<>()));
                     });
+            
+            bind(results, context);
         });
-        
-        bind(results, context);
+
     }
     
     /**
