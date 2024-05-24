@@ -48,8 +48,7 @@ dependencies {
     implementation("net.neoforged:neoforge:${Versions.NEO_FORGE}")
     compileOnly(project(":common"))
     localOnlyRuntime("dev.architectury:architectury-neoforge:11.0.11")
-    implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
-
+    localOnlyRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
 }
 
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {
