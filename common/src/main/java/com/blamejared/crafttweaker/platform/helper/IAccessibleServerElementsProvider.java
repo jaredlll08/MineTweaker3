@@ -5,6 +5,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 
+import java.util.function.Consumer;
+
 // TODO("Better package")
 public interface IAccessibleServerElementsProvider {
     
@@ -19,6 +21,8 @@ public interface IAccessibleServerElementsProvider {
     RegistryAccess registryAccess();
     
     void registryAccess(final RegistryAccess registryAccess);
+    
+    void runWithRegistryAccess(final Consumer<RegistryAccess> consumer);
     
     boolean hasRegistryAccess();
     

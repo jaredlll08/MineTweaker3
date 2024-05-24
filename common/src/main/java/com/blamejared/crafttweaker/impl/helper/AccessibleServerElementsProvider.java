@@ -5,9 +5,12 @@ import com.blamejared.crafttweaker.platform.helper.IAccessibleServerElementsProv
 import com.google.common.base.Suppliers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class AccessibleServerElementsProvider implements IAccessibleServerElementsProvider {
@@ -16,12 +19,13 @@ public final class AccessibleServerElementsProvider implements IAccessibleServer
     
     private ReloadableServerResources resources;
     private RegistryAccess registryAccess;
-    private PotionBrewing potionBrewing;
+    private final List<Consumer<RegistryAccess>> waitingForRegistryAccess;
     
     private AccessibleServerElementsProvider() {
         
         this.resources = null;
         this.registryAccess = null;
+        this.waitingForRegistryAccess = new ArrayList<>();
     }
     
     static IAccessibleServerElementsProvider get() {
@@ -63,6 +67,21 @@ public final class AccessibleServerElementsProvider implements IAccessibleServer
     public void registryAccess(RegistryAccess registryAccess) {
         
         this.registryAccess = registryAccess;
+        Iterator<Consumer<RegistryAccess>> iterator = waitingForRegistryAccess.iterator();
+        while(iterator.hasNext()) {
+            iterator.next().accept(this.registryAccess);
+            iterator.remove();
+        }
+    }
+    
+    @Override
+    public void runWithRegistryAccess(Consumer<RegistryAccess> consumer) {
+        
+        if(hasRegistryAccess()) {
+            consumer.accept(registryAccess());
+        } else {
+            waitingForRegistryAccess.add(consumer);
+        }
     }
     
     @Override

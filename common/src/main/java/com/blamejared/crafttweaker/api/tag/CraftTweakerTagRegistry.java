@@ -13,7 +13,6 @@ import com.blamejared.crafttweaker.mixin.common.access.tag.AccessTagNetworkSeria
 import com.blamejared.crafttweaker.platform.Services;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
@@ -64,7 +63,7 @@ public final class CraftTweakerTagRegistry {
      *
      * @return The {@link ITagManager} that was added.
      */
-    public <T> ITagManager<?> addManager(Class<? extends ITagManager<?>> cls) {
+    public ITagManager<?> addManager(Class<? extends ITagManager<?>> cls) {
         
         ITagManager<?> manager = InstantiationUtil.getOrCreateInstance(cls);
         Objects.requireNonNull(manager, "Error while creating tag manager from class: '" + cls + "'! Make sure it has a default constructor or a public static INSTANCE field!");
@@ -78,7 +77,7 @@ public final class CraftTweakerTagRegistry {
      *
      * @return The {@link ITagManager} that was added.
      */
-    public <T> ITagManager<?> addManager(ITagManager<?> manager) {
+    public ITagManager<?> addManager(ITagManager<?> manager) {
         
         registeredManagers.put(manager.resourceKey(), manager);
         if(manager.getClass().equals(KnownTagManager.class)) {
@@ -251,28 +250,27 @@ public final class CraftTweakerTagRegistry {
         
         List<TagManager.LoadResult<?>> results = new ArrayList<>();
         Set<ResourceKey<?>> knownKeys = new HashSet<>();
-        RegistryAccess registryAccess = CraftTweakerAPI.getAccessibleElementsProvider()
-                .client()
-                .registryAccess();
-        
-        tags.forEach((resourceKey, networkPayload) -> {
-            knownKeys.add(resourceKey);
-            HashMap<Object, Object> resultMap = new HashMap<>();
-            
-            Registry<Object> registry = registryAccess.registryOrThrow(resourceKey);
-            AccessTagNetworkSerialization.crafttweaker$$callDeserializeTagsFromNetwork(GenericUtil.uncheck(resourceKey), registry, networkPayload, (key, holders) -> resultMap.put(key.location(), holders));
-            
-            results.add(new TagManager.LoadResult(resourceKey, resultMap));
-            
+        CraftTweakerAPI.getAccessibleElementsProvider().client().runWithRegistryAccess((registryAccess) -> {
+            tags.forEach((resourceKey, networkPayload) -> {
+                
+                knownKeys.add(resourceKey);
+                HashMap<Object, Object> resultMap = new HashMap<>();
+                
+                Registry<Object> registry = registryAccess.registryOrThrow(resourceKey);
+                AccessTagNetworkSerialization.crafttweaker$$callDeserializeTagsFromNetwork(GenericUtil.uncheck(resourceKey), registry, networkPayload, (key, holders) -> resultMap.put(key.location(), holders));
+                results.add(new TagManager.LoadResult(resourceKey, resultMap));
+                
+            });
+            registryAccess
+                    .registries()
+                    .forEach(registryEntry -> {
+                        if(knownKeys.contains(registryEntry.key())) {
+                            return;
+                        }
+                        results.add(new TagManager.LoadResult<>(registryEntry.key(), new HashMap<>()));
+                    });
         });
-        registryAccess
-                .registries()
-                .forEach(registryEntry -> {
-                    if(knownKeys.contains(registryEntry.key())) {
-                        return;
-                    }
-                    results.add(new TagManager.LoadResult<>(registryEntry.key(), new HashMap<>()));
-                });
+        
         bind(results, context);
     }
     
