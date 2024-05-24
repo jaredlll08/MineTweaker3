@@ -31,7 +31,7 @@ public class ExpandDataComponentHolder {
     
     /**
      * Checks whether the holder contains the given DataComponent, which is indentified by the type.
-     * @param type The &lt;componenttype&gt; to check for.
+     * @param type The componenttype to check for.
      * @return Whether the holder contains the DataComponent.
      *
      * @docParam type <componenttype:minecraft:stack_size>
@@ -47,7 +47,7 @@ public class ExpandDataComponentHolder {
      * Gets the data identified by the given DataComponentType. If the ComponentHolder does not have the Component, then the default value is returned.
      *
      * @param tClass The type of the class stored within the component.
-     * @param type The &lt;componenttype&gt; to get
+     * @param type The componenttype to get
      * @param defaultValue The default value to return in the event that the holder does not have the component.
      * @param <T> The type of the ComponentType
      *
@@ -68,7 +68,7 @@ public class ExpandDataComponentHolder {
      * Gets the data identified by the given DataComponentType. If the ComponentHolder does not have the Component, then null is returned.
      *
      * @param <T> The type of the class stored within the component.
-     * @param type The &lt;componenttype&gt; to get
+     * @param type The componenttype to get
      * @return The value if it exists or null.
      *
      * @docParam <T> int?
@@ -89,7 +89,7 @@ public class ExpandDataComponentHolder {
      * If the ComponentAccess does not have the type, an exception is thrown.
      * If the ComponentAccess is not serializable, an exception is thrown.
      *
-     * @param type The &lt;componenttype&gt; to target.
+     * @param type The componenttype to target.
      * @return A {@link IData} representation of the Serialized DataComponent
      *
      * @docParam type <componenttype:minecraft:stack_size>
