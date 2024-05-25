@@ -23,12 +23,6 @@ public class ExpandAdvancementProgressEvent {
             NeoForgeEventBusWire.of()
     );
     
-    @ZenCodeType.Getter("advancement")
-    public static AdvancementHolder getAdvancement(AdvancementEvent.AdvancementProgressEvent internal) {
-        
-        return internal.getAdvancement();
-    }
-    
     @ZenCodeType.Getter("advancementProgress")
     public static AdvancementProgress getAdvancementProgress(AdvancementEvent.AdvancementProgressEvent internal) {
         
