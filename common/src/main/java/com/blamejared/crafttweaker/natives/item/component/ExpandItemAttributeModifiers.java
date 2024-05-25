@@ -1,9 +1,11 @@
 package com.blamejared.crafttweaker.natives.item.component;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -46,7 +48,7 @@ public class ExpandItemAttributeModifiers {
     @ZenCodeType.Method
     public static ItemAttributeModifiers withModifierAdded(ItemAttributeModifiers internal, Attribute attribute, AttributeModifier modifier, EquipmentSlotGroup slot) {
         
-        return internal.withModifierAdded(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute), modifier, slot);
+        return internal.withModifierAdded(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute), modifier, slot);
     }
     
     @ZenCodeType.Getter("modifiers")
@@ -100,7 +102,7 @@ public class ExpandItemAttributeModifiers {
         @ZenCodeType.Method
         public static ItemAttributeModifiers.Builder add(ItemAttributeModifiers.Builder internal, Attribute attribute, AttributeModifier modifier, EquipmentSlotGroup slot) {
             
-            return internal.add(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute), modifier, slot);
+            return internal.add(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute), modifier, slot);
         }
         
         @ZenCodeType.Method

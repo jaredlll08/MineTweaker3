@@ -3,12 +3,13 @@ package com.blamejared.crafttweaker.api.component;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -987,19 +988,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     @ZenCodeType.Method
     default T withPotionContents(Potion potion) {
         
-        return withPotionContents(new PotionContents(BuiltInRegistries.POTION.wrapAsHolder(potion)));
+        
+        return withPotionContents(new PotionContents(Services.REGISTRY.holderOrThrow(Registries.POTION, potion)));
     }
     
     @ZenCodeType.Method
     default T withPotionContents(Potion potion, List<MobEffectInstance> customEffects) {
         
-        return withPotionContents(new PotionContents(Optional.of(BuiltInRegistries.POTION.wrapAsHolder(potion)), Optional.empty(), customEffects));
+        return withPotionContents(new PotionContents(Optional.of(Services.REGISTRY.holderOrThrow(Registries.POTION, potion)), Optional.empty(), customEffects));
     }
     
     @ZenCodeType.Method
     default T withPotionContents(Potion potion, int customColor, List<MobEffectInstance> customEffects) {
         
-        return withPotionContents(new PotionContents(Optional.of(BuiltInRegistries.POTION.wrapAsHolder(potion)), Optional.of(customColor), customEffects));
+        return withPotionContents(new PotionContents(Optional.of(Services.REGISTRY.holderOrThrow(Registries.POTION, potion)), Optional.of(customColor), customEffects));
     }
     
     @ZenCodeType.Method
@@ -1274,7 +1276,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     @ZenCodeType.Method
     default T withInstrument(Instrument instrument) {
         
-        return _with(DataComponents.INSTRUMENT, BuiltInRegistries.INSTRUMENT.wrapAsHolder(instrument));
+        return _with(DataComponents.INSTRUMENT, Services.REGISTRY.holderOrThrow(Registries.INSTRUMENT, instrument));
     }
     
     @ZenCodeType.Method

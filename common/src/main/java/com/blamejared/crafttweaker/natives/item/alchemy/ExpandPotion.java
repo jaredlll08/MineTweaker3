@@ -32,7 +32,7 @@ public class ExpandPotion {
     @ZenCodeType.StaticExpansionMethod
     public static String getName(String prefix, @ZenCodeType.Optional @ZenCodeType.Nullable Potion potion) {
         
-        return Potion.getName(Optional.ofNullable(Optionull.map(potion, potion1 -> Services.REGISTRY.makeHolder(Registries.POTION, potion1))), prefix);
+        return Potion.getName(Optional.ofNullable(Optionull.map(potion, potion1 -> Services.REGISTRY.holderOrThrow(Registries.POTION, potion1))), prefix);
     }
     
     @ZenCodeType.Method

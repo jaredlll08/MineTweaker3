@@ -10,10 +10,12 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.recipe.replacement.ITargetingStrategy;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.natives.block.ExpandBlockState;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -22,10 +24,14 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.item.Instrument;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.armortrim.TrimMaterial;
+import net.minecraft.world.item.armortrim.TrimPattern;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.state.BlockState;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -365,6 +371,70 @@ public class BracketHandlers {
     public static DataComponentType getComponentType(String tokens) {
         
         return getRegistry(tokens, BuiltInRegistries.DATA_COMPONENT_TYPE);
+    }
+    
+    /**
+     * Gets a banner pattern based on registry name. Throws an exception if it can't find the banner pattern.
+     *
+     * @param tokens The banner pattern's resource location
+     *
+     * @return The found banner pattern
+     *
+     * @docParam tokens "minecraft:square_bottom_left"
+     */
+    @ZenCodeType.Method
+    @BracketResolver("bannerpattern")
+    public static BannerPattern getBannerPattern(String tokens) {
+        
+        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.BANNER_PATTERN));
+    }
+    
+    /**
+     * Gets an instrument based on registry name. Throws an exception if it can't find the instrument.
+     *
+     * @param tokens The instrument's resource location
+     *
+     * @return The found instrument
+     *
+     * @docParam tokens "minecraft:ponder_goat_horn"
+     */
+    @ZenCodeType.Method
+    @BracketResolver("instrument")
+    public static Instrument getInstrument(String tokens) {
+        
+        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.INSTRUMENT));
+    }
+    
+    /**
+     * Gets a trim pattern based on registry name. Throws an exception if it can't find the trim pattern.
+     *
+     * @param tokens The trim pattern's resource location
+     *
+     * @return The found trim pattern
+     *
+     * @docParam tokens "minecraft:sentry"
+     */
+    @ZenCodeType.Method
+    @BracketResolver("trimpattern")
+    public static TrimPattern getTrimPattern(String tokens) {
+        
+        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.TRIM_PATTERN));
+    }
+    
+    /**
+     * Gets a trim material based on registry name. Throws an exception if it can't find the trim material.
+     *
+     * @param tokens The trim material's resource location
+     *
+     * @return The found trim material
+     *
+     * @docParam tokens "minecraft:quartz"
+     */
+    @ZenCodeType.Method
+    @BracketResolver("trimmaterial")
+    public static TrimMaterial getTrimMaterial(String tokens) {
+        
+        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.TRIM_MATERIAL));
     }
     
 }

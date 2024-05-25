@@ -237,14 +237,14 @@ public class ExpandLivingEntity {
     @ZenCodeType.Method
     public static boolean hasEffect(LivingEntity internal, MobEffect effect) {
         
-        return internal.hasEffect(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
+        return internal.hasEffect(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static MobEffectInstance getEffect(LivingEntity internal, MobEffect effect) {
         
-        return internal.getEffect(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
+        return internal.getEffect(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Method
@@ -281,13 +281,13 @@ public class ExpandLivingEntity {
     @ZenCodeType.Method
     public static MobEffectInstance removeEffectNoUpdate(LivingEntity internal, MobEffect effect) {
         
-        return internal.removeEffectNoUpdate(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
+        return internal.removeEffectNoUpdate(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Method
     public static boolean removeEffect(LivingEntity internal, MobEffect effect) {
         
-        return internal.removeEffect(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect));
+        return internal.removeEffect(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect));
     }
     
     @ZenCodeType.Method
@@ -435,19 +435,19 @@ public class ExpandLivingEntity {
     @ZenCodeType.Method
     public static AttributeInstance getAttribute(LivingEntity internal, Attribute attribute) {
         
-        return internal.getAttribute(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute));
+        return internal.getAttribute(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute));
     }
     
     @ZenCodeType.Method
     public static double getAttributeValue(LivingEntity internal, Attribute attribute) {
         
-        return internal.getAttributeValue(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute));
+        return internal.getAttributeValue(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute));
     }
     
     @ZenCodeType.Method
     public static double getAttributeBaseValue(LivingEntity internal, Attribute attribute) {
         
-        return internal.getAttributeBaseValue(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute));
+        return internal.getAttributeBaseValue(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute));
     }
     
     @ZenCodeType.Method

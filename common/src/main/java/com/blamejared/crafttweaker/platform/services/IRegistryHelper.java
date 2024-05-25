@@ -40,6 +40,27 @@ public interface IRegistryHelper {
                 .registryAccess()).map(RegistryAccess.RegistryEntry::key).collect(Collectors.toSet());
     }
     
+    default <T> Registry<T> registryOrThrow(ResourceKey<Registry<T>> registry) {
+        
+        return CraftTweakerAPI.getAccessibleElementsProvider().registryAccess().registryOrThrow(registry);
+    }
+    
+    default <T> ResourceLocation keyOrThrow(ResourceKey<Registry<T>> registry, T thing) {
+        
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+                .registryAccess()
+                .registryOrThrow(registry)
+                .getKey(thing);
+    }
+    
+    default <T> Holder<T> holderOrThrow(ResourceKey<?> registry, T thing) {
+        
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+                .registryAccess()
+                .<T> registryOrThrow(GenericUtil.uncheck(registry))
+                .wrapAsHolder(thing);
+    }
+    
     /**
      * Maybe returns the registry key of the given object if we know about its type.
      */
@@ -98,30 +119,12 @@ public interface IRegistryHelper {
     
     default <T> Holder<T> makeHolder(ResourceKey<?> resourceKey, Either<T, ResourceLocation> objectOrKey) {
         
-        return objectOrKey.map(t -> makeHolder(resourceKey, t), key -> makeHolder(resourceKey, key));
-    }
-    
-    default <T> Holder<T> makeHolder(ResourceKey<?> resourceKey, T object) {
-        
-        Registry<T> registry = CraftTweakerAPI.getAccessibleElementsProvider()
-                .registryAccess()
-                .registryOrThrow(GenericUtil.uncheck(resourceKey));
-        return registry.getResourceKey(object)
-                .flatMap(registry::getHolder)
-                .orElseThrow(() -> new RuntimeException("Unable to make holder for registry: " + registry + " and object: " + object));
-    }
-    
-    default <T> Holder<T> makeHolder(ResourceKey<?> resourceKey, ResourceLocation key) {
-        
-        Registry<T> registry = CraftTweakerAPI.getAccessibleElementsProvider()
+        Registry<T> objects = CraftTweakerAPI.getAccessibleElementsProvider()
                 .registryAccess()
                 .registryOrThrow(GenericUtil.uncheck(resourceKey));
         
-        if(!registry.containsKey(key)) {
-            throw new IllegalArgumentException("Registry does not contain key: '" + key + "'");
-        }
-        return registry.getHolder(ResourceKey.create(registry.key(), key))
-                .orElseThrow(() -> new RuntimeException("Unable to make holder for registry: " + registry + " and id: " + key));
+        return objectOrKey.map(objects::wrapAsHolder, resourceLocation -> objects.getHolder(resourceLocation)
+                .orElseThrow());
     }
     
     default <T> Registry<T> makeRegistry(ResourceKey<Registry<T>> resourceKey) {

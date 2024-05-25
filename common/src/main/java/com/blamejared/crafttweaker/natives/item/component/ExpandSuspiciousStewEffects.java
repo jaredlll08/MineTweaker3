@@ -1,9 +1,10 @@
 package com.blamejared.crafttweaker.natives.item.component;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.component.SuspiciousStewEffects;
@@ -42,7 +43,7 @@ public class ExpandSuspiciousStewEffects {
         @ZenCodeType.StaticExpansionMethod
         public static SuspiciousStewEffects.Entry of(MobEffect effect, int duration) {
             
-            return new SuspiciousStewEffects.Entry(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect), duration);
+            return new SuspiciousStewEffects.Entry(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect), duration);
         }
         
         @ZenCodeType.Method

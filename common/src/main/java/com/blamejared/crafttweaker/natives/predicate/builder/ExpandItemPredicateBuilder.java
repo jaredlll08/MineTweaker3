@@ -69,7 +69,7 @@ public final class ExpandItemPredicateBuilder {
     @ZenCodeType.Method
     public static ItemPredicate.Builder potion(final ItemPredicate.Builder internal, final Potion potion) {
         
-        return internal.withSubPredicate(ItemSubPredicates.POTIONS, new ItemPotionsPredicate(HolderSet.direct(Services.REGISTRY.makeHolder(Registries.POTION, potion))));
+        return internal.withSubPredicate(ItemSubPredicates.POTIONS, new ItemPotionsPredicate(HolderSet.direct(Services.REGISTRY.holderOrThrow(Registries.POTION, potion))));
     }
     
     @ZenCodeType.Method

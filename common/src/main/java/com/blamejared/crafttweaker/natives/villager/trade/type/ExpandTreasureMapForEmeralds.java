@@ -40,7 +40,7 @@ public class ExpandTreasureMapForEmeralds {
     @ZenCodeType.StaticExpansionMethod
     public static VillagerTrades.TreasureMapForEmeralds create(int emeraldCost, ResourceLocation destination, String displayName, MapDecorationType destinationType, int maxUses, int villagerXp) {
         
-        return new VillagerTrades.TreasureMapForEmeralds(emeraldCost, TagKey.create(Registries.STRUCTURE, destination), displayName, Services.REGISTRY.makeHolder(Registries.MAP_DECORATION_TYPE, destinationType), maxUses, villagerXp);
+        return new VillagerTrades.TreasureMapForEmeralds(emeraldCost, TagKey.create(Registries.STRUCTURE, destination), displayName, Services.REGISTRY.holderOrThrow(Registries.MAP_DECORATION_TYPE, destinationType), maxUses, villagerXp);
     }
     
 }

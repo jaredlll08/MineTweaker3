@@ -1,10 +1,11 @@
 package com.blamejared.crafttweaker.natives.predicate;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -22,14 +23,14 @@ public final class ExpandMobEffectsPredicate {
         
         return new MobEffectsPredicate(map.entrySet()
                 .stream()
-                .map(entry -> Map.entry(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(entry.getKey()), entry.getValue()))
+                .map(entry -> Map.entry(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, entry.getKey()), entry.getValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
     
     @ZenCodeType.StaticExpansionMethod
     public static MobEffectsPredicate create(final MobEffect effect, final MobEffectsPredicate.MobEffectInstancePredicate predicate) {
         
-        return new MobEffectsPredicate(new LinkedHashMap<>(Map.of(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect), predicate))); // To keep parity with vanilla
+        return new MobEffectsPredicate(new LinkedHashMap<>(Map.of(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect), predicate))); // To keep parity with vanilla
     }
     
 }

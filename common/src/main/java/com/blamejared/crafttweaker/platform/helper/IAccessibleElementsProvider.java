@@ -1,15 +1,12 @@
 package com.blamejared.crafttweaker.platform.helper;
 
 import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.RecipeManager;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 // TODO("Better package")

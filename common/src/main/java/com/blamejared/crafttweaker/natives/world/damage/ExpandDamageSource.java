@@ -24,13 +24,13 @@ public class ExpandDamageSource {
     @ZenCodeType.StaticExpansionMethod
     public static DamageSource create(DamageType type, @ZenCodeType.Optional Entity directEntity, @ZenCodeType.Optional Entity causingEntity) {
         
-        return new DamageSource(Services.REGISTRY.makeHolder(Registries.DAMAGE_TYPE, type), directEntity, causingEntity);
+        return new DamageSource(Services.REGISTRY.holderOrThrow(Registries.DAMAGE_TYPE, type), directEntity, causingEntity);
     }
     
     @ZenCodeType.StaticExpansionMethod
     public static DamageSource create(DamageType type, Vec3 damageSourcePosition) {
         
-        return new DamageSource(Services.REGISTRY.makeHolder(Registries.DAMAGE_TYPE, type), damageSourcePosition);
+        return new DamageSource(Services.REGISTRY.holderOrThrow(Registries.DAMAGE_TYPE, type), damageSourcePosition);
     }
     
     @ZenCodeType.Getter("foodExhaustion")

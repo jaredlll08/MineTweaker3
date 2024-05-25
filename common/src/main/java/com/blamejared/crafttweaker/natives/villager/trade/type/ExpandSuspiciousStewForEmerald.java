@@ -18,7 +18,7 @@ public class ExpandSuspiciousStewForEmerald {
     @ZenCodeType.StaticExpansionMethod
     public static VillagerTrades.SuspiciousStewForEmerald of(MobEffect effect, int duration, int xp) {
         
-        return new VillagerTrades.SuspiciousStewForEmerald(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, effect), duration, xp);
+        return new VillagerTrades.SuspiciousStewForEmerald(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, effect), duration, xp);
     }
     
     @ZenCodeType.StaticExpansionMethod

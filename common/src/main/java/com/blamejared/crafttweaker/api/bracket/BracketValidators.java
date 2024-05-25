@@ -21,6 +21,24 @@ public class BracketValidators {
         
     }
     
+    
+    public static boolean validateBracket(String bracketName, String tokens, Function<String, ?> bracketMethod, boolean logError) {
+        
+        try {
+            return bracketMethod.apply(tokens) != null;
+        } catch(Exception e) {
+            if(logError) {
+                CommonLoggers.zenCode().error("Error validating BEP <{}:{}>", bracketName, tokens, e);
+            }
+            return false;
+        }
+    }
+    
+    public static boolean validateBracket(String bracketName, String tokens, Function<String, ?> bracketMethod) {
+        
+        return validateBracket(bracketName, tokens, bracketMethod, true);
+    }
+    
     @ZenCodeType.Method
     @BracketValidator("block")
     public static boolean validateBlockBracket(String tokens) {
@@ -153,23 +171,6 @@ public class BracketValidators {
         return ResourceLocation.tryParse(tokens) != null;
     }
     
-    public static boolean validateBracket(String bracketName, String tokens, Function<String, ?> bracketMethod, boolean logError) {
-        
-        try {
-            return bracketMethod.apply(tokens) != null;
-        } catch(Exception e) {
-            if(logError) {
-                CommonLoggers.zenCode().error("Error validating BEP <{}:{}>", bracketName, tokens, e);
-            }
-            return false;
-        }
-    }
-    
-    public static boolean validateBracket(String bracketName, String tokens, Function<String, ?> bracketMethod) {
-        
-        return validateBracket(bracketName, tokens, bracketMethod, true);
-    }
-    
     @ZenCodeType.Method
     @BracketValidator("soundevent")
     public static boolean validateSoundEvent(String tokens) {
@@ -202,11 +203,63 @@ public class BracketValidators {
         
         if(tokens.split(":").length != 2) {
             CommonLoggers.zenCode()
-                    .error("Invalid Bracket Syntax: <componenttype:{}>! Syntax is <componenttype:modid:component_type_name>", tokens);
+                    .error("Invalid Bracket Syntax: <componenttype:{}>! Syntax is <componenttype:modid:name>", tokens);
             return false;
         }
         
         return validateBracket("componenttype", tokens, BracketHandlers::getComponentType);
+    }
+    
+    @ZenCodeType.Method
+    @BracketValidator("bannerpattern")
+    public static boolean validateBannerPattern(String tokens) {
+        
+        if(tokens.split(":").length != 2) {
+            CommonLoggers.zenCode()
+                    .error("Invalid Bracket Syntax: <bannerpattern:{}>! Syntax is <bannerpattern:modid:name>", tokens);
+            return false;
+        }
+        
+        return validateBracket("bannerpattern", tokens, BracketHandlers::getBannerPattern);
+    }
+    
+    @ZenCodeType.Method
+    @BracketValidator("instrument")
+    public static boolean validateInstrument(String tokens) {
+        
+        if(tokens.split(":").length != 2) {
+            CommonLoggers.zenCode()
+                    .error("Invalid Bracket Syntax: <instrument:{}>! Syntax is <instrument:modid:name>", tokens);
+            return false;
+        }
+        
+        return validateBracket("instrument", tokens, BracketHandlers::getInstrument);
+    }
+    
+    @ZenCodeType.Method
+    @BracketValidator("trimpattern")
+    public static boolean validateTrimPattern(String tokens) {
+        
+        if(tokens.split(":").length != 2) {
+            CommonLoggers.zenCode()
+                    .error("Invalid Bracket Syntax: <trimpattern:{}>! Syntax is <trimpattern:modid:name>", tokens);
+            return false;
+        }
+        
+        return validateBracket("trimpattern", tokens, BracketHandlers::getTrimPattern);
+    }
+    
+    @ZenCodeType.Method
+    @BracketValidator("trimmaterial")
+    public static boolean validateTrimMaterial(String tokens) {
+        
+        if(tokens.split(":").length != 2) {
+            CommonLoggers.zenCode()
+                    .error("Invalid Bracket Syntax: <trimmaterial:{}>! Syntax is <trimmaterial:modid:name>", tokens);
+            return false;
+        }
+        
+        return validateBracket("trimmaterial", tokens, BracketHandlers::getTrimMaterial);
     }
     
 }

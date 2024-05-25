@@ -21,7 +21,7 @@ public class ExpandMobEffectInstance {
     @ZenCodeType.StaticExpansionMethod
     public static MobEffectInstance of(MobEffect mobEffect, @ZenCodeType.OptionalInt int duration, @ZenCodeType.OptionalInt int amplifier, @ZenCodeType.OptionalBoolean boolean ambient, @ZenCodeType.OptionalBoolean(true) boolean visible, @ZenCodeType.OptionalBoolean(true) boolean showIcon, @ZenCodeType.Optional @ZenCodeType.Nullable MobEffectInstance hiddenEffect) {
         
-        return new MobEffectInstance(Services.REGISTRY.makeHolder(Registries.MOB_EFFECT, mobEffect), duration, amplifier, ambient, visible, showIcon, hiddenEffect);
+        return new MobEffectInstance(Services.REGISTRY.holderOrThrow(Registries.MOB_EFFECT, mobEffect), duration, amplifier, ambient, visible, showIcon, hiddenEffect);
     }
     
     @ZenCodeType.Method

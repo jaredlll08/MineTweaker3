@@ -221,7 +221,7 @@ public final class HandCommands {
     
     private static <T> Collection<String> sendTagsInformation(final CommandSourceStack source, final MutableComponent header, final KnownTagManager<?> manager, final T target) {
         
-        Holder<T> tHolder = Services.REGISTRY.makeHolder(manager.resourceKey(), target);
+        Holder<T> tHolder = Services.REGISTRY.holderOrThrow(manager.resourceKey(), target);
         
         if(tHolder.tags().findAny().isEmpty()) {
             return List.of();
@@ -278,7 +278,7 @@ public final class HandCommands {
     
     private static <T> void sendVanillaTagsInformation(final CommandSourceStack source, final MutableComponent header, final ITagManager<?> manager, final T target) {
         
-        Holder<T> tHolder = Services.REGISTRY.makeHolder(manager.resourceKey(), target);
+        Holder<T> tHolder = Services.REGISTRY.holderOrThrow(manager.resourceKey(), target);
         
         if(tHolder.tags().findAny().isEmpty()) {
             return;

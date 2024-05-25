@@ -84,7 +84,7 @@ public class ExpandMobEffect {
     @ZenCodeType.Method
     public static MobEffect addAttributeModifier(MobEffect internal, Attribute attribute, String name, double value, AttributeModifier.Operation operation) {
         
-        return internal.addAttributeModifier(Services.REGISTRY.makeHolder(Registries.ATTRIBUTE, attribute), name, value, operation);
+        return internal.addAttributeModifier(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute), name, value, operation);
     }
     
     @ZenCodeType.Method
