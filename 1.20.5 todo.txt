@@ -1,8 +1,4 @@
-Expose net.minecraft.world.food.FoodProperties.PossibleEffect
-
 Make sure all Collection returning things can actually be used
-
-expose Item.TooltipContext
 
 Make sure all the Level related classes are exposed
 
@@ -15,14 +11,10 @@ expose net.minecraft.world.effect.MobEffect.AttributeTemplate
 Look at all the advancement / loot predicates and make sure it is all exposed, maybe throw it all out and redo lol
 relook at loot, see how we can make it easier, like have ItemSubPredicates be a bep
 
-Look at net.minecraft.nbt.NbtUtils.compareNbt and see if it is useful anywhere
-
 loot in neoforge does not work
 
 rename all ZC and docs stuff to make sense
 
 brewing has been disabled for now.
-
-Expose neoforge MutableDataComponentHolder
 
 Look at DataComponents and make sure all of them are actually exposed
