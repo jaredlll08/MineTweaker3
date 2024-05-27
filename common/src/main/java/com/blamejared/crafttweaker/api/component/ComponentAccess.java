@@ -621,7 +621,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     // <editor-fold desc="INTANGIBLE_PROJECTILE">
     
     @ZenCodeType.Getter("isIntangibleProjectile")
-    default boolean isInangibleProjectile() {
+    default boolean isIntangibleProjectile() {
         
         return _has(DataComponents.INTANGIBLE_PROJECTILE);
     }
