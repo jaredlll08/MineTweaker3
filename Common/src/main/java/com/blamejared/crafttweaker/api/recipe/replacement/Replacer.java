@@ -234,10 +234,11 @@ public final class Replacer {
      * the function will determine what the element should be replaced by. In other words, any instance that makes
      * {@code toReplace} return {@code true} will be replaced by the result of the execution of {@code with}.</p>
      *
-     * <p>The strategy used can be determined by you, allowing for example to consider each element in detail instead of
-     * directly. For example, a {@link com.blamejared.crafttweaker.api.ingredient.IIngredient} like
-     * {@code <item:minecraft:dirt> | <item:minecraft:diamond>} can also be considered as two separate ingredients and
-     * thus replacing only dirt can happen.</p>
+     * <p>The replacement strategy used will be default one, so the components will be checked directly, without
+     * examining the various elements in detail. For example, a
+     * {@link com.blamejared.crafttweaker.api.ingredient.IIngredient} like
+     * {@code <item:minecraft:dirt> | <item:minecraft:diamond>} will be considered like a single entity. Attempting to
+     * replace only dirt, for example, won't work.</p>
      *
      * <p>A replacer cannot be modified after execution.</p>
      *
@@ -265,10 +266,11 @@ public final class Replacer {
      * <p>In particular, the given {@link IRecipeComponent} will be used to query the recipe and alter exactly what has
      * been specified. The function can be used to modify all elements.
      *
-     * <p>The strategy used can be determined by you, allowing for example to consider each element in detail instead of
-     * directly. For example, a {@link com.blamejared.crafttweaker.api.ingredient.IIngredient} like
-     * {@code <item:minecraft:dirt> | <item:minecraft:diamond>} can also be considered as two separate ingredients and
-     * thus replacing only dirt can happen.</p>
+     * <p>The replacement strategy used will be default one, so the components will be checked directly, without
+     * examining the various elements in detail. For example, a
+     * {@link com.blamejared.crafttweaker.api.ingredient.IIngredient} like
+     * {@code <item:minecraft:dirt> | <item:minecraft:diamond>} will be considered like a single entity. Attempting to
+     * replace only dirt, for example, won't work.</p>
      *
      * <p>A replacer cannot be modified after execution.</p>
      *
