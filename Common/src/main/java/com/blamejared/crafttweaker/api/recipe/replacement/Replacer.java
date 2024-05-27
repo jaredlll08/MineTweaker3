@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.action.recipe.replace.ActionBatchReplacem
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.google.common.base.Predicates;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
@@ -223,6 +224,68 @@ public final class Replacer {
     public <T> Replacer replace(final IRecipeComponent<T> component, final ITargetingStrategy strategy, final Predicate<T> toReplace, final Function<T, T> with) {
         
         return this.replace(component, strategy, DescriptivePredicate.wrap(toReplace), DescriptiveUnaryOperator.wrap(with::apply));
+    }
+    
+    /**
+     * Specifies a replacement that should be carried out by this replacer.
+     *
+     * <p>In particular, the given {@link IRecipeComponent} will be used to query the recipe and alter exactly what has
+     * been specified. The predicate will be used to determine whether a specific target needs to be replaced, whereas
+     * the function will determine what the element should be replaced by. In other words, any instance that makes
+     * {@code toReplace} return {@code true} will be replaced by the result of the execution of {@code with}.</p>
+     *
+     * <p>The strategy used can be determined by you, allowing for example to consider each element in detail instead of
+     * directly. For example, a {@link com.blamejared.crafttweaker.api.ingredient.IIngredient} like
+     * {@code <item:minecraft:dirt> | <item:minecraft:diamond>} can also be considered as two separate ingredients and
+     * thus replacing only dirt can happen.</p>
+     *
+     * <p>A replacer cannot be modified after execution.</p>
+     *
+     * @param component The {@link IRecipeComponent} indicating what should be targeted.
+     * @param toReplace A {@link Predicate} determining whether a specific element should be replaced or not. The
+     *                  argument given to it is the target that might have to be replaced.
+     * @param with      A {@link Function} that determines the replacement for elements that {@code toReplace} deems
+     *                  necessary of replacement. The argument given to the function is the target that needs to be
+     *                  replaced. The function can then determine freely how the replacement should be carried out.
+     * @param <T>       The type of elements targeted by the component.
+     *
+     * @return This replacer for chaining.
+     *
+     * @since 14.0.0
+     */
+    @ZenCodeType.Method
+    public <T> Replacer replace(final IRecipeComponent<T> component, final Predicate<T> toReplace, final Function<T, T> with) {
+        
+        return this.replace(component, ITargetingStrategy.find(ITargetingStrategy.DEFAULT_STRATEGY_ID), DescriptivePredicate.wrap(toReplace), DescriptiveUnaryOperator.wrap(with::apply));
+    }
+    
+    /**
+     * Specifies a replacement that should be carried out by this replacer.
+     *
+     * <p>In particular, the given {@link IRecipeComponent} will be used to query the recipe and alter exactly what has
+     * been specified. The function can be used to modify all elements.
+     *
+     * <p>The strategy used can be determined by you, allowing for example to consider each element in detail instead of
+     * directly. For example, a {@link com.blamejared.crafttweaker.api.ingredient.IIngredient} like
+     * {@code <item:minecraft:dirt> | <item:minecraft:diamond>} can also be considered as two separate ingredients and
+     * thus replacing only dirt can happen.</p>
+     *
+     * <p>A replacer cannot be modified after execution.</p>
+     *
+     * @param component The {@link IRecipeComponent} indicating what should be targeted.
+     * @param with      A {@link Function} that determines the replacement for elements that {@code toReplace} deems
+     *                  necessary of replacement. The argument given to the function is the target that needs to be
+     *                  replaced. The function can then determine freely how the replacement should be carried out.
+     * @param <T>       The type of elements targeted by the component.
+     *
+     * @return This replacer for chaining.
+     *
+     * @since 14.0.0
+     */
+    @ZenCodeType.Method
+    public <T> Replacer replace(final IRecipeComponent<T> component, final Function<T, T> with) {
+        
+        return this.replace(component, ITargetingStrategy.find(ITargetingStrategy.DEFAULT_STRATEGY_ID), DescriptivePredicate.wrap(Predicates.alwaysTrue()), DescriptiveUnaryOperator.wrap(with::apply));
     }
     
     private <T> Replacer replace(
