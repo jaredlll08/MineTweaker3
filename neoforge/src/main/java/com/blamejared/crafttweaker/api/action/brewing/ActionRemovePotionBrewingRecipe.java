@@ -1,81 +1,81 @@
-package com.blamejared.crafttweaker.api.action.brewing;
-
-import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.natives.item.alchemy.ExpandPotion;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class ActionRemovePotionBrewingRecipe extends ActionBrewingBase {
-    
-    private final List<PotionBrewing.Mix<Potion>> removed = new ArrayList<>();
-    private final Potion input;
-    private final Potion output;
-    private final IItemStack reagentStack;
-    
-    public ActionRemovePotionBrewingRecipe(List<IBrewingRecipe> recipes, Potion output, IItemStack reagentStack, Potion input) {
-        
-        super(recipes);
-        this.output = output;
-        this.input = input;
-        this.reagentStack = reagentStack;
-        
-    }
-    
-    @Override
-    public void apply() {
-        //TODO 1.20.5
+//package com.blamejared.crafttweaker.api.action.brewing;
 //
-//        Iterator<PotionBrewing.Mix<Potion>> vanillaIterator = AccessPotionBrewing.crafttweaker$getPOTION_MIXES()
-//                .iterator();
-//        while(vanillaIterator.hasNext()) {
-//            PotionBrewing.Mix<Potion> mix = vanillaIterator.next();
+//import com.blamejared.crafttweaker.api.item.IItemStack;
+//import com.blamejared.crafttweaker.natives.item.alchemy.ExpandPotion;
+//import net.minecraft.world.item.alchemy.Potion;
+//import net.minecraft.world.item.alchemy.PotionBrewing;
+//import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
 //
-//            Potion potionInput = mix.from;
-//            Potion potionOutput = mix.to;
-//            Ingredient reagent = mix.ingredient;
+//import java.util.ArrayList;
+//import java.util.List;
 //
-//            if(potionInput == null || potionOutput == null || reagent == null) {
-//                throw new RuntimeException("Error getting potion from mix: " + mix + "! Please make an issue on the issue tracker!");
-//            }
+//public class ActionRemovePotionBrewingRecipe extends ActionBrewingBase {
 //
-//            if(potionInput == input && potionOutput == output && reagent.test(reagentStack.getInternal())) {
-//                removed.add(mix);
-//                vanillaIterator.remove();
-//            }
-//        }
-        
-    }
-    
-    @Override
-    public void undo() {
-        
-        //TODO 1.20.5
-//        for(PotionBrewing.Mix<Potion> potion : removed) {
-//            Potion potionInput = potion.from;
-//            Ingredient itemReagent = potion.ingredient;
-//            Potion potionOutput = potion.to;
+//    private final List<PotionBrewing.Mix<Potion>> removed = new ArrayList<>();
+//    private final Potion input;
+//    private final Potion output;
+//    private final IItemStack reagentStack;
 //
-//            AccessPotionBrewing.crafttweaker$callAddMix(potionInput, itemReagent.getItems()[0].getItem(), potionOutput);
-//        }
-    }
-    
-    @Override
-    public String describe() {
-        
-        return "Removing Brewing recipes that have an input of: " + ExpandPotion.getCommandString(input) + ", output of: " + ExpandPotion
-                .getCommandString(output) + " and a reagent of: " + reagentStack;
-    }
-    
-    @Override
-    public String describeUndo() {
-        
-        return "Undoing removal of Brewing recipes that have an input of: " + ExpandPotion.getCommandString(input) + ", output of: " + ExpandPotion
-                .getCommandString(output) + " and a reagent of: " + reagentStack;
-    }
-    
-    
-}
+//    public ActionRemovePotionBrewingRecipe(List<IBrewingRecipe> recipes, Potion output, IItemStack reagentStack, Potion input) {
+//
+//        super(recipes);
+//        this.output = output;
+//        this.input = input;
+//        this.reagentStack = reagentStack;
+//
+//    }
+//
+//    @Override
+//    public void apply() {
+//        //TODO 1.20.5
+////
+////        Iterator<PotionBrewing.Mix<Potion>> vanillaIterator = AccessPotionBrewing.crafttweaker$getPOTION_MIXES()
+////                .iterator();
+////        while(vanillaIterator.hasNext()) {
+////            PotionBrewing.Mix<Potion> mix = vanillaIterator.next();
+////
+////            Potion potionInput = mix.from;
+////            Potion potionOutput = mix.to;
+////            Ingredient reagent = mix.ingredient;
+////
+////            if(potionInput == null || potionOutput == null || reagent == null) {
+////                throw new RuntimeException("Error getting potion from mix: " + mix + "! Please make an issue on the issue tracker!");
+////            }
+////
+////            if(potionInput == input && potionOutput == output && reagent.test(reagentStack.getInternal())) {
+////                removed.add(mix);
+////                vanillaIterator.remove();
+////            }
+////        }
+//
+//    }
+//
+//    @Override
+//    public void undo() {
+//
+//        //TODO 1.20.5
+////        for(PotionBrewing.Mix<Potion> potion : removed) {
+////            Potion potionInput = potion.from;
+////            Ingredient itemReagent = potion.ingredient;
+////            Potion potionOutput = potion.to;
+////
+////            AccessPotionBrewing.crafttweaker$callAddMix(potionInput, itemReagent.getItems()[0].getItem(), potionOutput);
+////        }
+//    }
+//
+//    @Override
+//    public String describe() {
+//
+//        return "Removing Brewing recipes that have an input of: " + ExpandPotion.getCommandString(input) + ", output of: " + ExpandPotion
+//                .getCommandString(output) + " and a reagent of: " + reagentStack;
+//    }
+//
+//    @Override
+//    public String describeUndo() {
+//
+//        return "Undoing removal of Brewing recipes that have an input of: " + ExpandPotion.getCommandString(input) + ", output of: " + ExpandPotion
+//                .getCommandString(output) + " and a reagent of: " + reagentStack;
+//    }
+//
+//
+//}
