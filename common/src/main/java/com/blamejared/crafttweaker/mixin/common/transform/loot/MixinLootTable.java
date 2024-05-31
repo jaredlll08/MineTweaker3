@@ -18,7 +18,7 @@ public abstract class MixinLootTable {
     
     @Inject(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V", at = @At("HEAD"))
     private void crafttweaker$getRandomItemsRaw$populateContextWithTableId(final LootContext context, final Consumer<ItemStack> $$1, final CallbackInfo ci) {
-        //TODO 1.20.5 confirm
+        
         GenericUtil.<ILootTableIdHolder.Mutable> uncheck(context)
                 .crafttweaker$tableId(ExpandLootTable.getId(GenericUtil.uncheck(this)));
     }
