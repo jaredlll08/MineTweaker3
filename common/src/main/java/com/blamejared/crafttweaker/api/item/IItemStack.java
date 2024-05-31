@@ -57,7 +57,6 @@ import java.util.function.UnaryOperator;
 @ZenCodeType.Name("crafttweaker.api.item.IItemStack")
 @Document("vanilla/api/item/IItemStack")
 public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComponentHolder, ComponentAccess<IItemStack> {
-    //TODO 1.20.5 redo all of this and the comments!!!
     
     ResourceLocation INGREDIENT_ID = CraftTweakerConstants.rl("iitemstack");
     

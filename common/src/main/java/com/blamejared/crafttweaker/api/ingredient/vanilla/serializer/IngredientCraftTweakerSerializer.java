@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 public class IngredientCraftTweakerSerializer implements CraftTweakerVanillaIngredientSerializer<IngredientCraftTweaker<? extends IIngredient>> {
     
     public static final IngredientCraftTweakerSerializer INSTANCE = new IngredientCraftTweakerSerializer();
-    //TODO 1.20.5 I don't know if this makes sense or works
     public static final MapCodec<IngredientCraftTweaker<? extends IIngredient>> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(IIngredient.CODEC.fieldOf("ingredient")
                     .forGetter(IngredientCraftTweaker::getCrTIngredient)
