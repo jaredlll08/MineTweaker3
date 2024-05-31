@@ -64,8 +64,8 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     Codec<IItemStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ItemStack.CODEC.fieldOf("item").forGetter(IItemStack::getInternal),
             Codec.BOOL.fieldOf("mutable").forGetter(IItemStack::isMutable),
-            IngredientConditions.CODEC.fieldOf("conditions").forGetter(IItemStack::conditions),
-            IngredientTransformers.CODEC.fieldOf("transformers").forGetter(IItemStack::transformers)
+            IngredientConditions.CODEC.optionalFieldOf("conditions", IngredientConditions.EMPTY).forGetter(IItemStack::conditions),
+            IngredientTransformers.CODEC.optionalFieldOf("transformers", IngredientTransformers.EMPTY).forGetter(IItemStack::transformers)
             ).apply(instance, IItemStack::of));
     
     StreamCodec<RegistryFriendlyByteBuf, IItemStack> STREAM_CODEC = StreamCodec.composite(
