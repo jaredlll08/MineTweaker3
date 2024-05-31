@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.SharedConstants;
 import net.minecraft.world.InteractionResult;
 
 public class CraftTweakerFabric implements ModInitializer {
@@ -19,8 +18,6 @@ public class CraftTweakerFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         
-        //TODO 1.20.5 remove
-        SharedConstants.IS_RUNNING_IN_IDE = true;
         CraftTweakerCommon.init();
         FabricRegistryHelper.init();
         CraftTweakerCommon.getPluginManager().loadPlugins();

@@ -1,71 +1,87 @@
 package com.blamejared.crafttweaker.api.action.item;
 
-
 import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import com.blamejared.crafttweaker.api.action.internal.CraftTweakerAction;
-import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.zencode.IScriptLoadSource;
+import com.blamejared.crafttweaker.mixin.common.access.item.AccessItem;
+import com.blamejared.crafttweaker.natives.item.ExpandItem;
+import com.blamejared.crafttweaker.platform.Services;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.Logger;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class ActionSetItemProperty<T> extends CraftTweakerAction implements IUndoableAction {
     
-    private final IItemStack item;
-    private final String propertyName;
+    private final Item item;
+    private final DataComponentType<T> component;
     private final T newValue;
-    private final T oldValue;
-    private final Consumer<T> valueSetter;
-    private final Function<T, String> valueNameGetter;
+    private T oldValue;
     
-    public ActionSetItemProperty(IItemStack item, String propertyName, T newValue, T oldValue, Consumer<T> valueSetter) {
+    public ActionSetItemProperty(Item item, DataComponentType<T> component, T newValue) {
         
         this.item = item;
-        this.propertyName = propertyName;
+        this.component = component;
         this.newValue = newValue;
-        this.oldValue = oldValue;
-        this.valueSetter = valueSetter;
-        this.valueNameGetter = Object::toString;
-    }
-    
-    public ActionSetItemProperty(IItemStack item, String propertyName, T newValue, T oldValue, Consumer<T> valueSetter, Function<T, String> valueNameGetter) {
-        
-        this.item = item;
-        this.propertyName = propertyName;
-        this.newValue = newValue;
-        this.oldValue = oldValue;
-        this.valueSetter = valueSetter;
-        this.valueNameGetter = valueNameGetter;
     }
     
     @Override
     public void apply() {
+        // components are interned on Item, and we don't want to change *all* items
+        if(item.components() == DataComponents.COMMON_ITEM_COMPONENTS) {
+            ((AccessItem) item).crafttweaker$setComponents(DataComponentMap.builder()
+                    .addAll(item.components())
+                    .build());
+        }
         
-        this.valueSetter.accept(newValue);
+        if(item.components() instanceof DataComponentMap.Builder.SimpleMap map) {
+            if(newValue == null) {
+                oldValue = GenericUtil.uncheck(map.map().remove(component));
+            } else {
+                oldValue = GenericUtil.uncheck(map.map().put(component, newValue));
+            }
+        } else {
+            throw new IllegalStateException("Unknown DataComponentMap: " + item.components().getClass());
+        }
     }
     
     @Override
     public String describe() {
         
-        return "Set the value of " + propertyName + " on " + getTargetCommandString() + " to: '" + (newValue == null ? "null" : this.valueNameGetter.apply(newValue)) + "'";
+        if(newValue == null) {
+            return "Removing '" + Services.REGISTRY.keyOrThrow(Registries.DATA_COMPONENT_TYPE, component) + "' from item '" + ExpandItem.getCommandString(item) + "'";
+        } else {
+            return "Setting the value of '" + Services.REGISTRY.keyOrThrow(Registries.DATA_COMPONENT_TYPE, component) + "' to '" + newValue + "' on item '" + ExpandItem.getCommandString(item) + "'";
+        }
     }
     
     @Override
     public void undo() {
         
-        this.valueSetter.accept(oldValue);
+        if(item.components() == DataComponents.COMMON_ITEM_COMPONENTS) {
+            ((AccessItem) item).crafttweaker$setComponents(DataComponentMap.builder()
+                    .addAll(item.components())
+                    .build());
+        }
+        
+        if(item.components() instanceof DataComponentMap.Builder.SimpleMap map) {
+            if(oldValue == null) {
+                map.map().remove(component);
+            } else {
+                map.map().put(component, oldValue);
+            }
+        } else {
+            throw new IllegalStateException("Unknown DataComponentMap: " + item.components().getClass());
+        }
     }
     
     @Override
     public String describeUndo() {
         
-        return "Reset the value of " + propertyName + " on " + getTargetCommandString() + " to: '" + (newValue == null ? "null" : this.valueNameGetter.apply(oldValue)) + "'";
-    }
-    
-    public String getTargetCommandString() {
-        
-        return item.getCommandString();
+        return "Reset the value of '" + Services.REGISTRY.keyOrThrow(Registries.DATA_COMPONENT_TYPE, component) + "' on item '" + ExpandItem.getCommandString(item) + "'";
     }
     
     @Override

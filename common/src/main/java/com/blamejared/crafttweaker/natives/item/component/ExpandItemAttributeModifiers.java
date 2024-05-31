@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -73,6 +72,12 @@ public class ExpandItemAttributeModifiers {
     @Document("vanilla/api/item/component/ItemAttributeModifiersEntry")
     @NativeTypeRegistration(value = ItemAttributeModifiers.Entry.class, zenCodeName = "crafttweaker.api.item.component.ItemAttributeModifiersEntry")
     public static class ExpandItemAttributeModifiersEntry {
+        
+        @ZenCodeType.StaticExpansionMethod
+        public static ItemAttributeModifiers.Entry of(Attribute attribute, AttributeModifier modifier, EquipmentSlotGroup slot) {
+            
+            return new ItemAttributeModifiers.Entry(Services.REGISTRY.holderOrThrow(Registries.ATTRIBUTE, attribute), modifier, slot);
+        }
         
         @ZenCodeType.Getter("attribute")
         public static Attribute attribute(ItemAttributeModifiers.Entry internal) {

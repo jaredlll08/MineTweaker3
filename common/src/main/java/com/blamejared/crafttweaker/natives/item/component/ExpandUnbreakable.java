@@ -11,6 +11,12 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = Unbreakable.class, zenCodeName = "crafttweaker.api.item.component.Unbreakable")
 public class ExpandUnbreakable {
     
+    @ZenCodeType.StaticExpansionMethod
+    public static Unbreakable of(boolean showInTooltip) {
+        
+        return new Unbreakable(showInTooltip);
+    }
+    
     @ZenCodeType.Method
     public static Unbreakable withTooltip(Unbreakable internal, boolean showInTooltip) {
         
