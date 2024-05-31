@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +26,7 @@ public class ScriptSerializerTest implements CraftTweakerGameTest {
     public void testCodecEncode(GameTestHelper helper) {
         
         DataResult<JsonElement> encodeResult = encode(ScriptSerializer.CODEC, getRecipe());
-        JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
+        JsonElement jsonResult = encodeResult.getOrThrow(GameTestAssertException::new);
         assertThat(jsonResult.isJsonObject(), is(true));
         assertThat(jsonResult.getAsJsonObject(), is(getJson()));
     }
@@ -35,7 +36,7 @@ public class ScriptSerializerTest implements CraftTweakerGameTest {
     public void testCodecDecode(GameTestHelper helper) {
         
         DataResult<Pair<ScriptRecipe, JsonElement>> decode = decode(ScriptSerializer.CODEC, getJson());
-        Pair<ScriptRecipe, JsonElement> decodeResult = decode.getOrThrow(false, this::fail);
+        Pair<ScriptRecipe, JsonElement> decodeResult = decode.getOrThrow(GameTestAssertException::new);
         assertThat(decodeResult.getFirst(), is(getRecipe()));
     }
     

@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Items;
 
@@ -23,17 +24,23 @@ public class IItemStackTest  implements CraftTweakerGameTest {
     public void testCodecEncode(GameTestHelper helper) {
         
         DataResult<JsonElement> encodeResult = encode(IItemStack.CODEC, IItemStack.of(Items.APPLE));
-        JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
+        JsonElement jsonResult = encodeResult.getOrThrow(GameTestAssertException::new);
         assertThat(jsonResult.isJsonObject(), is(true));
         assertThat(jsonResult.getAsJsonObject(), is(parseJson("""
-                {
-                  "item": {
-                    "id": "minecraft:apple",
-                    "Count": 1
-                  },
-                  "mutable": false
-                }
-                """)));
+  {
+    "item": {
+      "id": "minecraft:apple",
+      "Count": 1
+    },
+    "mutable": false,
+    "conditions": {
+      "conditions": []
+    },
+    "transformers": {
+      "transformers": []
+    }
+  }
+  """)));
     }
     
     @GameTest(template = "crafttweaker:empty")
@@ -42,14 +49,20 @@ public class IItemStackTest  implements CraftTweakerGameTest {
         
         DataResult<Pair<IItemStack, JsonElement>> decode = decode(IItemStack.CODEC, parseJson("""
                 {
-                  "item": {
-                    "id": "minecraft:apple",
-                    "Count": 1
-                  },
-                  "mutable": false
-                }
-                """));
-        Pair<IItemStack, JsonElement> decodeResult = decode.getOrThrow(false, this::fail);
+                      "item": {
+                        "id": "minecraft:apple",
+                        "Count": 1
+                      },
+                      "mutable": false,
+                      "conditions": {
+                        "conditions": []
+                      },
+                      "transformers": {
+                        "transformers": []
+                      }
+                    }
+"""));
+        Pair<IItemStack, JsonElement> decodeResult = decode.getOrThrow(GameTestAssertException::new);
         assertThat(decodeResult.getFirst(), is(IItemStack.of(Items.APPLE)));
     }
     

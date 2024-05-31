@@ -39,7 +39,7 @@ public class FluidStackTest implements CraftTweakerGameTest {
         if(Services.PLATFORM.getPlatformName().equals("Forge") || Services.PLATFORM.getPlatformName().equals("NeoForge")) {
             usesIntAmount = true;
         }
-        IData expected = new MapData(Map.of("amount", usesIntAmount ? new IntData(2) : new LongData(2), "fluid", new StringData("minecraft:water")));
+        IData expected = new MapData(Map.of("amount", usesIntAmount ? new IntData(2) : new LongData(2), "id", new StringData("minecraft:water")));
         assertThat(iData, is(expected));
         
     }

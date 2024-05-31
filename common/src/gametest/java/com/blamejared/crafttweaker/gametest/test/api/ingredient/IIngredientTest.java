@@ -16,6 +16,7 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Items;
 
@@ -66,7 +67,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
         
         IIngredient input = IItemStack.of(Items.APPLE.getDefaultInstance());
         DataResult<JsonElement> encodeResult = encode(IIngredient.CODEC, input);
-        JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
+        JsonElement jsonResult = encodeResult.getOrThrow(GameTestAssertException::new);
         assertThat(jsonResult, is(parseJson("{'item': 'minecraft:apple'}")));
     }
     
@@ -75,7 +76,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
     public void testCodecDecode(GameTestHelper helper) {
         
         DataResult<Pair<IIngredient, JsonElement>> decode = decode(IIngredient.CODEC, parseJson("{'item': 'minecraft:apple'}"));
-        Pair<IIngredient, JsonElement> decodeResult = decode.getOrThrow(false, this::fail);
+        Pair<IIngredient, JsonElement> decodeResult = decode.getOrThrow(GameTestAssertException::new);
         assertThat(decodeResult.getFirst(), is(IItemStack.of(Items.APPLE.getDefaultInstance())));
     }
     
@@ -93,7 +94,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
                 Arguments.Builder.named("item matches item with data")
                         .input(IItemStack.of(Items.APPLE))
                         .other(IItemStack.of(Items.APPLE)
-                                .withTag(new MapData(Map.of("Custom", ExpandString.asData("Data")))))
+                                .withCustomData(new MapData(Map.of("Custom", ExpandString.asData("Data")))))
                         .expected(true),
                 Arguments.Builder.named("item does not match different item")
                         .input(IItemStack.of(Items.ARROW))
@@ -105,7 +106,7 @@ public class IIngredientTest implements CraftTweakerGameTest {
                         .expected(false),
                 Arguments.Builder.named("item with data does not match item without data")
                         .input(IItemStack.of(Items.APPLE)
-                                .withTag(new MapData(Map.of("Custom", ExpandString.asData("Data")))))
+                                .withCustomData(new MapData(Map.of("Custom", ExpandString.asData("Data")))))
                         .other(IItemStack.of(Items.APPLE))
                         .expected(false)
         );

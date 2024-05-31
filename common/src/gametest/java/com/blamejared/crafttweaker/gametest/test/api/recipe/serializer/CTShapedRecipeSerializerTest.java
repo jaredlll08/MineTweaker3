@@ -7,16 +7,13 @@ import com.blamejared.crafttweaker.api.recipe.type.CTShapedRecipe;
 import com.blamejared.crafttweaker.gametest.CraftTweakerGameTest;
 import com.blamejared.crafttweaker.gametest.framework.annotation.CraftTweakerGameTestHolder;
 import com.blamejared.crafttweaker.gametest.framework.annotation.TestModifier;
-import com.blamejared.crafttweaker.impl.loot.condition.LootTableIdCondition;
-import com.blamejared.crafttweaker.impl.loot.condition.LootTableIdRegexCondition;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Items;
-
-import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -29,7 +26,7 @@ public class CTShapedRecipeSerializerTest implements CraftTweakerGameTest {
     public void testCodecEncode(GameTestHelper helper) {
         
         DataResult<JsonElement> encodeResult = encode(CTShapedRecipeSerializer.CODEC, getSubject());
-        JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
+        JsonElement jsonResult = encodeResult.getOrThrow(GameTestAssertException::new);
         assertThat(jsonResult.isJsonObject(), is(true));
         assertThat(jsonResult.getAsJsonObject(), is(getJson()));
     }
@@ -39,7 +36,7 @@ public class CTShapedRecipeSerializerTest implements CraftTweakerGameTest {
     public void testCodecDecode(GameTestHelper helper) {
         
         DataResult<Pair<CTShapedRecipe, JsonElement>> decode = decode(CTShapedRecipeSerializer.CODEC, getJson());
-        Pair<CTShapedRecipe, JsonElement> decodeResult = decode.getOrThrow(false, this::fail);
+        Pair<CTShapedRecipe, JsonElement> decodeResult = decode.getOrThrow(GameTestAssertException::new);
         assertThat(decodeResult.getFirst(), is(getSubject()));
     }
     
@@ -70,6 +67,7 @@ public class CTShapedRecipeSerializerTest implements CraftTweakerGameTest {
     
     private CTShapedRecipe getSubject() {
         
-        return new CTShapedRecipe(immutableStack(Items.APPLE), new IIngredient[][]{{immutableStack(Items.DIAMOND), immutableStack(Items.BARREL)}}, MirrorAxis.ALL);
+        return new CTShapedRecipe(immutableStack(Items.APPLE), new IIngredient[][] {{immutableStack(Items.DIAMOND), immutableStack(Items.BARREL)}}, MirrorAxis.ALL);
     }
+    
 }

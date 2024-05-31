@@ -100,11 +100,6 @@ public class SpecialCaseTestReporter implements TestReporter {
     
     private long getRunTime(GameTestInfo info) {
         
-        if(info.getTestFunction() instanceof FutureJUnitTestFunction jUnitTestFunction) {
-            return Duration.ofNanos(jUnitTestFunction.result().endTime() - jUnitTestFunction.result().startTime())
-                    .toMillis();
-        }
-        
         return info.getRunTime();
     }
     

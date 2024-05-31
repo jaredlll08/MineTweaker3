@@ -2,9 +2,9 @@ package com.blamejared.crafttweaker.gametest.test.api.ingredient.vanilla.type;
 
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.transformer.type.TransformReuse;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientTransformed;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.CraftTweakerVanillaIngredient;
-import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientTransformed;
+import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientCraftTweaker;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.gametest.CraftTweakerGameTest;
 import com.blamejared.crafttweaker.gametest.framework.annotation.CraftTweakerGameTestHolder;
 import com.blamejared.crafttweaker.gametest.framework.annotation.TestModifier;
@@ -28,7 +28,7 @@ public class IngredientTransformedTest implements CraftTweakerGameTest {
     @TestModifier(implicitSuccession = true)
     public void testTest(GameTestHelper helper, Arguments arguments) {
         
-        CraftTweakerVanillaIngredient subject = IngredientTransformed.of(new IIngredientTransformed<IIngredient>(immutableStack(Items.DIAMOND_AXE), TransformReuse.getInstance()));
+        CraftTweakerVanillaIngredient subject = IngredientCraftTweaker.of(IItemStack.of(Items.DIAMOND_AXE.getDefaultInstance()).reuse());
         assertThat(subject.test(arguments.input()), is(arguments.<Boolean> expected()));
     }
     

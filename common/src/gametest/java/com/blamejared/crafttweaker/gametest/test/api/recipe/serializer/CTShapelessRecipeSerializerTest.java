@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Items;
 
@@ -27,7 +28,7 @@ public class CTShapelessRecipeSerializerTest implements CraftTweakerGameTest {
     public void testCodecEncode(GameTestHelper helper) {
         
         DataResult<JsonElement> encodeResult = encode(CTShapelessRecipeSerializer.CODEC, getSubject());
-        JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
+        JsonElement jsonResult = encodeResult.getOrThrow(GameTestAssertException::new);
         assertThat(jsonResult.isJsonObject(), is(true));
         assertThat(jsonResult.getAsJsonObject(), is(getJson()));
     }
@@ -37,7 +38,7 @@ public class CTShapelessRecipeSerializerTest implements CraftTweakerGameTest {
     public void testCodecDecode(GameTestHelper helper) {
         
         DataResult<Pair<CTShapelessRecipe, JsonElement>> decode = decode(CTShapelessRecipeSerializer.CODEC, getJson());
-        Pair<CTShapelessRecipe, JsonElement> decodeResult = decode.getOrThrow(false, this::fail);
+        Pair<CTShapelessRecipe, JsonElement> decodeResult = decode.getOrThrow(GameTestAssertException::new);
         assertThat(decodeResult.getFirst(), is(getSubject()));
     }
     

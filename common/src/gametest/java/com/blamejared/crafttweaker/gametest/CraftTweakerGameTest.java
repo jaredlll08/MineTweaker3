@@ -9,11 +9,15 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Consumer;
@@ -61,7 +65,7 @@ public interface CraftTweakerGameTest {
     default ItemStack stack(ItemLike item, Consumer<CompoundTag> tag) {
         
         ItemStack itemStack = new ItemStack(item);
-        tag.accept(itemStack.getOrCreateTag());
+        itemStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, customData -> customData.update(tag));
         return itemStack;
     }
     
@@ -86,9 +90,9 @@ public interface CraftTweakerGameTest {
     }
     
     
-    default FriendlyByteBuf createBuffer() {
+    default RegistryFriendlyByteBuf createBuffer(RegistryAccess registryAccess) {
         
-        return new FriendlyByteBuf(Unpooled.buffer());
+        return new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
     }
     
     default <T> DataResult<JsonElement> encode(Codec<T> codec, T t) {
@@ -96,11 +100,20 @@ public interface CraftTweakerGameTest {
         return codec.encodeStart(JsonOps.INSTANCE, t);
     }
     
+    default <T> DataResult<JsonElement> encode(MapCodec<T> codec, T t) {
+        
+        return codec.codec().encodeStart(JsonOps.INSTANCE, t);
+    }
+    
     default <T> DataResult<Pair<T, JsonElement>> decode(Codec<T> codec, JsonElement element) {
         
         return codec.decode(JsonOps.INSTANCE, element);
     }
     
+    default <T> DataResult<Pair<T, JsonElement>> decode(MapCodec<T> codec, JsonElement element) {
+        
+        return codec.codec().decode(JsonOps.INSTANCE, element);
+    }
     
     default JsonElement parseJson(String json) {
         

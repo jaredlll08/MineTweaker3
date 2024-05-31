@@ -14,8 +14,6 @@ import java.util.List;
 @VisibleForTesting
 public class ScriptBuilder {
     
-    
-    
     @VisibleForTesting
     public record Script(String name, String content) {}
     

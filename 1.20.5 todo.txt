@@ -1,7 +1,0 @@
-Check Entity and Living Entity on what to expose
-
-loot in neoforge does not work
-
-rename all ZC and docs stuff to make sense
-
-brewing has been disabled for now.

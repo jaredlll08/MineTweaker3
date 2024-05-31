@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 import java.util.regex.Pattern;
@@ -25,7 +26,7 @@ public class LootTableIdRegexConditionTest implements CraftTweakerGameTest {
     public void testCodecEncode(GameTestHelper helper) {
         
         DataResult<JsonElement> encodeResult = encode(LootTableIdRegexCondition.CODEC, getSubject());
-        JsonElement jsonResult = encodeResult.getOrThrow(false, this::fail);
+        JsonElement jsonResult = encodeResult.getOrThrow(GameTestAssertException::new);
         assertThat(jsonResult, is(getJson()));
     }
     
@@ -34,14 +35,14 @@ public class LootTableIdRegexConditionTest implements CraftTweakerGameTest {
     public void testCodecDecode(GameTestHelper helper) {
         
         DataResult<Pair<LootTableIdRegexCondition, JsonElement>> decode = decode(LootTableIdRegexCondition.CODEC, getJson());
-        Pair<LootTableIdRegexCondition, JsonElement> decodeResult = decode.getOrThrow(false, this::fail);
+        Pair<LootTableIdRegexCondition, JsonElement> decodeResult = decode.getOrThrow(GameTestAssertException::new);
         // You can't actually test pattern equality...
         assertThat(decodeResult.getFirst().regex().pattern(), is(getSubject().regex().pattern()));
     }
     
     private JsonElement getJson() {
         
-        return parseJson(".*chest.*");
+        return parseJson("{\"pattern\":\".*chest.*\"}");
     }
     
     private LootTableIdRegexCondition getSubject() {

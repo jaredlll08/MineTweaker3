@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 @CraftTweakerGameTestHolder
 public class JsonConverterTest implements CraftTweakerGameTest {
     
