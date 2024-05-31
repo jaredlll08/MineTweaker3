@@ -457,6 +457,12 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     @ZenCodeType.Method
+    default T withAttributeModifiers(ItemAttributeModifiers.Entry modifier, @ZenCodeType.OptionalBoolean(true) boolean showInTooltip) {
+        
+        return _with(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(List.of(modifier), showInTooltip));
+    }
+    
+    @ZenCodeType.Method
     default T withAttributeModifiers(List<ItemAttributeModifiers.Entry> modifiers, @ZenCodeType.OptionalBoolean(true) boolean showInTooltip) {
         
         return _with(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(modifiers, showInTooltip));
