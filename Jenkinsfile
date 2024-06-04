@@ -7,9 +7,9 @@ def botUsername = 'crafttweakerbot'
 def botEmail = 'crafttweakerbot@gmail.com'
 
 def documentationDir = 'CrafttweakerDocumentation'
-def exportDirInRepo = 'docs_exported/1.20.5/crafttweaker'
+def exportDirInRepo = 'docs_exported/1.20.6/crafttweaker'
 
-def branchName = "1.20.5"
+def branchName = "1.20.6"
 
 pipeline {
     agent any
@@ -45,7 +45,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests'
-                sh './gradlew check' // TODO 1.20.5 re-enable gameTest
+                sh './gradlew check' // TODO 1.21 re-enable gameTest
             }
         }
 
