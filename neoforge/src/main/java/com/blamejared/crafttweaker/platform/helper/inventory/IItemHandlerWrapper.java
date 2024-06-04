@@ -2,7 +2,6 @@ package com.blamejared.crafttweaker.platform.helper.inventory;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +34,7 @@ public class IItemHandlerWrapper implements IInventoryWrapper {
         if(item.isEmpty()) {
             return true;
         }
-        if(ItemHandlerHelper.canItemStacksStack(item, stack)) {
+        if(ItemStack.isSameItemSameComponents(item, stack)) {
             int maxStackSize = Math.min(handler.getSlotLimit(slot), item.getMaxStackSize());
             return item.getCount() + stack.getCount() < maxStackSize;
         }

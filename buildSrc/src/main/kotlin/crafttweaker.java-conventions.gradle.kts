@@ -20,21 +20,8 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion))
     withSourcesJar()
     withJavadocJar()
-    sourceSets {
-        named("main") {
-            resources {
-                srcDirs.add(project.file("src/generated/resources"))
-            }
-        }
-        register("gametest") {
-            resources {
-                srcDirs.add(project.file("src/gametest/resources"))
-            }
-            compileClasspath += sourceSets["main"].runtimeClasspath
-            runtimeClasspath += sourceSets["main"].runtimeClasspath
-        }
-    }
 }
+
 @Suppress("UnstableApiUsage")
 repositories {
     mavenCentral()
@@ -68,23 +55,30 @@ repositories {
     }
 }
 
-tasks {
-    named<JavaCompile>("compileTestJava").configure {
-        options.isFork = true
-        options.compilerArgs.add("-XDenableSunApiLintControl")
+setOf("apiElements", "runtimeElements", "sourcesElements", "javadocElements").forEach { it: String ->
+    configurations.getByName(it).outgoing {
+        capability("$group:${base.archivesName.get()}:$version")
+        capability("$group:${Properties.MOD_ID}-${project.name}-${Versions.MINECRAFT}:$version")
+        capability("$group:${Properties.MOD_ID}:$version")
     }
+    publishing.publications {
+        if (this is MavenPublication) {
+            this.suppressPomMetadataWarningsFor(it)
+        }
+    }
+}
+
+tasks {
     named<JavaCompile>("compileJava").configure {
         options.compilerArgs.add("-Acrafttweaker.processor.document.output_directory=${project.rootProject.file(Properties.DOCS_OUTPUT_DIR)}")
         options.compilerArgs.add("-Acrafttweaker.processor.document.multi_source=true")
-    }
-    withType<JavaCompile>().matching { notNeoTask(it) }.configureEach {
         options.encoding = StandardCharsets.UTF_8.toString()
         options.release.set(Versions.MOD_JAVA.toInt())
         Dependencies.ZENCODE.forEach {
             source(project(it).sourceSets.getByName("main").allSource)
         }
     }
-    withType<Javadoc>().matching { notNeoTask(it) }.configureEach {
+    named<Javadoc>("javadoc").configure {
         options {
             encoding = StandardCharsets.UTF_8.toString()
             // Javadoc defines this specifically as StandardJavadocDocletOptions
@@ -103,30 +97,7 @@ tasks {
             from(project(it).sourceSets.getByName("main").allSource)
         }
     }
-    named<JavaCompile>("compileGametestJava").configure {
-        if (this.project.name == "neoforge") {
-            Dependencies.ZENCODE.forEach {
-                source(project(it).sourceSets.getByName("main").allSource)
-            }
-            Dependencies.ZENCODE_TEST.forEach {
-                source(project(it).sourceSets.getByName("test").allSource)
-            }
-        }
-//        if (this.project.name == "forge") {
-//            project.copy {
-//                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//                from(project.sourceSets.getByName("gametest").output)
-//                Dependencies.ZENCODE.forEach {
-//                    from(project(it).sourceSets.main.get().output)
-//                }
-//                Dependencies.ZENCODE_TEST.forEach {
-//                    from(project(it).sourceSets.test.get().output)
-//                }
-//                into(project.layout.buildDirectory.dir("sourcesSets/main"))
-//            }
-//        }
-    }
-    withType<ProcessResources>().matching { notNeoTask(it) }.configureEach {
+    named<ProcessResources>("processResources").configure {
         dependsOn(":StdLibs:zipItUp")
         from(project.files(project.evaluationDependsOn(":StdLibs").tasks.getByName("zipItUp").outputs))
 
@@ -158,7 +129,7 @@ tasks {
             expand(properties)
         }
     }
-    withType<Jar>().matching { notNeoTask(it) }.configureEach {
+    named<Jar>("jar").configure {
         from(project.rootProject.file("LICENSE"))
         manifest {
             attributes["Specification-Title"] = Properties.MOD_NAME
@@ -175,40 +146,26 @@ tasks {
 
 @Suppress("UnstableApiUsage")
 configurations {
-    val gtl = register("gametestLibrary")
     val library = register("library")
     val lor = register("localOnlyRuntime")
-    getByName("gametestImplementation") {
-        extendsFrom(gtl.get())
-    }
     getByName("implementation") {
         extendsFrom(library.get())
     }
     getByName("runtimeClasspath").extendsFrom(lor.get())
-    getByName("gametestRuntimeClasspath").extendsFrom(gtl.get())
     // fabric loader 0.15 adds mixinextras which causes a crash due to us pulling in other ASM versions from ZC
-    all {
-        resolutionStrategy {
-            force("org.ow2.asm:asm:9.6")
-            force("org.ow2.asm:asm-commons:9.6")
-        }
-    }
+//    all {
+//        resolutionStrategy {
+//            force("org.ow2.asm:asm:9.6")
+//            force("org.ow2.asm:asm-commons:9.6")
+//        }
+//    }
 }
 
 dependencies {
     annotationProcessor("com.blamejared.crafttweaker:Crafttweaker_Annotation_Processors:${Versions.CRAFTTWEAKER_ANNOTATION_PROCESSOR}")
-    "gametestLibrary"("org.hamcrest:hamcrest:${Versions.HAMCREST}")
-    "gametestLibrary"("org.junit.jupiter:junit-jupiter-engine:${Versions.JUPITER_ENGINE}")
-    "gametestLibrary"("org.junit.jupiter:junit-jupiter-params:${Versions.JUPITER_ENGINE}")
-    "gametestLibrary"("org.junit.platform:junit-platform-launcher:${Versions.JUNIT_PLATFORM_LAUNCHER}")
 
     Dependencies.ZENCODE.forEach {
         implementation(project(it))
-        "gametestImplementation"(project(it))
-    }
-
-    Dependencies.ZENCODE_TEST.forEach {
-        "gametestImplementation"(project(it).dependencyProject.sourceSets.test.get().output)
     }
 }
 
@@ -220,7 +177,7 @@ publishing {
         }
     }
     repositories {
-        maven("file:///${System.getenv("local_maven")}")
+        maven(System.getenv("local_maven_url") ?: "file://${project.projectDir}/repo")
     }
 }
 
@@ -228,8 +185,4 @@ idea {
     module {
         excludeDirs.addAll(setOf(project.file("run"), project.file("runs"), project.file("run_server"), project.file("run_client"), project.file("run_game_test")))
     }
-}
-
-fun notNeoTask(task: Task): Boolean {
-    return !task.name.startsWith("neo")
 }

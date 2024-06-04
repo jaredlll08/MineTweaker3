@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import com.blamejared.crafttweaker.impl.CraftTweakerEarlyInit;
 import com.blamejared.crafttweaker.impl.command.CtCommands;
 import com.blamejared.crafttweaker.impl.plugin.core.PluginManager;
-import com.blamejared.crafttweaker.platform.Services;
 import com.google.common.base.Suppliers;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.SharedConstants;

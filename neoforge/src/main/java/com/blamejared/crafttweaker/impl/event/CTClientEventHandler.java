@@ -10,12 +10,11 @@ import com.blamejared.crafttweaker.platform.Services;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.function.Predicate;
@@ -39,16 +38,15 @@ public class CTClientEventHandler {
     public static void nameTag(RenderNameTagEvent e) {
         
         Entity entity = e.getEntity();
-        Event.Result eventResult = e.getResult();
-        Boolean result = eventResult == Event.Result.DEFAULT ? null : eventResult == Event.Result.ALLOW;
+        TriState canRender = e.canRender();
         Component content = e.getContent();
         Component originalContent = e.getOriginalContent();
         for(Predicate<Entity> predicate : Services.CLIENT.NAMETAGS.keySet()) {
             if(predicate.test(entity)) {
                 try {
-                    NameTagResult nameTagResult = new NameTagResult(result, content, originalContent);
+                    NameTagResult nameTagResult = new NameTagResult(canRender.isTrue(), content, originalContent);
                     Services.CLIENT.NAMETAGS.get(predicate).apply(entity, nameTagResult);
-                    e.setResult(nameTagResult.getResult() == null ? Event.Result.DEFAULT : nameTagResult.getResult() ? Event.Result.ALLOW : Event.Result.DENY);
+                    e.setCanRender(nameTagResult.getResult() == null ? TriState.DEFAULT : nameTagResult.getResult() ? TriState.TRUE : TriState.FALSE);
                     e.setContent(nameTagResult.getContent());
                 } catch(final Exception exception) {
                     CommonLoggers.api().error(

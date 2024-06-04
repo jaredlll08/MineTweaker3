@@ -3,14 +3,13 @@ package com.blamejared.crafttweaker.natives.event.interact;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.event.NeoForgeEventCancellationCarrier;
 import com.blamejared.crafttweaker.api.event.ZenEvent;
-import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker.api.event.bus.IEventBus;
+import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -33,17 +32,34 @@ public class ExpandRightClickBlockEvent {
             NeoForgeEventCancellationCarrier.of()
     );
     
-    
-    @ZenCodeType.Getter("useBlock")
-    public static Event.Result getUseBlock(PlayerInteractEvent.RightClickBlock internal) {
+    @ZenCodeType.Setter("cancellationResult")
+    public static void setCancellationResult(PlayerInteractEvent.RightClickBlock internal, InteractionResult result) {
         
-        return internal.getUseBlock();
+        internal.setCancellationResult(result);
     }
     
-    @ZenCodeType.Getter("useItem")
-    public static Event.Result getUseItem(PlayerInteractEvent.RightClickBlock internal) {
+    @ZenCodeType.Getter("cancellationResult")
+    public static InteractionResult getCancellationResult(PlayerInteractEvent.RightClickBlock internal) {
         
-        return internal.getUseItem();
+        return internal.getCancellationResult();
+    }
+    
+    @ZenCodeType.Setter("canceled")
+    public static void setCanceled(PlayerInteractEvent.RightClickBlock internal, boolean canceled) {
+        
+        internal.setCanceled(canceled);
+    }
+    
+    @ZenCodeType.Setter("useItem")
+    public static void setUseItem(PlayerInteractEvent.RightClickBlock internal, TriState triggerItem) {
+        
+        internal.setUseItem(triggerItem);
+    }
+    
+    @ZenCodeType.Setter("useBlock")
+    public static void setUseBlock(PlayerInteractEvent.RightClickBlock internal, TriState triggerBlock) {
+        
+        internal.setUseBlock(triggerBlock);
     }
     
     @ZenCodeType.Getter("hitVec")
@@ -52,48 +68,16 @@ public class ExpandRightClickBlockEvent {
         return internal.getHitVec();
     }
     
-    @ZenCodeType.Setter("useBlock")
-    public static void setUseBlock(PlayerInteractEvent.RightClickBlock internal, Event.Result triggerBlock) {
+    @ZenCodeType.Getter("useItem")
+    public static TriState getUseItem(PlayerInteractEvent.RightClickBlock internal) {
         
-        internal.setUseBlock(triggerBlock);
+        return internal.getUseItem();
     }
     
-    @ZenCodeType.Setter("useItem")
-    public static void setUseItem(PlayerInteractEvent.RightClickBlock internal, Event.Result triggerItem) {
+    @ZenCodeType.Getter("useBlock")
+    public static TriState getUseBlock(PlayerInteractEvent.RightClickBlock internal) {
         
-        internal.setUseItem(triggerItem);
-    }
-    
-    /**
-     * The face of the block that was clicked
-     * Unlike in {@link PlayerInteractEvent} this is known not to be null
-     */
-    @ZenCodeType.Getter("face")
-    public static Direction getFace(PlayerInteractEvent internal) {
-        
-        return internal.getFace();
-    }
-    
-    /**
-     * @return The {@link InteractionResult} that will be returned to vanilla if the event is cancelled, instead of calling the relevant
-     * method of the event. By default, this is PASS, meaning cancelled events will cause
-     * the client to keep trying more interactions until something works.
-     */
-    @ZenCodeType.Getter("cancellationResult")
-    public static InteractionResult getCancellationResult(PlayerInteractEvent.RightClickBlock internal) {
-        
-        return internal.getCancellationResult();
-    }
-    
-    /**
-     * Set the {@link InteractionResult} that will be returned to vanilla if the event is cancelled, instead of calling the relevant method of the event.
-     *
-     * Note that this only has an effect on RightClickBlockEvent, RightClickItemEvent, EntityInteractEvent.
-     */
-    @ZenCodeType.Setter("cancellationResult")
-    public static void setCancellationResult(PlayerInteractEvent.RightClickBlock internal, InteractionResult result) {
-        
-        internal.setCancellationResult(result);
+        return internal.getUseBlock();
     }
     
 }

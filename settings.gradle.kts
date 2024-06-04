@@ -3,24 +3,70 @@ import java.io.FileFilter
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://maven.neoforged.net/releases") {
-            name = "NeoForge"
+        mavenCentral()
+        exclusiveContent {
+            forRepository {
+                maven("https://maven.fabricmc.net") {
+                    name = "Fabric"
+                }
+            }
+            filter {
+                includeGroup("net.fabricmc")
+                includeGroup("fabric-loom")
+            }
         }
-        maven("https://maven.fabricmc.net/") {
-            name = "Fabric"
+        maven("https://maven.neoforged.net/releases")
+        // Add the maven repository for the ModDevGradle plugin.
+        maven("https://prmaven.neoforged.net/ModDevGradle/pr1") {
+            content {
+                includeModule("net.neoforged.moddev", "net.neoforged.moddev.gradle.plugin")
+                includeModule("net.neoforged.moddev.junit", "net.neoforged.moddev.junit.gradle.plugin")
+                includeModule("net.neoforged", "moddev-gradle")
+            }
         }
-        maven("https://repo.spongepowered.org/repository/maven-public/") {
-            name = "Sponge Snapshots"
+        exclusiveContent {
+            forRepository {
+                maven("https://repo.spongepowered.org/repository/maven-public") {
+                    name = "Sponge"
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("org.spongepowered")
+            }
         }
-        maven("https://maven.minecraftforge.net") {
-            name = "Forge"
+        exclusiveContent {
+            forRepository {
+                maven("https://maven.minecraftforge.net") {
+                    name = "Forge"
+                }
+            }
+            filter {
+                includeGroup("net.minecraftforge")
+            }
         }
-        maven("https://maven.parchmentmc.org") {
-            name = "ParchmentMC"
+        exclusiveContent {
+            forRepository {
+                maven("https://maven.parchmentmc.org") {
+                    name = "ParchmentMC"
+                }
+            }
+            filter {
+                includeGroup("org.parchmentmc.data")
+            }
         }
-        maven("https://maven.blamejared.com") {
-            name = "BlameJared"
+
+        exclusiveContent {
+            forRepository {
+                maven("https://maven.blamejared.com") {
+                    name = "BlameJared"
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("com.blamejared")
+                includeGroupAndSubgroups("net.darkhax")
+            }
         }
+
     }
 }
 
@@ -30,6 +76,7 @@ plugins {
 
 rootProject.name = "CraftTweaker"
 val excludedProjects = setOf(
+        "buildSrc",
         "ModuleDeserializer",
         "ModuleSerializationShared",
         "ModuleSerializer",

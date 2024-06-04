@@ -19,7 +19,6 @@ dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
     modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC}")
-    compileOnly(project(":common"))
 
 //    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-api-fabric:${Versions.REI}") {
 //        exclude("net.fabricmc", "fabric-loader")
@@ -32,11 +31,6 @@ dependencies {
     implementation("org.javassist:javassist:${Versions.JAVA_ASSIST}")?.let { include(it) } // required for reflections
 
     modImplementation("com.faux.fauxcustomentitydata:FauxCustomEntityData-fabric-${Versions.MINECRAFT}:${Versions.FAUX_CUSTOM_ENTITY_DATA}")
-
-    gametestCompileOnly(files(project(":common").dependencyProject.sourceSets.gametest.get().java.srcDirs))
-    Dependencies.ZENCODE_TEST.forEach {
-        gametestImplementation(project(it).dependencyProject.sourceSets.test.get().output)
-    }
 }
 
 loom {
@@ -49,12 +43,7 @@ loom {
     mods {
         register("crafttweaker") {
             sourceSet(sourceSets.main.get())
-            sourceSet(sourceSets.gametest.get())
             Dependencies.ZENCODE.forEach {
-                sourceSet(project(it).sourceSets.main.get())
-                sourceSet(project(it).sourceSets.test.get())
-            }
-            Dependencies.ZENCODE_TEST.forEach {
                 sourceSet(project(it).sourceSets.main.get())
                 sourceSet(project(it).sourceSets.test.get())
             }
@@ -77,14 +66,6 @@ loom {
             runDir("run_server")
             environmentVariable("crafttweaker.logger.forward_to_latest_log", true)
             environmentVariable("crafttweaker.scripts.directory", rootProject.file("dev_scripts"))
-        }
-        create("GameTest") {
-            server()
-            source(sourceSets.gametest.get())
-            vmArgs("-Dfabric-api.gametest=1")
-            configName = "Fabric Game Test"
-            ideConfigGenerated(true)
-            runDir("run_game_test")
         }
     }
 }

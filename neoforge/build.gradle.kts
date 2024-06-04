@@ -1,4 +1,3 @@
-import com.blamejared.crafttweaker.gradle.Dependencies
 import com.blamejared.crafttweaker.gradle.Properties
 import com.blamejared.crafttweaker.gradle.Versions
 import com.blamejared.gradle.mod.utils.GMUtils
@@ -7,49 +6,37 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id("crafttweaker.modloader-conventions")
-    id("net.neoforged.gradle.userdev") version ("7.0.107")
+    id("net.neoforged.moddev") version "0.1.52-pr-1-pr-publish"
 }
 
-minecraft {
-    accessTransformers.file(file("src/main/resources/META-INF/accesstransformer.cfg"))
-}
+neoForge {
+    version = "20.6.104-beta-pr-959-features-gradle-metadata"
 
-runs {
-    configureEach {
-        modSource(project.sourceSets.main.get())
-        modSource(project(":common").sourceSets.main.get())
-        Dependencies.ZENCODE.forEach {
-            modSource(project(it).sourceSets.main.get())
+    runs {
+        configureEach {
+            environment("crafttweaker.logger.forward_to_latest_log", "true")
+            environment("crafttweaker.scripts.directory", rootProject.file("dev_scripts").absolutePath)
+            systemProperty("forge.enabledGameTestNamespaces", Properties.MOD_ID)
         }
-        if(!this.name.equals("gameTestServer")) {
-            environmentVariables(mapOf("crafttweaker.logger.forward_to_latest_log" to "true", "crafttweaker.scripts.directory" to rootProject.file("dev_scripts").absolutePath))
-        }
-        systemProperty("forge.enabledGameTestNamespaces", Properties.MOD_ID)
-    }
-    register("client") {
-    }
-    register("server") {
-        programArgument("--nogui")
-    }
-    register("gameTestServer") {
-        modSource(project.sourceSets.gametest.get())
-        modSource(project(":common").sourceSets.gametest.get())
-        Dependencies.ZENCODE_TEST.forEach {
-            modSource(project(it).sourceSets.test.get())
-        }
+        register("client") {
+            client()
+            gameDirectory.set(file("runs/client"))
 
-        dependencies {
-            runtime(project.configurations.gametestLibrary.get())
+        }
+        register("server") {
+            server()
+        }
+    }
+    mods {
+        register("crafttweaker") {
+            sourceSet(sourceSets.main.get())
         }
     }
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${Versions.NEO_FORGE}")
-    compileOnly(project(":common"))
-    localOnlyRuntime("dev.architectury:architectury-neoforge:12.0.28")
-    implementation("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
-
+    localOnlyRuntime("dev.architectury:architectury-neoforge:12.1.3")
+    localOnlyRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
 }
 
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {

@@ -178,7 +178,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public Fluid getBucketContent(BucketItem item) {
         
-        return item.getFluid();
+        return item.content;
     }
     
     @Override

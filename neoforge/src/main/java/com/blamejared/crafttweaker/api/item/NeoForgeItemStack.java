@@ -5,9 +5,6 @@ import com.blamejared.crafttweaker.api.action.item.ActionSetBurnTime;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.ToolAction;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -29,16 +26,10 @@ public interface NeoForgeItemStack extends IItemStack {
         CraftTweakerAPI.apply(new ActionSetBurnTime(this, time, manager.getRecipeType()));
     }
     
-    @Override
-    default int getBurnTime() {
-        
-        return CommonHooks.getBurnTime(getInternal(), RecipeType.SMELTING);
-    }
-    
     @ZenCodeType.Method
     default int getBurnTime(IRecipeManager manager) {
         
-        return CommonHooks.getBurnTime(getInternal(), manager.getRecipeType());
+        return getInternal().getBurnTime(manager.getRecipeType());
     }
     
 }

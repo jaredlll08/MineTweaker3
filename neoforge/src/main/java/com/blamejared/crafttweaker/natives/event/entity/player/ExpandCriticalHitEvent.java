@@ -2,8 +2,8 @@ package com.blamejared.crafttweaker.natives.event.entity.player;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.event.ZenEvent;
-import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker.api.event.bus.IEventBus;
+import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.world.entity.Entity;
@@ -28,22 +28,22 @@ public class ExpandCriticalHitEvent {
         return internal.getTarget();
     }
     
-    @ZenCodeType.Setter("damageModifier")
-    public static void setDamageModifier(CriticalHitEvent internal, float mod) {
+    @ZenCodeType.Setter("damageMultiplier")
+    public static void setDamageMultiplier(CriticalHitEvent internal, float mult) {
         
-        internal.setDamageModifier(mod);
+        internal.setDamageMultiplier(mult);
     }
     
-    @ZenCodeType.Getter("damageModifier")
-    public static float getDamageModifier(CriticalHitEvent internal) {
+    @ZenCodeType.Getter("damageMultiplier")
+    public static float getDamageMultiplier(CriticalHitEvent internal) {
         
-        return internal.getDamageModifier();
+        return internal.getDamageMultiplier();
     }
     
-    @ZenCodeType.Getter("oldDamageModifier")
-    public static float getOldDamageModifier(CriticalHitEvent internal) {
+    @ZenCodeType.Getter("vanillaMultiplier")
+    public static float getVanillaMultiplier(CriticalHitEvent internal) {
         
-        return internal.getOldDamageModifier();
+        return internal.getVanillaMultiplier();
     }
     
     @ZenCodeType.Getter("isVanillaCritical")

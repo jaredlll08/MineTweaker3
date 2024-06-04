@@ -9,33 +9,46 @@ plugins {
     id("net.darkhax.curseforgegradle")
 }
 
+configurations {
+    register("commonJava") {
+        isCanBeResolved = true
+    }
+    register("commonResources") {
+        isCanBeResolved = true
+    }
+}
+
 dependencies {
-    "gametestCompileOnly"(project(":common"))
+    compileOnly(project(":common")) {
+        capabilities {
+            requireCapability("$group:${Properties.MOD_ID}")
+        }
+    }
+    "commonJava"(project(path = ":common", configuration = "commonJava"))
+    "commonResources"(project(path = ":common", configuration = "commonResources"))
 }
 
 tasks {
-    withType<ProcessResources>().matching { notNeoTask(it) }.configureEach {
-        from(project(":common").sourceSets.main.get().resources)
+    named<JavaCompile>("compileJava").configure {
+        dependsOn(configurations.getByName("commonJava"))
+        source(configurations.getByName("commonJava"))
     }
 
-    withType<JavaCompile>().matching { notNeoTask(it) }.configureEach {
-        source(project(":common").sourceSets.main.get().allSource)
+    named<ProcessResources>("processResources").configure {
+        dependsOn(configurations.getByName("commonResources"))
+        from(configurations.getByName("commonResources"))
     }
 
-    withType<Javadoc>().matching { notNeoTask(it) }.configureEach {
-        source(project(":common").sourceSets.main.get().allJava)
+    named<Javadoc>("javadoc").configure {
+        dependsOn(configurations.getByName("commonJava"))
+        source(configurations.getByName("commonJava"))
     }
 
     named<Jar>("sourcesJar") {
-        from(project(":common").sourceSets.main.get().allSource)
-    }
-
-    named("compileGametestJava", JavaCompile::class.java) {
-        source(project(":common").sourceSets.getByName("gametest").java)
-    }
-
-    named("processGametestResources", ProcessResources::class.java) {
-        from(project(":common").sourceSets.getByName("gametest").resources)
+        dependsOn(configurations.getByName("commonJava"))
+        dependsOn(configurations.getByName("commonResources"))
+        from(configurations.getByName("commonJava"))
+        from(configurations.getByName("commonResources"))
     }
 
 }
