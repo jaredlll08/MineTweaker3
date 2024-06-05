@@ -3,6 +3,7 @@ package com.blamejared.crafttweaker.api.recipe.component;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
 
@@ -20,6 +21,11 @@ public final class RecipeComponentEqualityCheckers {
     public static boolean areIngredientsEqual(final IIngredient a, final IIngredient b) {
         
         return Objects.equals(a, b) || (a.contains(b) && b.contains(a));
+    }
+    
+    public static boolean areIngredientsEqual(final IIngredientWithAmount a, final IIngredientWithAmount b) {
+        
+        return areIngredientsEqual(a.ingredient(), b.ingredient()) && areNumbersEqual(a.amount(), b.amount());
     }
     
     public static boolean areStacksEqual(final IItemStack a, final IItemStack b) {
@@ -51,4 +57,5 @@ public final class RecipeComponentEqualityCheckers {
         
         return a.matches(b);
     }
+    
 }

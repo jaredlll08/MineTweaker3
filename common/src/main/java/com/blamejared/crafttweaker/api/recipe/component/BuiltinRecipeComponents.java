@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientEmpty;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.MirrorAxis;
@@ -41,13 +42,13 @@ public final class BuiltinRecipeComponents {
                 new TypeToken<>() {},
                 Object::equals
         );
-    
+        
         public static final IRecipeComponent<CookingBookCategory> COOKING_BOOK_CATEGORY = IRecipeComponent.simple(
                 CraftTweakerConstants.rl("metadata/cooking_book_category"),
                 new TypeToken<>() {},
                 Object::equals
         );
-    
+        
         public static final IRecipeComponent<CraftingBookCategory> CRAFTING_BOOK_CATEGORY = IRecipeComponent.simple(
                 CraftTweakerConstants.rl("metadata/crafting_book_category"),
                 new TypeToken<>() {},
@@ -86,9 +87,15 @@ public final class BuiltinRecipeComponents {
                 new TypeToken<>() {},
                 RecipeComponentEqualityCheckers::areIngredientsEqual,
                 ingredient -> Arrays.asList(ingredient.getItems()),
-                items -> items.size() < 1 ? IIngredientEmpty.getInstance() : items.stream()
+                items -> items.isEmpty() ? IIngredientEmpty.getInstance() : items.stream()
                         .reduce(IIngredient::or)
                         .orElseThrow()
+        );
+        
+        public static final IRecipeComponent<IIngredientWithAmount> INGREDIENTS_WITH_AMOUNTS = IRecipeComponent.simple(
+                CraftTweakerConstants.rl("input/ingredients_with_amounts"),
+                new TypeToken<>() {},
+                RecipeComponentEqualityCheckers::areIngredientsEqual
         );
         
         public static final IRecipeComponent<CTFluidIngredient> FLUID_INGREDIENTS = IRecipeComponent.composite(
@@ -96,7 +103,7 @@ public final class BuiltinRecipeComponents {
                 new TypeToken<>() {},
                 RecipeComponentEqualityCheckers::areFluidIngredientsEqual,
                 ingredient -> ingredient instanceof CTFluidIngredient.CompoundFluidIngredient cfi ? cfi.getElements() : List.of(ingredient),
-                items -> items.size() < 1 ? CTFluidIngredient.EMPTY.get() : items.stream()
+                items -> items.isEmpty() ? CTFluidIngredient.EMPTY.get() : items.stream()
                         .reduce(CTFluidIngredient::asCompound)
                         .orElseThrow()
         );
