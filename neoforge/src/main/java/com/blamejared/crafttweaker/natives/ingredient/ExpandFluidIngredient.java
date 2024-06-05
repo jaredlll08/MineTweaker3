@@ -3,12 +3,17 @@ package com.blamejared.crafttweaker.natives.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
+import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SingleFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Arrays;
@@ -92,10 +97,27 @@ public class ExpandFluidIngredient {
         if(internal.hasNoFluids()) {
             return CTFluidIngredient.EMPTY.get();
         }
+        switch(internal) {
+            case TagFluidIngredient tfi -> {
+                KnownTag<Fluid> tag = CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.FLUID).tag(tfi.tag());
+                return new CTFluidIngredient.FluidTagWithAmountIngredient(tag.withAmount(1));
+            }
+            case SingleFluidIngredient sfi -> {
+                return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(sfi.fluid().value(), 1));
+            }
+            case CompoundFluidIngredient cfi -> {
+                return cfi.children()
+                        .stream()
+                        .map(ExpandFluidIngredient::asCTFluidIngredient)
+                        .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
+            }
+            default -> {
+                return Arrays.stream(internal.getStacks())
+                        .map(fluidStack -> IFluidStack.of(fluidStack).asFluidIngredient())
+                        .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
+            }
+        }
         
-        return Arrays.stream(internal.getStacks())
-                .map(fluidStack -> IFluidStack.of(fluidStack).asFluidIngredient())
-                .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
     }
     
 }
