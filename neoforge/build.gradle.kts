@@ -50,7 +50,6 @@ tasks.create<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.addJavaVersion("Java ${Versions.MOD_JAVA}")
     mainFile.addGameVersion(Versions.MINECRAFT)
     mainFile.addModLoader("NeoForge")
-
     doLast {
         project.ext.set("curse_file_url", "${Properties.CURSE_HOMEPAGE_LINK}/files/${mainFile.curseFileId}")
     }
@@ -62,6 +61,8 @@ modrinth {
     changelog.set(GMUtils.smallChangelog(project, Properties.GIT_REPO))
     versionName.set("NeoForge-${Versions.MINECRAFT}-$version")
     versionType.set("release")
+
+    loaders.add("NeoForge")
     gameVersions.set(listOf(Versions.MINECRAFT))
     uploadFile.set(tasks.jar.get())
 }
