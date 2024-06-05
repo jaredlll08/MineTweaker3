@@ -18,6 +18,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = Ingredient.class, zenCodeName = "crafttweaker.api.item.Ingredient")
 public class ExpandIngredient {
     
+    //TODO 1.21 move to the ingredient package
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IIngredient asIIngredient(Ingredient internal) {
