@@ -3,9 +3,9 @@ package com.blamejared.crafttweaker.natives.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
+import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -44,9 +44,9 @@ public class ExpandSizedFluidIngredient {
     }
     
     @ZenCodeType.StaticExpansionMethod
-    public static SizedFluidIngredient of(TagKey<Fluid> tag, int amount) {
+    public static SizedFluidIngredient of(KnownTag<Fluid> tag, int amount) {
         
-        return SizedFluidIngredient.of(tag, amount);
+        return SizedFluidIngredient.of(tag.getTagKey(), amount);
     }
     
     @ZenCodeType.Getter("fluids")
