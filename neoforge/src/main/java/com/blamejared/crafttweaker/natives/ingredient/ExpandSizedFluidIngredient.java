@@ -67,10 +67,7 @@ public class ExpandSizedFluidIngredient {
         if(internal.ingredient().hasNoFluids()) {
             return CTFluidIngredient.EMPTY.get();
         }
-        
-        return Arrays.stream(internal.getFluids())
-                .map(fluidStack -> IFluidStack.of(fluidStack).asFluidIngredient())
-                .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
+        return ExpandFluidIngredient.asCTFluidIngredient(internal.ingredient(), internal.amount());
     }
     
 }

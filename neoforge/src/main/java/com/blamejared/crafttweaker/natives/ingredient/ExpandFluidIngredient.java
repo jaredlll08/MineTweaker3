@@ -94,26 +94,33 @@ public class ExpandFluidIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static CTFluidIngredient asCTFluidIngredient(FluidIngredient internal) {
         
+        return asCTFluidIngredient(internal, 1);
+    }
+    
+    @ZenCodeType.Method
+    public static CTFluidIngredient asCTFluidIngredient(FluidIngredient internal, int amount) {
+        
         if(internal.hasNoFluids()) {
             return CTFluidIngredient.EMPTY.get();
         }
         switch(internal) {
             case TagFluidIngredient tfi -> {
                 KnownTag<Fluid> tag = CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.FLUID).tag(tfi.tag());
-                return new CTFluidIngredient.FluidTagWithAmountIngredient(tag.withAmount(1));
+                return new CTFluidIngredient.FluidTagWithAmountIngredient(tag.withAmount(amount));
             }
             case SingleFluidIngredient sfi -> {
-                return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(sfi.fluid().value(), 1));
+                return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(sfi.fluid().value(), amount));
             }
             case CompoundFluidIngredient cfi -> {
                 return cfi.children()
                         .stream()
-                        .map(ExpandFluidIngredient::asCTFluidIngredient)
+                        .map(fluidIngredient -> asCTFluidIngredient(fluidIngredient, amount))
                         .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
             }
             default -> {
+                // This copyWithAmount is *probably* fine, but may not be good for performance
                 return Arrays.stream(internal.getStacks())
-                        .map(fluidStack -> IFluidStack.of(fluidStack).asFluidIngredient())
+                        .map(fluidStack -> IFluidStack.of(fluidStack.copyWithAmount(amount)).asFluidIngredient())
                         .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
             }
         }
