@@ -64,9 +64,6 @@ public class ExpandSizedFluidIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static CTFluidIngredient asCTFluidIngredient(SizedFluidIngredient internal) {
         
-        if(internal.ingredient().hasNoFluids()) {
-            return CTFluidIngredient.EMPTY.get();
-        }
         return ExpandFluidIngredient.asCTFluidIngredient(internal.ingredient(), internal.amount());
     }
     

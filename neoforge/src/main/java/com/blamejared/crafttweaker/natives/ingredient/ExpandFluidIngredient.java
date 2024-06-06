@@ -100,9 +100,6 @@ public class ExpandFluidIngredient {
     @ZenCodeType.Method
     public static CTFluidIngredient asCTFluidIngredient(FluidIngredient internal, int amount) {
         
-        if(internal.hasNoFluids()) {
-            return CTFluidIngredient.EMPTY.get();
-        }
         switch(internal) {
             case TagFluidIngredient tfi -> {
                 KnownTag<Fluid> tag = CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.FLUID).tag(tfi.tag());
@@ -115,9 +112,13 @@ public class ExpandFluidIngredient {
                 return cfi.children()
                         .stream()
                         .map(fluidIngredient -> asCTFluidIngredient(fluidIngredient, amount))
+                        .filter(ctFluidIngredient -> ctFluidIngredient != CTFluidIngredient.EMPTY.get())
                         .reduce(CTFluidIngredient::asCompound).orElseGet(CTFluidIngredient.EMPTY);
             }
             default -> {
+                if(internal.hasNoFluids()) {
+                    return CTFluidIngredient.EMPTY.get();
+                }
                 // This copyWithAmount is *probably* fine, but may not be good for performance
                 return Arrays.stream(internal.getStacks())
                         .map(fluidStack -> IFluidStack.of(fluidStack.copyWithAmount(amount)).asFluidIngredient())
