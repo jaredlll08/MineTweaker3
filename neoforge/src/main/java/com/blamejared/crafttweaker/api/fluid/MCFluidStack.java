@@ -106,7 +106,7 @@ public class MCFluidStack implements IFluidStack {
             copy.remove(type);
         } else {
             Codec<?> codec = type.codecOrThrow();
-            DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE, value);
+            DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
             copy.set(type, decode.getOrThrow().getFirst());
         }
         return IFluidStack.of(copy);
@@ -116,7 +116,7 @@ public class MCFluidStack implements IFluidStack {
     public IFluidStack withJsonComponents(IData value) {
         
         final FluidStack copy = getInternal().copy();
-        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE, value);
+        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
         Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
         copy.applyComponents(pair.getFirst());
         return IFluidStack.of(copy);

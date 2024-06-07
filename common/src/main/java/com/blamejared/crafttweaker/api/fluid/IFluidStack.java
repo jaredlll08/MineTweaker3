@@ -249,7 +249,7 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
     @ZenCodeType.Caster(implicit = true)
     default IData asIData() {
         
-        return codec().encodeStart(IDataOps.INSTANCE, this)
+        return codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), this)
                 .getOrThrow(s -> new IllegalStateException("Error while encoding IFluidStack as IData: " + s));
     }
     
@@ -268,7 +268,7 @@ public interface IFluidStack extends CommandStringDisplayable, DataComponentHold
             builder.append(".withJsonComponent(")
                     .append(ExpandDataComponentType.getCommandString(typedDataComponent.type()))
                     .append(", ")
-                    .append(typedDataComponent.encodeValue(IDataOps.INSTANCE).getOrThrow())
+                    .append(typedDataComponent.encodeValue(IDataOps.INSTANCE.withRegistryAccess()).getOrThrow())
                     .append(")");
         });
         split.removed()

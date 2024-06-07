@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.api.data.op;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.data.BoolData;
 import com.blamejared.crafttweaker.api.data.ByteArrayData;
 import com.blamejared.crafttweaker.api.data.ByteData;
@@ -25,7 +26,9 @@ import com.mojang.serialization.ListBuilder;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import net.minecraft.Optionull;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -40,9 +43,19 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public final class IDataOps implements DynamicOps<IData> {
+    
     public static final IDataOps INSTANCE = new IDataOps();
     
     private IDataOps() {}
+    
+    public RegistryOps<IData> withRegistryAccess() {
+        
+        return withRegistryAccess(CraftTweakerAPI.getAccessibleElementsProvider().registryAccess());
+    }
+    public RegistryOps<IData> withRegistryAccess(RegistryAccess access) {
+        
+        return access.createSerializationContext(this);
+    }
     
     @Override
     public IData empty() {
@@ -52,7 +65,8 @@ public final class IDataOps implements DynamicOps<IData> {
     
     @Override
     public <U> U convertTo(final DynamicOps<U> outOps, final IData input) {
-        if (this == outOps) {
+        
+        if(this == outOps) {
             return GenericUtil.uncheck(input.copy());
         }
         
@@ -98,7 +112,7 @@ public final class IDataOps implements DynamicOps<IData> {
     public DataResult<String> getStringValue(final IData input) {
         
         // Do not use asString as that keeps quotes around the string for some reason
-        return input.getType() == IData.Type.STRING? DataResult.success(input.getAsString()) : this.noType(input, "string");
+        return input.getType() == IData.Type.STRING ? DataResult.success(input.getAsString()) : this.noType(input, "string");
     }
     
     @Override
@@ -135,7 +149,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<Stream<Pair<IData, IData>>> getMapValues(final IData input) {
         
-        return input.getType() == IData.Type.MAP?
+        return input.getType() == IData.Type.MAP ?
                 DataResult.success(input.getKeys().stream().map(it -> Pair.of(new StringData(it), input.getAt(it)))) :
                 this.noType(input, "map");
     }
@@ -157,7 +171,7 @@ public final class IDataOps implements DynamicOps<IData> {
                 final boolean mightBeWrapper = data.getInternal().getElementType() == Tag.TAG_COMPOUND;
                 final Stream<IData> result = data.asList()
                         .stream()
-                        .map(mightBeWrapper? this::unwrapIfNeeded : Function.identity());
+                        .map(mightBeWrapper ? this::unwrapIfNeeded : Function.identity());
                 yield DataResult.success(result);
             }
             case BYTE_ARRAY, INT_ARRAY, LONG_ARRAY -> DataResult.success(input.asList().stream());
@@ -174,7 +188,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public IData remove(final IData input, final String key) {
         
-        if (input.getType() != IData.Type.MAP) {
+        if(input.getType() != IData.Type.MAP) {
             return input;
         }
         
@@ -240,7 +254,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<Boolean> getBooleanValue(final IData input) {
         
-        return switch (input.getType()) {
+        return switch(input.getType()) {
             case BOOL -> DataResult.success(input.asBool());
             case BYTE -> DataResult.success(input.asByte() != 0);
             default -> this.noType(input, "boolean");
@@ -286,7 +300,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<IData> mergeToPrimitive(final IData prefix, final IData value) {
         
-        if (prefix.getType() != IData.Type.EMPTY) {
+        if(prefix.getType() != IData.Type.EMPTY) {
             return DataResult.error(() -> "Unable to append " + value + " to " + prefix + " primitively", value);
         }
         return DataResult.success(value);
@@ -295,19 +309,21 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<Consumer<BiConsumer<IData, IData>>> getMapEntries(final IData input) {
         
-        if (input.getType() != IData.Type.MAP) {
+        if(input.getType() != IData.Type.MAP) {
             return this.noType(input, "map");
         }
         
         final MapData map = GenericUtil.uncheck(input);
-        final Stream<Pair<IData, IData>> entries = map.getKeys().stream().map(it -> Pair.of(new StringData(it), map.getAt(it)));
+        final Stream<Pair<IData, IData>> entries = map.getKeys()
+                .stream()
+                .map(it -> Pair.of(new StringData(it), map.getAt(it)));
         return DataResult.success(acceptor -> entries.forEach(pair -> acceptor.accept(pair.getFirst(), pair.getSecond())));
     }
     
     @Override
     public DataResult<MapLike<IData>> getMap(final IData input) {
         
-        if (input.getType() != IData.Type.MAP) {
+        if(input.getType() != IData.Type.MAP) {
             return this.noType(input, "map");
         }
         
@@ -331,7 +347,7 @@ public final class IDataOps implements DynamicOps<IData> {
                 final boolean mightBeWrapper = data.getInternal().getElementType() == Tag.TAG_COMPOUND;
                 final Stream<IData> dataStream = data.asList()
                         .stream()
-                        .map(mightBeWrapper? this::unwrapIfNeeded : Function.identity());
+                        .map(mightBeWrapper ? this::unwrapIfNeeded : Function.identity());
                 yield DataResult.success(acceptor -> dataStream.forEach(acceptor));
             }
             case BYTE_ARRAY, INT_ARRAY, LONG_ARRAY -> DataResult.success(acceptor -> input.asList().forEach(acceptor));
@@ -342,7 +358,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<ByteBuffer> getByteBuffer(final IData input) {
         
-        return input.getType() == IData.Type.BYTE_ARRAY?
+        return input.getType() == IData.Type.BYTE_ARRAY ?
                 DataResult.success(ByteBuffer.wrap(input.asByteArray())) :
                 DynamicOps.super.getByteBuffer(input);
     }
@@ -358,7 +374,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<IntStream> getIntStream(final IData input) {
         
-        return input.getType() == IData.Type.INT_ARRAY?
+        return input.getType() == IData.Type.INT_ARRAY ?
                 DataResult.success(IntStream.of(input.asIntArray())) :
                 DynamicOps.super.getIntStream(input);
     }
@@ -372,7 +388,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<LongStream> getLongStream(final IData input) {
         
-        return input.getType() == IData.Type.LONG_ARRAY?
+        return input.getType() == IData.Type.LONG_ARRAY ?
                 DataResult.success(LongStream.of(input.asLongArray())) :
                 DynamicOps.super.getLongStream(input);
     }
@@ -382,11 +398,11 @@ public final class IDataOps implements DynamicOps<IData> {
         
         return new LongArrayData(input.toArray());
     }
-
+    
     @Override
     public DataResult<IData> get(final IData input, final String key) {
         
-        return input.getType() == IData.Type.MAP?
+        return input.getType() == IData.Type.MAP ?
                 Optionull.mapOrElse(
                         input.getAt(key),
                         DataResult::success,
@@ -398,7 +414,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<IData> getGeneric(final IData input, final IData key) {
         
-        return key.getType() == IData.Type.STRING?
+        return key.getType() == IData.Type.STRING ?
                 this.get(input, key.getAsString()) :
                 DataResult.error(() -> "No such key %s in %s".formatted(key, input));
     }
@@ -481,15 +497,18 @@ public final class IDataOps implements DynamicOps<IData> {
     }
     
     private <R> DataResult<R> noType(final IData data, final String expect) {
+        
         return DataResult.error(() -> data.getType() + " is not a valid type for " + expect);
     }
     
     private Function<Stream<IData>, IData> adaptToStreamedList(final IData data) {
+        
         final ListDataAdapter adapter = this.adaptToList(data);
-        return adapter == null? null : it -> it.reduce(adapter, Function::apply, OpUtils.noCombiner()).finish();
+        return adapter == null ? null : it -> it.reduce(adapter, Function::apply, OpUtils.noCombiner()).finish();
     }
     
     private ListDataAdapter adaptToList(final IData data) {
+        
         return switch(data.getType()) {
             case BYTE_ARRAY, LONG_ARRAY, INT_ARRAY, LIST -> this.orEmpty(data, SameTypeListDataAdapter::list);
             case EMPTY -> DecidingListDataAdapter.of();
@@ -498,18 +517,19 @@ public final class IDataOps implements DynamicOps<IData> {
     }
     
     private ListDataAdapter orEmpty(final IData data, final Function<IData, ListDataAdapter> alternative) {
-        return data.asList().isEmpty()? DecidingListDataAdapter.of() : alternative.apply(data);
+        
+        return data.asList().isEmpty() ? DecidingListDataAdapter.of() : alternative.apply(data);
     }
     
     private IData unwrapIfNeeded(final IData other) {
         
-        if (other.getType() != IData.Type.MAP) {
+        if(other.getType() != IData.Type.MAP) {
             return other;
         }
         
         final MapData data = GenericUtil.uncheck(other);
         final Set<String> keys = data.getKeys();
-        if (keys.size() == 1 && keys.contains(AnyTypeListDataAdapter.WRAPPER_KEY)) {
+        if(keys.size() == 1 && keys.contains(AnyTypeListDataAdapter.WRAPPER_KEY)) {
             return data.getAt(AnyTypeListDataAdapter.WRAPPER_KEY);
         }
         

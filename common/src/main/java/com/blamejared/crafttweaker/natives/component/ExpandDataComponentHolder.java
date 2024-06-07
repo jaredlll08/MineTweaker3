@@ -98,7 +98,7 @@ public class ExpandDataComponentHolder {
     @ZenCodeType.Nullable
     public static IData getJsonComponent(DataComponentHolder internal, DataComponentType type) {
         
-        DataResult<IData> result = type.codecOrThrow().encodeStart(IDataOps.INSTANCE, type);
+        DataResult<IData> result = type.codecOrThrow().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), type);
         return result.getOrThrow();
     }
     

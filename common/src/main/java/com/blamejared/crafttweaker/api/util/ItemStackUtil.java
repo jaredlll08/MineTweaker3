@@ -28,7 +28,7 @@ public final class ItemStackUtil {
             sb.append(".withJsonComponent(")
                     .append(ExpandDataComponentType.getCommandString(typedDataComponent.type()))
                     .append(", ")
-                    .append(typedDataComponent.encodeValue(IDataOps.INSTANCE).getOrThrow())
+                    .append(typedDataComponent.encodeValue(IDataOps.INSTANCE.withRegistryAccess()).getOrThrow())
                     .append(")");
         });
         split.removed()

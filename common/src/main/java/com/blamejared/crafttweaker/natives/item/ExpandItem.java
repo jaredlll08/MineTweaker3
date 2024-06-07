@@ -96,7 +96,7 @@ public class ExpandItem {
             remove(internal, type);
         } else {
             Codec<?> codec = type.codecOrThrow();
-            DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE, value);
+            DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
             setComponent(internal, type, decode.getOrThrow().getFirst());
         }
     }

@@ -55,7 +55,7 @@ final class DefaultRecipeHandler implements IRecipeHandler<Recipe<?>> {
         try {
             final MapData data = new MapData();
             data.put("type", new StringData(serializerKey.get().toString()));
-            final DataResult<IData> result = recipe.getSerializer().codec().codec().encode(GenericUtil.uncheck(recipe), IDataOps.INSTANCE, data);
+            final DataResult<IData> result = recipe.getSerializer().codec().codec().encode(GenericUtil.uncheck(recipe), IDataOps.INSTANCE.withRegistryAccess(), data);
             
             return result.result()
                     .map(it ->

@@ -20,7 +20,7 @@ public class ExpandMerchantOffers {
     @ZenCodeType.Method
     public static IData createTag(MerchantOffers internal) {
         
-        return MerchantOffers.CODEC.encodeStart(IDataOps.INSTANCE, internal).getOrThrow();
+        return MerchantOffers.CODEC.encodeStart(IDataOps.INSTANCE.withRegistryAccess(), internal).getOrThrow();
     }
     
 }

@@ -131,5 +131,5 @@ public interface IRegistryHelper {
         
         return new MappedRegistry<>(resourceKey, Lifecycle.stable());
     }
-    
+
 }

@@ -14,19 +14,15 @@ import com.blamejared.crafttweaker.api.bracket.custom.RecipeTypeBracketHandler;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
-import com.blamejared.crafttweaker.api.data.visitor.DataToJsonStringVisitor;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.logging.CommonLoggers;
-import com.blamejared.crafttweaker.api.recipe.RecipeList;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.NameUtil;
 import com.blamejared.crafttweaker.api.zencode.util.PositionUtil;
 import com.blamejared.crafttweaker.impl.helper.AccessibleElementsProvider;
-import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.google.gson.JsonObject;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -124,7 +120,7 @@ public class GenericRecipesManager {
                 .orElseThrow(() -> new IllegalArgumentException("Recipe Serializer '%s' does not exist.".formatted(requestedSerializer)));
         
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
-        final Recipe<?> recipe = serializer.codec().codec().parse(IDataOps.INSTANCE, data).getOrThrow(IllegalArgumentException::new);
+        final Recipe<?> recipe = serializer.codec().codec().parse(IDataOps.INSTANCE.withRegistryAccess(), data).getOrThrow(IllegalArgumentException::new);
         
         final IRecipeManager<?> manager = RecipeTypeBracketHandler.getOrDefault(recipe.getType());
         final RecipeHolder<?> holder = new RecipeHolder<>(recipeName, recipe);

@@ -185,7 +185,7 @@ public class ExpandMerchantOffer {
     @ZenCodeType.Method
     public static IData createTag(MerchantOffer internal) {
         
-        return MerchantOffer.CODEC.encodeStart(IDataOps.INSTANCE, internal).getOrThrow();
+        return MerchantOffer.CODEC.encodeStart(IDataOps.INSTANCE.withRegistryAccess(), internal).getOrThrow();
     }
     
     @ZenCodeType.Method

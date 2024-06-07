@@ -374,7 +374,7 @@ public interface IIngredient extends CommandStringDisplayable {
     @ZenCodeType.Caster(implicit = true)
     default IData asIData() {
         
-        return Ingredient.CODEC_NONEMPTY.encodeStart(IDataOps.INSTANCE, this.asVanillaIngredient())
+        return Ingredient.CODEC_NONEMPTY.encodeStart(IDataOps.INSTANCE.withRegistryAccess(), this.asVanillaIngredient())
                 .getOrThrow(IllegalArgumentException::new);
     }
     

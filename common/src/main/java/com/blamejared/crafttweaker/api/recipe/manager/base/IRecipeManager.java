@@ -22,7 +22,6 @@ import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.NameUtil;
 import com.blamejared.crafttweaker.api.zencode.util.PositionUtil;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.google.common.collect.Lists;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,8 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * Default interface for Registry based handlers as they can all remove recipes by ResourceLocation.
@@ -101,7 +98,7 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
         final T recipe = serializer.codec()
                 .codec()
-                .parse(IDataOps.INSTANCE, mapData)
+                .parse(IDataOps.INSTANCE.withRegistryAccess(), mapData)
                 .getOrThrow(IllegalStateException::new);
         
         final RecipeType<?> recipeType = recipe.getType();
