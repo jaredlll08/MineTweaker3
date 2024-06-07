@@ -120,14 +120,14 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public DataResult<IData> mergeToMap(final IData map, final IData key, final IData value) {
         
-        if (map.getType() != IData.Type.MAP) {
+        if(map.getType() != IData.Type.MAP && map != empty()) {
             return this.noType(map, "map");
         }
-        if (key.getType() != IData.Type.STRING) {
+        if(key.getType() != IData.Type.STRING && map != empty()) {
             return this.noType(key, "string");
         }
         
-        final MapData other = GenericUtil.uncheck(map.copyInternal());
+        final MapData other = map == empty() ? new MapData() : GenericUtil.uncheck(map.copyInternal());
         other.put(key.getAsString(), value);
         return DataResult.success(other);
     }
