@@ -19,7 +19,7 @@ import java.util.stream.*;
  */
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.fluid.FluidIngredient")
-@Document("forge/api/fluid/FluidIngredient")
+@Document("vanilla/api/fluid/FluidIngredient")
 public abstract class CTFluidIngredient implements CommandStringDisplayable {
     
     public static final Supplier<CTFluidIngredient> EMPTY = () -> new FluidStackIngredient(IFluidStack.empty());
