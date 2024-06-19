@@ -8,7 +8,7 @@ loot.modifiers.register(
   "bracket_drop",
   LootConditions.allOf([
     BlockStatePropertyLootCondition.create(<block:minecraft:dirt>),
-    MatchToolLootCondition.create(ItemPredicate.create(<tag:items:minecraft:wool>))
+    MatchToolLootCondition.create(ItemPredicate.create(<tag:item:minecraft:wool>))
   ]),
   CommonLootModifiers.add(<item:minecraft:diamond>)
 );

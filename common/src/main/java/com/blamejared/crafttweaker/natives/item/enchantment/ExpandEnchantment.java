@@ -1,18 +1,19 @@
 package com.blamejared.crafttweaker.natives.item.enchantment;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import com.blamejared.crafttweaker_annotations.annotations.TaggableElement;
-import net.minecraft.core.registries.BuiltInRegistries;
+import com.google.common.collect.Maps;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -25,35 +26,27 @@ import java.util.Map;
 public class ExpandEnchantment {
     
     @ZenCodeType.Method
-    public static Map<EquipmentSlot, ItemStack> getSlotItems(Enchantment internal, LivingEntity entity) {
+    public static int getMinCost(Enchantment internal, int level) {
         
-        return internal.getSlotItems(entity);
+        return internal.getMinCost(level);
     }
     
-    @ZenCodeType.Getter("weight")
-    public static int getWeight(Enchantment internal) {
+    @ZenCodeType.Getter("definition")
+    public static Enchantment.EnchantmentDefinition definition(Enchantment internal) {
         
-        return internal.getWeight();
+        return internal.definition();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("minLevel")
-    public static int getMinLevel(Enchantment internal) {
-        
-        return internal.getMinLevel();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("maxLevel")
+    @ZenCodeType.Getter
     public static int getMaxLevel(Enchantment internal) {
         
         return internal.getMaxLevel();
     }
     
-    @ZenCodeType.Method
-    public static int getMinCost(Enchantment internal, int level) {
+    @ZenCodeType.Getter("description")
+    public static Component description(Enchantment internal) {
         
-        return internal.getMinCost(level);
+        return internal.description();
     }
     
     @ZenCodeType.Method
@@ -63,93 +56,90 @@ public class ExpandEnchantment {
     }
     
     @ZenCodeType.Method
-    public static int getDamageProtection(Enchantment internal, int level, DamageSource source) {
+    public static Map<EquipmentSlot, IItemStack> getSlotItems(Enchantment internal, LivingEntity entity) {
         
-        return internal.getDamageProtection(level, source);
+        return Maps.transformValues(internal.getSlotItems(entity), IItemStack::of);
     }
     
     @ZenCodeType.Method
-    public static float getDamageBonus(Enchantment internal, int level, EntityType<Entity> mobType) {
+    public static boolean matchingSlot(Enchantment internal, EquipmentSlot slot) {
         
-        return internal.getDamageBonus(level, mobType);
+        return internal.matchingSlot(slot);
+    }
+    
+    //TODO 1.21.x when we have non item data component types
+    //    @ZenCodeType.Getter("effects")
+    //    public static DataComponentMap effects(Enchantment internal) {
+    //
+    //        return internal.effects();
+    //    }
+    //
+    //    public static <T> List<T> getEffects(Enchantment internal, DataComponentType<List<T>> $$0) {
+    //        return internal.getEffects($$0);
+    //    }
+    
+    @ZenCodeType.Getter("supportedItems")
+    public static Item[] getSupportedItems(Enchantment internal) {
+        
+        return internal.getSupportedItems().stream().map(Holder::value).toArray(Item[]::new);
+    }
+    
+    @ZenCodeType.Getter("exclusiveSet")
+    public static Enchantment[] exclusiveSet(Enchantment internal) {
+        
+        return internal.exclusiveSet()
+                .stream()
+                .map(Holder::value)
+                .toArray(Enchantment[]::new);
     }
     
     @ZenCodeType.Method
-    public static boolean isCompatibleWith(Enchantment internal, Enchantment other) {
+    public static boolean isPrimaryItem(Enchantment internal, IItemStack stack) {
         
-        return internal.isCompatibleWith(other);
+        return internal.isPrimaryItem(stack.getInternal());
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Getter("descriptionId")
-    public static String getDescriptionId(Enchantment internal) {
+    public static boolean canEnchant(Enchantment internal, IItemStack stack) {
         
-        return internal.getDescriptionId();
+        return internal.canEnchant(stack.getInternal());
     }
     
     @ZenCodeType.Method
-    public static Component getFullname(Enchantment internal, int level) {
+    public static boolean isSupportedItem(Enchantment internal, IItemStack stack) {
         
-        return internal.getFullname(level);
+        return internal.isSupportedItem(stack.getInternal());
     }
     
-    @ZenCodeType.Method
-    public static boolean canEnchant(Enchantment internal, ItemStack stack) {
+    @ZenCodeType.Getter("anvilCost")
+    public static int getAnvilCost(Enchantment internal) {
         
-        return internal.canEnchant(stack);
+        return internal.getAnvilCost();
     }
     
-    @ZenCodeType.Method
-    public static void doPostAttack(Enchantment internal, LivingEntity source, Entity target, int level) {
+    
+    @ZenCodeType.Getter("weight")
+    public static int getWeight(Enchantment internal) {
         
-        internal.doPostAttack(source, target, level);
+        return internal.getWeight();
     }
     
-    @ZenCodeType.Method
-    public static void doPostHurt(Enchantment internal, LivingEntity source, Entity target, int level) {
+    @ZenCodeType.Getter("minLevel")
+    public static int getMinLevel(Enchantment internal) {
         
-        internal.doPostHurt(source, target, level);
+        return internal.getMinLevel();
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isTreasureOnly")
-    public static boolean isTreasureOnly(Enchantment internal) {
-        
-        return internal.isTreasureOnly();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isCurse")
-    public static boolean isCurse(Enchantment internal) {
-        
-        return internal.isCurse();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isTradeable")
-    public static boolean isTradeable(Enchantment internal) {
-        
-        return internal.isTradeable();
-    }
-    
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("isDiscoverable")
-    public static boolean isDiscoverable(Enchantment internal) {
-        
-        return internal.isDiscoverable();
-    }
-    
-    @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     public static ResourceLocation getRegistryName(Enchantment internal) {
         
-        return BuiltInRegistries.ENCHANTMENT.getKey(internal);
+        return Services.REGISTRY.keyOrThrow(Registries.ENCHANTMENT, internal);
     }
     
     @ZenCodeType.Getter("commandString")
     public static String getCommandString(Enchantment internal) {
         
-        return "<enchantment:" + BuiltInRegistries.ENCHANTMENT.getKey(internal) + ">";
+        return "<enchantment:" + getRegistryName(internal) + ">";
     }
     
 }

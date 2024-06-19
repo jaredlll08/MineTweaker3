@@ -7,7 +7,9 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.blamejared.crafttweaker.natives.loot.ExpandLootContext;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -149,7 +151,7 @@ public final class CommonLootModifiers {
             if(tool == null || tool.getInternal() == null || tool.isEmpty()) {
                 loot.add(stack.copy());
             } else {
-                final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, tool.getInternal());
+                final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT,enchantment), tool.getInternal());
                 final int oldAmount = stack.amount();
                 final int newAmount = enchantmentLevel <= 0 ? oldAmount : oldAmount * Math.max(0, context.getRandom()
                         .nextInt(enchantmentLevel + 2) - 1) + 1;
@@ -197,7 +199,7 @@ public final class CommonLootModifiers {
             if(tool == null || tool.getInternal() == null || tool.isEmpty()) {
                 loot.add(stack.copy());
             } else {
-                final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, tool.getInternal());
+                final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment), tool.getInternal());
                 
                 if(enchantmentLevel <= 0) {
                     loot.add(stack.copy());
@@ -256,7 +258,7 @@ public final class CommonLootModifiers {
             if(tool == null || tool.getInternal() == null || tool.isEmpty()) {
                 loot.add(stack.copy());
             } else {
-                final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(enchantment, tool.getInternal());
+                final int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT,enchantment), tool.getInternal());
                 
                 if(enchantmentLevel <= 0) {
                     loot.add(stack.copy());
@@ -405,7 +407,7 @@ public final class CommonLootModifiers {
      *
      * @return An {@link ILootModifier} that carries out the operation.
      *
-     * @docParam target <tag:items:forge:ingots/iron>
+     * @docParam target <tag:item:forge:ingots/iron>
      * @docParam replacement <item:minecraft:iron_ingot>
      */
     @ZenCodeType.Method
@@ -462,7 +464,7 @@ public final class CommonLootModifiers {
      *
      * @return An {@link ILootModifier} that carries out the operation.
      *
-     * @docParam replacementMap { <tag:items:forge:gems/emerald> : <item:minecraft:emerald> }
+     * @docParam replacementMap { <tag:item:forge:gems/emerald> : <item:minecraft:emerald> }
      */
     @ZenCodeType.Method
     public static ILootModifier replaceAllWith(final Map<IIngredient, IItemStack> replacementMap) {
@@ -585,7 +587,7 @@ public final class CommonLootModifiers {
      *
      * @return An {@link ILootModifier} that carries out the operation.
      *
-     * @docParam target <tag:items:minecraft:creeper_drop_music_discs>
+     * @docParam target <tag:item:minecraft:creeper_drop_music_discs>
      */
     @ZenCodeType.Method
     public static ILootModifier remove(final IIngredient target) {
@@ -611,7 +613,7 @@ public final class CommonLootModifiers {
      * @param target The {@link IIngredient} to remove along with its quantity.
      * @return An {@link ILootModifier} that carries out the operation.
      *
-     * @docParam target <tag:items:minecraft:wooden_planks> * 2
+     * @docParam target <tag:item:minecraft:wooden_planks> * 2
      */
     @ZenCodeType.Method
     public static ILootModifier removeExactly(final IIngredientWithAmount target) {
@@ -673,7 +675,7 @@ public final class CommonLootModifiers {
      *
      * @return An {@link ILootModifier} that carries out the operation.
      *
-     * @docParam targets <item:minecraft:bell>, <tag:items:minecraft:rails>
+     * @docParam targets <item:minecraft:bell>, <tag:item:minecraft:rails>
      */
     @ZenCodeType.Method
     public static ILootModifier removeAll(final IIngredient... targets) {
@@ -692,7 +694,7 @@ public final class CommonLootModifiers {
      * @param targets The {@link IIngredient}s to remove along with their quantity.
      * @return An {@link ILootModifier} that carries out the operation.
      *
-     * @docParam target <tag:items:minecraft:wooden_planks> * 2, <item:minecraft:dried_kelp>
+     * @docParam target <tag:item:minecraft:wooden_planks> * 2, <item:minecraft:dried_kelp>
      */
     @ZenCodeType.Method
     public static ILootModifier removeExactlyAll(final IIngredientWithAmount... targets) {

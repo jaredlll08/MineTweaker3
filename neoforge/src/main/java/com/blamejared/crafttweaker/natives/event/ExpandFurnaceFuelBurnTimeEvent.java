@@ -13,6 +13,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -36,7 +37,7 @@ public class ExpandFurnaceFuelBurnTimeEvent {
     }
     
     @ZenCodeType.Getter("recipeType")
-    public static IRecipeManager<Recipe<Container>> getRecipeType(FurnaceFuelBurnTimeEvent internal) {
+    public static IRecipeManager<Recipe<RecipeInput>> getRecipeType(FurnaceFuelBurnTimeEvent internal) {
         
         return GenericUtil.uncheck(RecipeTypeBracketHandler.getOrDefault(internal.getRecipeType()));
     }

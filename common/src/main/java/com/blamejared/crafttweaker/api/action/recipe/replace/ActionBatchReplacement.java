@@ -14,9 +14,9 @@ import com.blamejared.crafttweaker.api.recipe.replacement.ReplacementRequest;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.impl.helper.AccessibleElementsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 
 import java.util.Collection;
 import java.util.stream.Collector;
@@ -67,7 +67,7 @@ public final class ActionBatchReplacement extends CraftTweakerAction implements 
                 .orElse(recipeStream);
     }
     
-    private <C extends Container, T extends Recipe<C>> void replace(final RecipeHolder<?> recipe) {
+    private <C extends RecipeInput, T extends Recipe<C>> void replace(final RecipeHolder<?> recipe) {
         
         final RecipeHolder<T> typedRecipe = GenericUtil.uncheck(recipe);
         final IRecipeHandler<T> handler = CraftTweakerAPI.getRegistry().getRecipeHandlerFor(typedRecipe);
@@ -76,7 +76,7 @@ public final class ActionBatchReplacement extends CraftTweakerAction implements 
                 .ifPresent(it -> this.replace(manager, handler, typedRecipe.id(), it));
     }
     
-    private <C extends Container, T extends Recipe<C>> void replace(
+    private <C extends RecipeInput, T extends Recipe<C>> void replace(
             final IRecipeManager<? super T> manager,
             final IRecipeHandler<T> handler,
             final ResourceLocation name,
@@ -97,7 +97,7 @@ public final class ActionBatchReplacement extends CraftTweakerAction implements 
         return any;
     }
     
-    private <C extends Container, T extends Recipe<C>> RecipeHolder<T> rebuild(
+    private <C extends RecipeInput, T extends Recipe<C>> RecipeHolder<T> rebuild(
             final IDecomposedRecipe recipe,
             final IRecipeManager<? super T> manager,
             final IRecipeHandler<T> handler,

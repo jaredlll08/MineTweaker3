@@ -34,6 +34,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
@@ -63,9 +64,11 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     Codec<IItemStack> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ItemStack.CODEC.fieldOf("item").forGetter(IItemStack::getInternal),
             Codec.BOOL.fieldOf("mutable").forGetter(IItemStack::isMutable),
-            IngredientConditions.CODEC.optionalFieldOf("conditions", IngredientConditions.EMPTY).forGetter(IItemStack::conditions),
-            IngredientTransformers.CODEC.optionalFieldOf("transformers", IngredientTransformers.EMPTY).forGetter(IItemStack::transformers)
-            ).apply(instance, IItemStack::of));
+            IngredientConditions.CODEC.optionalFieldOf("conditions", IngredientConditions.EMPTY)
+                    .forGetter(IItemStack::conditions),
+            IngredientTransformers.CODEC.optionalFieldOf("transformers", IngredientTransformers.EMPTY)
+                    .forGetter(IItemStack::transformers)
+    ).apply(instance, IItemStack::of));
     
     StreamCodec<RegistryFriendlyByteBuf, IItemStack> STREAM_CODEC = StreamCodec.composite(
             ItemStack.STREAM_CODEC,
@@ -83,10 +86,10 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     String CRAFTTWEAKER_DATA_KEY = "CraftTweakerData";
     
     @ZenCodeType.Field
-    UUID BASE_ATTACK_DAMAGE_UUID = AccessItem.crafttweaker$getBASE_ATTACK_DAMAGE_UUID();
+    ResourceLocation BASE_ATTACK_DAMAGE_ID = Item.BASE_ATTACK_DAMAGE_ID;
     
     @ZenCodeType.Field
-    UUID BASE_ATTACK_SPEED_UUID = AccessItem.crafttweaker$getBASE_ATTACK_SPEED_UUID();
+    ResourceLocation BASE_ATTACK_SPEED_ID = Item.BASE_ATTACK_SPEED_ID;
     
     static IItemStack empty() {
         
@@ -448,14 +451,16 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     }
     
     /**
-     * Gets the use duration of the ItemStack
+     * Gets the use duration of the ItemStack for the given entity
      *
      * @return use duration
+     *
+     * @docParam entity entity
      */
-    @ZenCodeType.Getter("useDuration")
-    default int getUseDuration() {
+    @ZenCodeType.Method
+    default int getUseDuration(LivingEntity entity) {
         
-        return getInternal().getUseDuration();
+        return getInternal().getUseDuration(entity);
     }
     
     /**

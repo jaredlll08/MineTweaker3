@@ -77,13 +77,6 @@ public class ExpandServer {
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Getter("isNetherEnabled")
-    public static boolean isNetherEnabled(MinecraftServer internal) {
-        
-        return internal.isNetherEnabled();
-    }
-    
-    @ZenCodeType.Method
     @ZenCodeType.Getter("isShutdown")
     public static boolean isShutdown(MinecraftServer internal) {
         

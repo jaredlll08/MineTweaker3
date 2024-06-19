@@ -2,7 +2,6 @@ package com.blamejared.crafttweaker.api.action.recipe.generic;
 
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.Set;
@@ -14,7 +13,7 @@ public class ActionRemoveGenericRecipeByName extends ActionRemoveGenericRecipeBa
     
     public ActionRemoveGenericRecipeByName(String name) {
         
-        this.names = Set.of(new ResourceLocation(name));
+        this.names = Set.of(ResourceLocation.parse(name));
     }
     
     public ActionRemoveGenericRecipeByName(ResourceLocation[] names) {

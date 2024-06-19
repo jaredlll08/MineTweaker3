@@ -1,8 +1,10 @@
 package com.blamejared.crafttweaker.natives.loot.condition;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -16,7 +18,7 @@ public final class ExpandBonusLevelTableCondition {
     @ZenCodeType.StaticExpansionMethod
     public static LootItemCondition.Builder create(final Enchantment enchantment, final float... values) {
         
-        return BonusLevelTableCondition.bonusLevelFlatChance(enchantment, values);
+        return BonusLevelTableCondition.bonusLevelFlatChance(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment), values);
     }
     
 }

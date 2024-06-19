@@ -120,7 +120,7 @@ public class KnownTagManager<T> implements ITagManager<KnownTag<T>> {
      *
      * @return The list of elements in the tag.
      *
-     * @docParam of <tag:items:minecraft:dirt>
+     * @docParam of <tag:item:minecraft:dirt>
      */
     @ZenCodeType.Method
     public List<T> elements(KnownTag<T> of) {
@@ -145,7 +145,7 @@ public class KnownTagManager<T> implements ITagManager<KnownTag<T>> {
     @ZenCodeType.Method
     public KnownTag<T> tag(String id) {
         
-        return tag(new ResourceLocation(id));
+        return tag(ResourceLocation.parse(id));
     }
     
     @ZenCodeType.Method

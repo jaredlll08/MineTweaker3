@@ -88,7 +88,7 @@ public final class RecipeComponentBracketHandler implements BracketExpressionPar
         
         final ResourceLocation rl;
         try {
-            rl = new ResourceLocation(name);
+            rl = ResourceLocation.parse(name);
         } catch(final ResourceLocationException e) {
             throw new ParseException(position, "Invalid name, expected <recipecomponent:modid:location>", e);
         }

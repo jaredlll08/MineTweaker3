@@ -82,7 +82,11 @@ public final class PlayerAppender extends AbstractAppender {
     @Override
     public void append(final LogEvent event) {
         
-        final String message = this.getLayout().toSerializable(event).toString().replaceAll("(\r?\n)|\r", " ");
+        final String message = this.getLayout()
+                .toSerializable(event)
+                .toString()
+                .replaceAll("\r", "")
+                .replaceAll("\n\n", "\n");
         final LogMessage logMessage = new LogMessage(event.getLevel(), message);
         
         for(final Iterator<WeakReference<Player>> iterator = this.players.iterator(); iterator.hasNext(); ) {
@@ -119,8 +123,16 @@ public final class PlayerAppender extends AbstractAppender {
         final ChatStyle style = STYLES.get(message.level());
         final MutableComponent header = Component.literal("[%s]: ".formatted(message.level().name()))
                 .setStyle(style.levelStyle());
-        final Component line = Component.literal(message.message()).setStyle(style.messageStyle());
-        player.sendSystemMessage(header.append(line));
+        String[] split = message.message().split("\n");
+        for(int i = 0; i < split.length; i++) {
+            final Component line = Component.literal(split[i]).setStyle(style.messageStyle());
+            if(i == 0) {
+                player.sendSystemMessage(header.append(line));
+            } else {
+                player.sendSystemMessage(line);
+            }
+        }
+        
     }
     
 }

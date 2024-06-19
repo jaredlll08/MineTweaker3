@@ -1,10 +1,12 @@
 package com.blamejared.crafttweaker.natives.predicate;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -28,7 +30,7 @@ public final class ExpandEnchantmentPredicate {
     @ZenCodeType.StaticExpansionMethod
     public static EnchantmentPredicate create(final Enchantment enchantment, final MinMaxBounds.Ints level) {
         
-        return new EnchantmentPredicate(enchantment, level);
+        return new EnchantmentPredicate(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT,enchantment), level);
     }
     
 }

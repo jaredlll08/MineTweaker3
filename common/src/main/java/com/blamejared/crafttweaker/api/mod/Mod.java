@@ -2,9 +2,11 @@ package com.blamejared.crafttweaker.api.mod;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.material.Fluid;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -43,13 +46,13 @@ public final class Mod {
     }
     
     
-    private <T> Collection<T> getRegistryObjects(Registry<T> registry) {
+    private <T> Collection<T> getRegistryObjects(ResourceKey<Registry<T>> registry) {
         
-        return registry.keySet()
+        return Services.REGISTRY.registryOrThrow(registry)
+                .entrySet()
                 .stream()
-                .filter(resourceLocation -> resourceLocation.getNamespace().equals(id()))
-                .map(resourceLocation -> registry.getOptional(resourceLocation)
-                        .orElseThrow(() -> new IllegalArgumentException("Cannot get registry object from name: '" + resourceLocation + "'! This should never happen!")))
+                .filter(resourceKeyTEntry -> resourceKeyTEntry.getKey().location().getNamespace().equals(id()))
+                .map(Map.Entry::getValue)
                 .toList();
     }
     
@@ -62,7 +65,7 @@ public final class Mod {
     @ZenCodeType.Getter("items")
     public Collection<Item> getItems() {
         
-        return getRegistryObjects(BuiltInRegistries.ITEM);
+        return getRegistryObjects(Registries.ITEM);
     }
     
     
@@ -91,7 +94,7 @@ public final class Mod {
     @ZenCodeType.Getter("potions")
     public Collection<Potion> getPotions() {
         
-        return getRegistryObjects(BuiltInRegistries.POTION);
+        return getRegistryObjects(Registries.POTION);
     }
     
     /**
@@ -103,7 +106,7 @@ public final class Mod {
     @ZenCodeType.Getter("attributes")
     public Collection<Attribute> getAttributes() {
         
-        return getRegistryObjects(BuiltInRegistries.ATTRIBUTE);
+        return getRegistryObjects(Registries.ATTRIBUTE);
     }
     
     /**
@@ -115,7 +118,7 @@ public final class Mod {
     @ZenCodeType.Getter("fluids")
     public Collection<Fluid> getFluids() {
         
-        return getRegistryObjects(BuiltInRegistries.FLUID);
+        return getRegistryObjects(Registries.FLUID);
     }
     
     /**
@@ -127,7 +130,7 @@ public final class Mod {
     @ZenCodeType.Getter("enchantments")
     public Collection<Enchantment> getEnchantments() {
         
-        return getRegistryObjects(BuiltInRegistries.ENCHANTMENT);
+        return getRegistryObjects(Registries.ENCHANTMENT);
     }
     
     /**
@@ -139,7 +142,7 @@ public final class Mod {
     @ZenCodeType.Getter("blocks")
     public Collection<Block> getBlocks() {
         
-        return getRegistryObjects(BuiltInRegistries.BLOCK);
+        return getRegistryObjects(Registries.BLOCK);
     }
     
     /**
@@ -151,7 +154,7 @@ public final class Mod {
     @ZenCodeType.Getter("mobEffects")
     public Collection<MobEffect> getMobEffects() {
         
-        return getRegistryObjects(BuiltInRegistries.MOB_EFFECT);
+        return getRegistryObjects(Registries.MOB_EFFECT);
     }
     
     /**
@@ -163,7 +166,7 @@ public final class Mod {
     @ZenCodeType.Getter("villagerProfessions")
     public Collection<VillagerProfession> getVillagerProfessions() {
         
-        return getRegistryObjects(BuiltInRegistries.VILLAGER_PROFESSION);
+        return getRegistryObjects(Registries.VILLAGER_PROFESSION);
     }
     
     /**
@@ -175,7 +178,7 @@ public final class Mod {
     @ZenCodeType.Getter("soundEvents")
     public Collection<SoundEvent> getSoundEvents() {
         
-        return getRegistryObjects(BuiltInRegistries.SOUND_EVENT);
+        return getRegistryObjects(Registries.SOUND_EVENT);
     }
     
     /**

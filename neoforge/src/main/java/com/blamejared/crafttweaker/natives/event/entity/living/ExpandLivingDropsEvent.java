@@ -62,12 +62,6 @@ public class ExpandLivingDropsEvent {
         drops.forEach(drop -> addDrop(internal, drop));
     }
     
-    @ZenCodeType.Getter("lootingLevel")
-    public static int getLootingLevel(LivingDropsEvent internal) {
-        
-        return internal.getLootingLevel();
-    }
-    
     /**
      * Whether the Entity doing the drop has recently been damaged.
      */

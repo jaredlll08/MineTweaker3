@@ -151,13 +151,6 @@ public class ExpandEntity {
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Getter("portalWaitTime")
-    public static int getPortalWaitTime(Entity internal) {
-        
-        return internal.getPortalWaitTime();
-    }
-    
-    @ZenCodeType.Method
     public static void lavaHurt(Entity internal) {
         
         internal.lavaHurt();

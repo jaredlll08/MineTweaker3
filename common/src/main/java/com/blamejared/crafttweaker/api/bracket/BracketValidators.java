@@ -3,8 +3,10 @@ package com.blamejared.crafttweaker.api.bracket;
 import com.blamejared.crafttweaker.api.annotation.BracketValidator;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.logging.CommonLoggers;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import org.openzen.zencode.java.ZenCodeType;
@@ -20,7 +22,6 @@ public class BracketValidators {
     private BracketValidators() {
         
     }
-    
     
     public static boolean validateBracket(String bracketName, String tokens, Function<String, ?> bracketMethod, boolean logError) {
         
@@ -46,7 +47,7 @@ public class BracketValidators {
         return validateBracket("block", tokens, BracketHandlers::getBlock);
     }
     
-    @ZenCodeType.StaticExpansionMethod
+    @ZenCodeType.Method
     @BracketValidator("fluid")
     public static boolean validateFluidStack(String tokens) {
         
@@ -105,8 +106,8 @@ public class BracketValidators {
             return false;
         }
         
-        final ResourceLocation key = new ResourceLocation(split[0], split[1]);
-        if(!BuiltInRegistries.ENCHANTMENT.containsKey(key)) {
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+        if(!Services.REGISTRY.registryOrThrow(Registries.ENCHANTMENT).containsKey(key)) {
             CommonLoggers.zenCode().error("Could not get enchantment '{}': the enchantment isn't registered", tokens);
             return false;
         }
@@ -141,7 +142,7 @@ public class BracketValidators {
                     .error("Could not get item with name: <item:{}>! Syntax is <item:modid:itemname>", tokens);
             return false;
         }
-        ResourceLocation key = new ResourceLocation(split[0], split[1]);
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
         
         if(!BuiltInRegistries.ITEM.containsKey(key)) {
             CommonLoggers.zenCode().error("Could not get item with name: <item:{}>! Item does not exist!", tokens);

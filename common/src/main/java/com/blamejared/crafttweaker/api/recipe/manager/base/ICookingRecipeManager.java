@@ -39,7 +39,7 @@ public interface ICookingRecipeManager<T extends AbstractCookingRecipe> extends 
      *
      * @docParam name "wool2diamond"
      * @docParam output <item:minecraft:diamond>
-     * @docParam input <tag:items:minecraft:wool>
+     * @docParam input <tag:item:minecraft:wool>
      * @docParam xp 1.0
      * @docParam cookTime 30
      */
@@ -69,7 +69,7 @@ public interface ICookingRecipeManager<T extends AbstractCookingRecipe> extends 
      * @docParam name "wool2diamond"
      * @docParam category <constant:minecraft:cookingbookcategory:misc>
      * @docParam output <item:minecraft:diamond>
-     * @docParam input <tag:items:minecraft:wool>
+     * @docParam input <tag:item:minecraft:wool>
      * @docParam xp 1.0
      * @docParam cookTime 30
      */
@@ -87,7 +87,7 @@ public interface ICookingRecipeManager<T extends AbstractCookingRecipe> extends 
      * @param input  IIngredient of the recipe to remove.
      *
      * @docParam output <item:minecraft:diamond>
-     * @docParam input <tag:items:minecraft:wool>
+     * @docParam input <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     default void removeRecipe(IItemStack output, IIngredient input) {

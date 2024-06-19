@@ -41,15 +41,17 @@ public class ExpandCrossBowItem {
      * Gets the charged duration of the given stack.
      *
      * @param crossbowStack The stack to check
+     * @param entity The entity to get the charge duration for
      *
      * @return the charged duration of the given stack.
      *
      * @docParam crossbowStack <item:minecraft:crossbow>
+     * @docParam entity entity
      */
     @ZenCodeType.StaticExpansionMethod
-    public static int getChargeDuration(ItemStack crossbowStack) {
+    public static int getChargeDuration(ItemStack crossbowStack, LivingEntity entity) {
         
-        return CrossbowItem.getChargeDuration(crossbowStack);
+        return CrossbowItem.getChargeDuration(crossbowStack, entity);
     }
     
 }

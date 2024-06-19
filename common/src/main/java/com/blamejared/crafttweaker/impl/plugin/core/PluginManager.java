@@ -92,7 +92,7 @@ public final class PluginManager {
         final ResourceLocation id;
         try {
             final String targetId = Objects.requireNonNull(clazz.getAnnotation(CraftTweakerPlugin.class)).value();
-            id = new ResourceLocation(targetId);
+            id = ResourceLocation.parse(targetId);
             if(id.getNamespace().equals("minecraft")) {
                 throw new ResourceLocationException("Illegal namespace 'minecraft'");
             }

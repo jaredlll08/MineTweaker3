@@ -208,9 +208,9 @@ public class ExpandMob {
     }
     
     @ZenCodeType.Method
-    public static boolean canBeLeashed(Mob internal, Player leashHolder) {
+    public static boolean canBeLeashed(Mob internal) {
         
-        return internal.canBeLeashed(leashHolder);
+        return internal.canBeLeashed();
     }
     
     @ZenCodeType.Getter("leashed")

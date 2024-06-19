@@ -1,7 +1,6 @@
 package com.blamejared.crafttweaker.natives.entity;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.data.MapData;
 import com.blamejared.crafttweaker.api.entity.CTEntityIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
@@ -159,6 +158,11 @@ public class ExpandEntityType {
     
     @ZenCodeType.Getter("commandString")
     public static String getCommandString(EntityType<Entity> internal) {
+        
+        return rawGetCommandString(internal);
+    }
+    
+    public static String rawGetCommandString(EntityType<?> internal) {
         
         return "<entitytype:" + BuiltInRegistries.ENTITY_TYPE.getKey(internal) + ">";
     }

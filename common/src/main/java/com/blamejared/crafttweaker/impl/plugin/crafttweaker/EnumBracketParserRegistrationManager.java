@@ -47,7 +47,7 @@ final class EnumBracketParserRegistrationManager {
         
         final ResourceLocation id;
         try {
-            id = new ResourceLocation(value);
+            id = ResourceLocation.parse(value);
         } catch(final ResourceLocationException e) {
             throw new IllegalArgumentException("Provided resource location '" + value + "' for enum " + clazz.getName() + " is invalid", e);
         }

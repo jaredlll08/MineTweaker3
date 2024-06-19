@@ -20,9 +20,9 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${Versions.FABRIC_LOADER}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${Versions.FABRIC}")
 
-//    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-api-fabric:${Versions.REI}") {
-//        exclude("net.fabricmc", "fabric-loader")
-//    }
+    modLocalRuntime("me.shedaniel:RoughlyEnoughItems-api-fabric:${Versions.REI}") {
+        exclude("net.fabricmc", "fabric-loader")
+    }
     modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:${Versions.REI}") {
         exclude("net.fabricmc", "fabric-loader")
     }

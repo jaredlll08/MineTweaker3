@@ -18,7 +18,6 @@ import java.util.List;
 @ZenRegister
 @Document("vanilla/api/recipe/type/Recipe")
 @NativeTypeRegistration(value = Recipe.class, zenCodeName = "crafttweaker.api.recipe.type.Recipe")
-//@NativeMethod(name = "getResultItem", parameters = {}, getterName = "resultItem")
 public class ExpandRecipe {
     
     @ZenCodeType.Method

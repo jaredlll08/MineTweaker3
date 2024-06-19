@@ -16,8 +16,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.valueproviders.FloatProviderType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -48,14 +50,14 @@ import java.util.Optional;
 @Document("vanilla/api/BracketHandlers")
 public class BracketHandlers {
     
-    public static <T> T getRegistry(String tokens, Registry<T> registry) {
+    public static <T> T getRegistry(String tokens, ResourceKey<Registry<T>> registry) {
         
         return getRegistry(tokens, registry, false);
     }
     
-    public static <T> T getRegistry(String tokens, Registry<T> registry, boolean includeTypeNamespace) {
+    public static <T> T getRegistry(String tokens, ResourceKey<Registry<T>> registry, boolean includeTypeNamespace) {
         
-        String type = includeTypeNamespace ? registry.key().location().toString() : registry.key().location().getPath();
+        String type = includeTypeNamespace ? registry.location().toString() : registry.location().getPath();
         if(!tokens.toLowerCase(Locale.ENGLISH).equals(tokens)) {
             CommonLoggers.zenCode().warn("{} bracket <{}:{}> is not lowercase!", type, type, tokens);
         }
@@ -64,9 +66,8 @@ public class BracketHandlers {
         if(split.length != 2) {
             throw new IllegalArgumentException("Could not get " + type + " with name: <" + type + ":" + tokens + ">! Syntax is <" + type + ":modid:name>");
         }
-        ResourceLocation key = new ResourceLocation(split[0], split[1]);
-        
-        return registry.getOptional(key)
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+        return Services.REGISTRY.registryOrThrow(registry).getOptional(key)
                 .orElseThrow(() -> new IllegalArgumentException("Could not get " + type + " with name: <" + type + ":" + tokens + ">! " + type + " does not exist!"));
     }
     
@@ -74,7 +75,7 @@ public class BracketHandlers {
     @BracketResolver("attribute")
     public static Attribute getAttribute(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.ATTRIBUTE);
+        return getRegistry(tokens, Registries.ATTRIBUTE);
     }
     
     /**
@@ -90,7 +91,7 @@ public class BracketHandlers {
     @BracketResolver("block")
     public static Block getBlock(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.BLOCK);
+        return getRegistry(tokens, Registries.BLOCK);
     }
     
     
@@ -107,7 +108,7 @@ public class BracketHandlers {
     @BracketResolver("fluid")
     public static IFluidStack getFluidStack(String tokens) {
         
-        return IFluidStack.of(getRegistry(tokens, BuiltInRegistries.FLUID), 1);
+        return IFluidStack.of(getRegistry(tokens, Registries.FLUID), 1);
     }
     
     /**
@@ -134,12 +135,12 @@ public class BracketHandlers {
             String blockName = split[0] + ":" + split[1];
             String properties = split.length > 2 ? split[2] : "";
             
-            Optional<Block> found = BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(blockName));
+            Optional<Block> found = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(blockName));
             if(found.isEmpty()) {
                 final Throwable t = new IllegalArgumentException("Could not get BlockState from: <blockstate:" + tokens + ">! The block does not exist!");
                 CommonLoggers.zenCode().error("Error creating BlockState!", t);
             } else {
-                return getBlockState(found.get(), blockName, properties);
+                return getBlockState(found.get(), properties);
             }
         }
         CommonLoggers.zenCode()
@@ -149,10 +150,10 @@ public class BracketHandlers {
     
     public static BlockState getBlockState(String name, String properties) {
         
-        return getBlockState(BuiltInRegistries.BLOCK.get(new ResourceLocation(name)), name, properties);
+        return getBlockState(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(name)), properties);
     }
     
-    public static BlockState getBlockState(Block block, String name, String properties) {
+    public static BlockState getBlockState(Block block,  String properties) {
         
         BlockState blockState = block.defaultBlockState();
         if(properties != null && !properties.isEmpty()) {
@@ -183,7 +184,7 @@ public class BracketHandlers {
     @ZenCodeType.Method
     public static MobEffect getMobEffect(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.MOB_EFFECT);
+        return getRegistry(tokens, Registries.MOB_EFFECT);
     }
     
     /**
@@ -199,7 +200,7 @@ public class BracketHandlers {
     @BracketResolver("enchantment")
     public static Enchantment getEnchantment(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.ENCHANTMENT);
+        return getRegistry(tokens, Registries.ENCHANTMENT);
     }
     
     /**
@@ -215,7 +216,7 @@ public class BracketHandlers {
     @BracketResolver("entitytype")
     public static EntityType<Entity> getEntityType(String tokens) {
         
-        return GenericUtil.uncheck(getRegistry(tokens, BuiltInRegistries.ENTITY_TYPE));
+        return GenericUtil.uncheck(getRegistry(tokens, Registries.ENTITY_TYPE));
     }
     
     
@@ -232,7 +233,7 @@ public class BracketHandlers {
     @ZenCodeType.Method
     public static IItemStack getItem(String tokens) {
         
-        return IItemStack.of(new ItemStack(getRegistry(tokens, BuiltInRegistries.ITEM)));
+        return IItemStack.of(new ItemStack(getRegistry(tokens, Registries.ITEM)));
     }
     
     
@@ -240,7 +241,7 @@ public class BracketHandlers {
     @ZenCodeType.Method
     public static Potion getPotion(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.POTION);
+        return getRegistry(tokens, Registries.POTION);
     }
     
     
@@ -268,7 +269,7 @@ public class BracketHandlers {
             // This is bound to cause issues, like: <recipetype:crafttweaker:scripts>.removeAll(); Best to just fix it now
             throw new IllegalArgumentException("Nice try, but there's no reason you need to access the <recipetype:crafttweaker:scripts> recipe manager!");
         }
-        final ResourceLocation key = new ResourceLocation(tokens);
+        final ResourceLocation key = ResourceLocation.parse(tokens);
         
         final IRecipeManager<?> result = RecipeTypeBracketHandler.getOrDefault(key);
         
@@ -292,7 +293,7 @@ public class BracketHandlers {
     @BracketResolver("profession")
     public static VillagerProfession getProfession(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.VILLAGER_PROFESSION);
+        return getRegistry(tokens, Registries.VILLAGER_PROFESSION);
     }
     
     /**
@@ -308,7 +309,7 @@ public class BracketHandlers {
     @BracketResolver("soundevent")
     public static SoundEvent getSoundEvent(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.SOUND_EVENT);
+        return getRegistry(tokens, Registries.SOUND_EVENT);
     }
     
     /**
@@ -337,7 +338,7 @@ public class BracketHandlers {
             throw new IllegalArgumentException("Could not get targeting strategy with <targetingstrategy:" + tokens + ">: syntax is <targetingstrategy:modid:name>");
         }
         
-        final ResourceLocation key = new ResourceLocation(split[0], split[1]);
+        final ResourceLocation key = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
         return ITargetingStrategy.find(key);
     }
     
@@ -354,7 +355,7 @@ public class BracketHandlers {
     @BracketResolver("villagertype")
     public static VillagerType getVillagerType(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.VILLAGER_TYPE);
+        return getRegistry(tokens, Registries.VILLAGER_TYPE);
     }
     
     /**
@@ -370,7 +371,7 @@ public class BracketHandlers {
     @BracketResolver("componenttype")
     public static DataComponentType getComponentType(String tokens) {
         
-        return getRegistry(tokens, BuiltInRegistries.DATA_COMPONENT_TYPE);
+        return getRegistry(tokens, Registries.DATA_COMPONENT_TYPE);
     }
     
     /**
@@ -386,7 +387,7 @@ public class BracketHandlers {
     @BracketResolver("bannerpattern")
     public static BannerPattern getBannerPattern(String tokens) {
         
-        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.BANNER_PATTERN));
+        return getRegistry(tokens, Registries.BANNER_PATTERN);
     }
     
     /**
@@ -402,7 +403,7 @@ public class BracketHandlers {
     @BracketResolver("instrument")
     public static Instrument getInstrument(String tokens) {
         
-        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.INSTRUMENT));
+        return getRegistry(tokens, Registries.INSTRUMENT);
     }
     
     /**
@@ -418,7 +419,7 @@ public class BracketHandlers {
     @BracketResolver("trimpattern")
     public static TrimPattern getTrimPattern(String tokens) {
         
-        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.TRIM_PATTERN));
+        return getRegistry(tokens, Registries.TRIM_PATTERN);
     }
     
     /**
@@ -434,7 +435,8 @@ public class BracketHandlers {
     @BracketResolver("trimmaterial")
     public static TrimMaterial getTrimMaterial(String tokens) {
         
-        return getRegistry(tokens, Services.REGISTRY.registryOrThrow(Registries.TRIM_MATERIAL));
+        FloatProviderType<?> registry = getRegistry(tokens, Registries.FLOAT_PROVIDER_TYPE);
+        return getRegistry(tokens, Registries.TRIM_MATERIAL);
     }
     
 }

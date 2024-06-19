@@ -10,9 +10,9 @@ import com.blamejared.crafttweaker.api.util.RecipeUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -84,7 +84,7 @@ public class CTShapedRecipe extends ShapedRecipe {
         }
     }
     
-    private Pair<Integer, Integer> calculateOffset(CraftingContainer inv) {
+    private Pair<Integer, Integer> calculateOffset(CraftingInput inv) {
         
         Pair<Integer, Integer> offset = calculateOffset(mirroredIngredients[MirrorAxis.NONE.ordinal()], inv);
         if(isValidOffset(offset) || !mirrorAxis.isMirrored()) {
@@ -113,19 +113,19 @@ public class CTShapedRecipe extends ShapedRecipe {
         return INVALID;
     }
     
-    private Pair<Integer, Integer> calculateOffset(IIngredient[][] test, CraftingContainer inv) {
+    private Pair<Integer, Integer> calculateOffset(IIngredient[][] test, CraftingInput inv) {
         
-        for(int rowOffset = 0; rowOffset <= inv.getHeight() - test.length; rowOffset++) {
+        for(int rowOffset = 0; rowOffset <= inv.height() - test.length; rowOffset++) {
             offset:
-            for(int columnOffset = 0; columnOffset <= inv.getWidth() - test[0].length; columnOffset++) {
+            for(int columnOffset = 0; columnOffset <= inv.width() - test[0].length; columnOffset++) {
                 
-                final boolean[] visited = new boolean[inv.getContainerSize()];
+                final boolean[] visited = new boolean[inv.size()];
                 
                 for(int rowIndex = 0; rowIndex < test.length; rowIndex++) {
                     final IIngredient[] row = test[rowIndex];
                     for(int columnIndex = 0; columnIndex < row.length; columnIndex++) {
                         final IIngredient item = row[columnIndex];
-                        final int slotNumber = (rowIndex + rowOffset) * inv.getWidth() + columnIndex + columnOffset;
+                        final int slotNumber = (rowIndex + rowOffset) * inv.width() + columnIndex + columnOffset;
                         final ItemStack stackInSlot = inv.getItem(slotNumber);
                         
                         if(item == null && !stackInSlot.isEmpty() || item != null && !item.matches(IItemStack.ofMutable(stackInSlot))) {
@@ -147,13 +147,13 @@ public class CTShapedRecipe extends ShapedRecipe {
     }
     
     @Override
-    public boolean matches(CraftingContainer inv, @Nullable Level worldIn) {
+    public boolean matches(CraftingInput inv, @Nullable Level worldIn) {
         
         return isValidOffset(calculateOffset(inv));
     }
     
     @Override
-    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider lookup) {
+    public ItemStack assemble(CraftingInput container, HolderLookup.Provider lookup) {
         
         final Pair<Integer, Integer> offset = calculateOffset(container);
         if(offset == INVALID) {
@@ -179,7 +179,7 @@ public class CTShapedRecipe extends ShapedRecipe {
                 if(ingredient == null) {
                     continue;
                 }
-                final int slotIndex = (rowIndex + rowOffset) * container.getWidth() + columnIndex + columnOffset;
+                final int slotIndex = (rowIndex + rowOffset) * container.width() + columnIndex + columnOffset;
                 stacks[rowIndex][columnIndex] = IItemStack.of(container.getItem(slotIndex)).withAmount(1);
             }
         }
@@ -194,7 +194,7 @@ public class CTShapedRecipe extends ShapedRecipe {
     }
     
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         
         IIngredient[][] workingIngredients = mirroredIngredients[MirrorAxis.NONE.ordinal()];
         
@@ -228,9 +228,9 @@ public class CTShapedRecipe extends ShapedRecipe {
         return getRemainingItems(inv, offset, workingIngredients);
     }
     
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv, Pair<Integer, Integer> offsetPair, IIngredient[][] ingredients) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv, Pair<Integer, Integer> offsetPair, IIngredient[][] ingredients) {
         
-        final NonNullList<ItemStack> result = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> result = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
         
         if(offsetPair == INVALID) {
             return result;
@@ -246,7 +246,7 @@ public class CTShapedRecipe extends ShapedRecipe {
                 if(ingredient == null) {
                     continue;
                 }
-                final int slotIndex = (rowIndex + rowOffset) * inv.getWidth() + columnIndex + columnOffset;
+                final int slotIndex = (rowIndex + rowOffset) * inv.width() + columnIndex + columnOffset;
                 result.set(slotIndex, ingredient.getRemainingItem(IItemStack.ofMutable(inv.getItem(slotIndex)))
                         .getInternal());
             }

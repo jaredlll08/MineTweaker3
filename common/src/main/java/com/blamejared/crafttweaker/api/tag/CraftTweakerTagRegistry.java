@@ -319,13 +319,7 @@ public final class CraftTweakerTagRegistry {
     
     public String makeTagFolder(ResourceKey<?> key) {
         
-        String tagDir = TagManager.getTagDir(GenericUtil.uncheck(key));
-        
-        // Really not ideal, but I don't see a better way, lets just hope that other mods don't be dumb and add their tags to other folders.
-        if(tagDir.startsWith("tags/")) {
-            tagDir = tagDir.substring("tags/".length());
-        }
-        return tagDir;
+        return key.location().toString();
     }
     
     public record BindContext(boolean registerKnownManagers) {

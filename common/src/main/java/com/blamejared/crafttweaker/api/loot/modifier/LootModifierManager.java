@@ -73,7 +73,7 @@ public class LootModifierManager {
     @ZenCodeType.Method
     public ILootModifier getByName(final String name) {
         
-        return this.lootMap.get().getOrDefault(new ResourceLocation(name), ILootModifier.DEFAULT);
+        return this.lootMap.get().getOrDefault(ResourceLocation.parse(name), ILootModifier.DEFAULT);
     }
     
     /**
@@ -109,7 +109,7 @@ public class LootModifierManager {
     @ZenCodeType.Method
     public void removeByName(final String name) {
         
-        final ResourceLocation id = name.contains(":") ? new ResourceLocation(name) : CraftTweakerConstants.rl(name);
+        final ResourceLocation id = name.contains(":") ? ResourceLocation.parse(name) : CraftTweakerConstants.rl(name);
         CraftTweakerAPI.apply(new ActionRemoveLootModifier("with name '" + id + "'", entry -> entry.getKey()
                 .equals(id), this.lootMap));
     }

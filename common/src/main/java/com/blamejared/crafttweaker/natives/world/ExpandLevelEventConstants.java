@@ -22,8 +22,6 @@ public class ExpandLevelEventConstants {
     @ZenCodeType.Field
     public static final int SOUND_DISPENSER_PROJECTILE_LAUNCH = LevelEvent.SOUND_DISPENSER_PROJECTILE_LAUNCH;
     @ZenCodeType.Field
-    public static final int SOUND_ENDER_EYE_LAUNCH = LevelEvent.SOUND_ENDER_EYE_LAUNCH;
-    @ZenCodeType.Field
     public static final int SOUND_FIREWORK_SHOOT = LevelEvent.SOUND_FIREWORK_SHOOT;
     @ZenCodeType.Field
     public static final int SOUND_EXTINGUISH_FIRE = LevelEvent.SOUND_EXTINGUISH_FIRE;
@@ -99,6 +97,8 @@ public class ExpandLevelEventConstants {
     public static final int SOUND_CRAFTER_CRAFT = LevelEvent.SOUND_CRAFTER_CRAFT;
     @ZenCodeType.Field
     public static final int SOUND_CRAFTER_FAIL = LevelEvent.SOUND_CRAFTER_FAIL;
+    @ZenCodeType.Field
+    public static final int SOUND_WIND_CHARGE_SHOOT = LevelEvent.SOUND_WIND_CHARGE_SHOOT;
     @ZenCodeType.Field
     public static final int COMPOSTER_FILL = LevelEvent.COMPOSTER_FILL;
     @ZenCodeType.Field

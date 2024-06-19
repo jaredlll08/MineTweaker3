@@ -16,6 +16,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.List;
@@ -147,7 +148,7 @@ public final class ComponentFilteringRule<T> implements IFilteringRule {
         );
     }
     
-    private <C extends Container, V extends Recipe<C>> boolean castFilter(final RecipeHolder<?> recipe) {
+    private <C extends RecipeInput, V extends Recipe<C>> boolean castFilter(final RecipeHolder<?> recipe) {
         
         final RecipeHolder<V> typedRecipe = GenericUtil.uncheck(recipe);
         final IRecipeHandler<V> handler = CraftTweakerAPI.getRegistry().getRecipeHandlerFor(typedRecipe);

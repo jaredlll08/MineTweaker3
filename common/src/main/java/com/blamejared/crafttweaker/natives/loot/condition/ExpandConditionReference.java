@@ -24,7 +24,7 @@ public final class ExpandConditionReference {
     @ZenCodeType.StaticExpansionMethod
     public static LootItemCondition.Builder create(final String name) {
         
-        return create(new ResourceLocation(name));
+        return create(ResourceLocation.parse(name));
     }
     
 }

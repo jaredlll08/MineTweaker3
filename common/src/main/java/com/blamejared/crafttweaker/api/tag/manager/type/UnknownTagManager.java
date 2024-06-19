@@ -84,7 +84,7 @@ public class UnknownTagManager implements ITagManager<UnknownTag> {
     @ZenCodeType.Method
     public UnknownTag tag(String id) {
         
-        return tag(new ResourceLocation(id));
+        return tag(ResourceLocation.parse(id));
     }
     
     @ZenCodeType.Method

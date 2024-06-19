@@ -1,6 +1,7 @@
 package com.blamejared.crafttweaker.natives.food;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -11,6 +12,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ZenRegister
 @Document("vanilla/api/food/FoodProperties")
@@ -20,13 +22,19 @@ public class ExpandFoodProperties {
     @ZenCodeType.StaticExpansionMethod
     public static FoodProperties create(int nutrition, float saturation, boolean canAlwaysEat, float eatSeconds) {
         
-        return create(nutrition, saturation, canAlwaysEat, eatSeconds, List.of());
+        return create(nutrition, saturation, canAlwaysEat, eatSeconds, IItemStack.empty());
     }
     
     @ZenCodeType.StaticExpansionMethod
-    public static FoodProperties create(int nutrition, float saturation, boolean canAlwaysEat, float eatSeconds, List<FoodProperties.PossibleEffect> effects) {
+    public static FoodProperties create(int nutrition, float saturation, boolean canAlwaysEat, float eatSeconds, IItemStack usingConvertsTo) {
         
-        return new FoodProperties(nutrition, saturation, canAlwaysEat, eatSeconds, effects);
+        return create(nutrition, saturation, canAlwaysEat, eatSeconds, usingConvertsTo, List.of());
+    }
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static FoodProperties create(int nutrition, float saturation, boolean canAlwaysEat, float eatSeconds, IItemStack usingConvertsTo, List<FoodProperties.PossibleEffect> effects) {
+        
+        return new FoodProperties(nutrition, saturation, canAlwaysEat, eatSeconds, usingConvertsTo.isEmpty() ? Optional.empty() : Optional.of(usingConvertsTo.getInternal()), effects);
     }
     
     @ZenCodeType.Getter("nutrition")
@@ -38,7 +46,7 @@ public class ExpandFoodProperties {
     @ZenCodeType.Method
     public static FoodProperties withNutrition(FoodProperties internal, int nutrition) {
         
-        return new FoodProperties(nutrition, internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.effects());
+        return new FoodProperties(nutrition, internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), internal.effects());
     }
     
     @ZenCodeType.Getter("saturationModifier")
@@ -50,7 +58,7 @@ public class ExpandFoodProperties {
     @ZenCodeType.Method
     public static FoodProperties withSaturation(FoodProperties internal, float saturation) {
         
-        return new FoodProperties(internal.nutrition(), saturation, internal.canAlwaysEat(), internal.eatSeconds(), internal.effects());
+        return new FoodProperties(internal.nutrition(), saturation, internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), internal.effects());
     }
     
     @ZenCodeType.Getter("canAlwaysEat")
@@ -62,7 +70,7 @@ public class ExpandFoodProperties {
     @ZenCodeType.Method
     public static FoodProperties withCanAlwaysEat(FoodProperties internal, boolean canAlwaysEat) {
         
-        return new FoodProperties(internal.nutrition(), internal.saturation(), canAlwaysEat, internal.eatSeconds(), internal.effects());
+        return new FoodProperties(internal.nutrition(), internal.saturation(), canAlwaysEat, internal.eatSeconds(), internal.usingConvertsTo(), internal.effects());
     }
     
     @ZenCodeType.Getter("eatSeconds")
@@ -74,7 +82,19 @@ public class ExpandFoodProperties {
     @ZenCodeType.Method
     public static FoodProperties withEatSeconds(FoodProperties internal, int eatSeconds) {
         
-        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), eatSeconds, internal.effects());
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), eatSeconds, internal.usingConvertsTo(), internal.effects());
+    }
+    
+    @ZenCodeType.Getter("usingConvertsTo")
+    public static IItemStack usingConvertsTo(FoodProperties internal) {
+        
+        return internal.usingConvertsTo().map(IItemStack::of).orElseGet(IItemStack::empty);
+    }
+    
+    @ZenCodeType.Method
+    public static FoodProperties withUsingConvertsTo(FoodProperties internal, IItemStack usingConvertsTo) {
+        
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), usingConvertsTo.isEmpty() ? Optional.empty() : Optional.of(usingConvertsTo.getInternal()), internal.effects());
     }
     
     @ZenCodeType.Getter("effects")
@@ -88,7 +108,7 @@ public class ExpandFoodProperties {
         
         ArrayList<FoodProperties.PossibleEffect> possibleEffects = new ArrayList<>(internal.effects());
         possibleEffects.add(Services.PLATFORM.createPossibleEffect(effect, probability));
-        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), possibleEffects);
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), possibleEffects);
     }
     
     @ZenCodeType.Method
@@ -96,19 +116,19 @@ public class ExpandFoodProperties {
         
         ArrayList<FoodProperties.PossibleEffect> possibleEffects = new ArrayList<>(internal.effects());
         possibleEffects.add(effect);
-        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), possibleEffects);
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), possibleEffects);
     }
     
     @ZenCodeType.Method
     public static FoodProperties withEffects(FoodProperties internal, List<FoodProperties.PossibleEffect> effects) {
         
-        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), effects);
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), effects);
     }
     
     @ZenCodeType.Method
     public static FoodProperties withoutEffect(FoodProperties internal, MobEffect effect) {
         
-        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.effects()
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), internal.effects()
                 .stream()
                 .filter(possibleEffect -> possibleEffect.effect().getEffect().value() != effect)
                 .toList());
@@ -117,7 +137,7 @@ public class ExpandFoodProperties {
     @ZenCodeType.Method
     public static FoodProperties withoutEffect(FoodProperties internal, FoodProperties.PossibleEffect effect) {
         
-        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.effects()
+        return new FoodProperties(internal.nutrition(), internal.saturation(), internal.canAlwaysEat(), internal.eatSeconds(), internal.usingConvertsTo(), internal.effects()
                 .stream()
                 .filter(possibleEffect -> !possibleEffect.equals(effect))
                 .toList());

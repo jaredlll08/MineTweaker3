@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  * An IIngredient that wraps a vanilla Ingredient.
  *
- * @docParam this <tag:items:minecraft:wool>.asIIngredient();
+ * @docParam this <tag:item:minecraft:wool>.asIIngredient();
  */
 @ZenRegister
 @ZenCodeType.Name("crafttweaker.api.ingredient.type.WrappingIIngredient")

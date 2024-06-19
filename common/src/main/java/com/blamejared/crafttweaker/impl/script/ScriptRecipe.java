@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -18,7 +19,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
-public class ScriptRecipe implements Recipe<Container> {
+public class ScriptRecipe implements Recipe<RecipeInput> {
     
     private static final Function<ScriptRecipe, ResourceLocation> ID_GENERATOR = Util.memoize(scriptRecipe -> {
         final String sanitizedFileName = scriptRecipe.getFileName()
@@ -42,13 +43,13 @@ public class ScriptRecipe implements Recipe<Container> {
     }
     
     @Override
-    public boolean matches(Container container, Level level) {
+    public boolean matches(RecipeInput container, Level level) {
         
         return false;
     }
     
     @Override
-    public ItemStack assemble(Container var1, HolderLookup.Provider var2) {
+    public ItemStack assemble(RecipeInput var1, HolderLookup.Provider var2) {
         
         return ItemStack.EMPTY;
     }

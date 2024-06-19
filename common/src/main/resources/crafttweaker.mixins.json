@@ -10,7 +10,6 @@
     "common.access.block.AccessBlockBehaviour",
     "common.access.block.AccessBlockStateBase",
     "common.access.brewing.AccessPotionBrewing",
-    "common.access.entity.AccessAttributeModifier",
     "common.access.entity.AccessFallingBlockEntity",
     "common.access.entity.AccessLightningBolt",
     "common.access.item.AccessIngredient",

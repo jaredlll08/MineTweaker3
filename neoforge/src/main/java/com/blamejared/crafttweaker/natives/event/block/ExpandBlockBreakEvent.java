@@ -30,16 +30,4 @@ public class ExpandBlockBreakEvent {
         return internal.getPlayer();
     }
     
-    @ZenCodeType.Getter("expToDrop")
-    public static int getExpToDrop(BlockEvent.BreakEvent internal) {
-        
-        return internal.getExpToDrop();
-    }
-    
-    @ZenCodeType.Setter("expToDrop")
-    public static void setExpToDrop(BlockEvent.BreakEvent internal, int exp) {
-        
-        internal.setExpToDrop(exp);
-    }
-    
 }

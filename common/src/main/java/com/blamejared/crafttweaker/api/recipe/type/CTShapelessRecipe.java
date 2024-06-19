@@ -8,10 +8,9 @@ import com.blamejared.crafttweaker.api.recipe.serializer.CTShapelessRecipeSerial
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -75,7 +74,7 @@ public class CTShapelessRecipe extends ShapelessRecipe {
     }
     
     @Override
-    public boolean matches(CraftingContainer inv, Level worldIn) {
+    public boolean matches(CraftingInput inv, Level worldIn) {
         //Don't do anything here, just make sure all slots have been visited
         final boolean[] visited = forAllUniqueMatches(inv, (ingredientIndex, matchingSlot, stack) -> {});
         
@@ -92,7 +91,7 @@ public class CTShapelessRecipe extends ShapelessRecipe {
     
     
     @Override
-    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider lookup) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider lookup) {
         
         if(this.function == null) {
             return this.output.getInternal().copy();
@@ -119,9 +118,9 @@ public class CTShapelessRecipe extends ShapelessRecipe {
     }
     
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput inv) {
         
-        final NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> remainingItems = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
         forAllUniqueMatches(inv, (ingredientIndex, matchingSlot, stack) -> remainingItems.set(matchingSlot, this.ctIngredients[ingredientIndex]
                 .getRemainingItem(stack)
                 .getInternal()));
@@ -137,14 +136,14 @@ public class CTShapelessRecipe extends ShapelessRecipe {
      * It can be possible for a slot to not be visited but still contain items.
      * Both cases need to be checked in the matches function!
      */
-    private boolean[] forAllUniqueMatches(Container inv, ForAllUniqueAction action) {
+    private boolean[] forAllUniqueMatches(CraftingInput inv, ForAllUniqueAction action) {
         
-        final boolean[] visited = new boolean[inv.getContainerSize()];
+        final boolean[] visited = new boolean[inv.size()];
         
         outer:
         for(int ingredientIndex = 0; ingredientIndex < this.ctIngredients.length; ingredientIndex++) {
             IIngredient ingredient = this.ctIngredients[ingredientIndex];
-            for(int i = 0; i < inv.getContainerSize(); i++) {
+            for(int i = 0; i < inv.size(); i++) {
                 if(visited[i]) {
                     continue;
                 }

@@ -76,7 +76,7 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         final IData requestedSerializer = mapData.getAt("type");
         final ResourceLocation serializerKey = requestedSerializer == null ? recipeTypeKey : Util.make(() -> {
             try {
-                return new ResourceLocation(requestedSerializer.getAsString());
+                return ResourceLocation.parse(requestedSerializer.getAsString());
             } catch(final ClassCastException | IllegalStateException | ResourceLocationException ex) {
                 throw new IllegalArgumentException("Expected 'type' field to be a valid resource location", ex);
             }
@@ -159,7 +159,7 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
      *
      * @param output output of the recipe
      *
-     * @docParam output <tag:items:minecraft:wool>
+     * @docParam output <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     default void remove(IIngredient output) {
@@ -193,7 +193,7 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
     default void removeByName(String... names) {
         
         CraftTweakerAPI.apply(new ActionRemoveRecipeByName<>(this, Arrays.stream(names)
-                .map(ResourceLocation::new)
+                .map(ResourceLocation::parse)
                 .toArray(ResourceLocation[]::new)));
     }
     

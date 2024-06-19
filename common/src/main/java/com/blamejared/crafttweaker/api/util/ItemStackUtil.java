@@ -8,10 +8,16 @@ import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Predicate;
 
 public final class ItemStackUtil {
+    
+    public static String getCommandString(final ItemLike itemLike) {
+        
+        return getCommandString(itemLike.asItem().getDefaultInstance());
+    }
     
     public static String getCommandString(final ItemStack stack) {
         

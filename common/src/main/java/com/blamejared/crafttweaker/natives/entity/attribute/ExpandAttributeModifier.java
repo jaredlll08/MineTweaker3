@@ -1,13 +1,11 @@
 package com.blamejared.crafttweaker.natives.entity.attribute;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.mixin.common.access.entity.AccessAttributeModifier;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.openzen.zencode.java.ZenCodeType;
-
-import java.util.UUID;
 
 @ZenRegister
 @Document("vanilla/api/entity/attribute/AttributeModifier")
@@ -17,26 +15,20 @@ public class ExpandAttributeModifier {
     /**
      * Creates a new AttributeModifier
      *
-     * @param name      the name of this attribute modifier
+     * @param id        the id of this attribute modifier
      * @param amount    the amount of this attribute modifier
      * @param operation the operation of this attribute modifier.
-     * @param uuid      the uuid of this attribute modifier, if omitted, it will use a random one.
      *
      * @return the new attribute modifier
      *
-     * @docParam name "My New Attribute Modifier"
+     * @docParam id <resource:crafttweaker:generic.scripting>
      * @docParam amount 11.4
      * @docParam operation AttributeOperation.ADDITION
-     * @docParam uuid "6d79f9c1-a4ab-4e72-a0ab-71870b89b4c6"
      */
     @ZenCodeType.StaticExpansionMethod
-    public static AttributeModifier create(String name, double amount, AttributeModifier.Operation operation, @ZenCodeType.OptionalString String uuid) {
+    public static AttributeModifier create(ResourceLocation id, double amount, AttributeModifier.Operation operation) {
         
-        if(uuid.isEmpty()) {
-            return new AttributeModifier(name, amount, operation);
-        } else {
-            return new AttributeModifier(UUID.fromString(uuid), name, amount, operation);
-        }
+        return new AttributeModifier(id, amount, operation);
     }
     
     /**
@@ -44,23 +36,10 @@ public class ExpandAttributeModifier {
      *
      * @return The ID of this AttributeModifier
      */
-    @ZenCodeType.Method
     @ZenCodeType.Getter("id")
-    public static String id(AttributeModifier internal) {
+    public static ResourceLocation id(AttributeModifier internal) {
         
-        return internal.id().toString();
-    }
-    
-    /**
-     * Gets the name of this AttributeModifier.
-     *
-     * @return The name of this AttributeModifier.
-     */
-    @ZenCodeType.Method
-    @ZenCodeType.Getter("name")
-    public static String name(AttributeModifier internal) {
-        
-        return internal.name();
+        return internal.id();
     }
     
     /**
@@ -68,7 +47,6 @@ public class ExpandAttributeModifier {
      *
      * @return The amount of this AttributeModifier.
      */
-    @ZenCodeType.Method
     @ZenCodeType.Getter("amount")
     public static double amount(AttributeModifier internal) {
         
@@ -80,7 +58,6 @@ public class ExpandAttributeModifier {
      *
      * @return The operation of this AttributeModifier.
      */
-    @ZenCodeType.Method
     @ZenCodeType.Getter("operation")
     public static AttributeModifier.Operation operation(AttributeModifier internal) {
         

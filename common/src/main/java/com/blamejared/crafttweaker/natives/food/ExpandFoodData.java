@@ -1,10 +1,10 @@
 package com.blamejared.crafttweaker.natives.food;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.food.FoodProperties;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -19,9 +19,9 @@ public class ExpandFoodData {
     }
     
     @ZenCodeType.Method
-    public static void eat(FoodData internal, IItemStack stack) {
+    public static void eat(FoodData internal, FoodProperties foodProperties) {
         
-        internal.eat(stack.getInternal());
+        internal.eat(foodProperties);
     }
     
     @ZenCodeType.Method

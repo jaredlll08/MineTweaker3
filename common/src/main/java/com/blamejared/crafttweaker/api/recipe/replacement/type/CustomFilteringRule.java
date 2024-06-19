@@ -6,9 +6,9 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.recipe.replacement.IFilteringRule;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.function.BiPredicate;
@@ -82,7 +82,7 @@ public final class CustomFilteringRule implements IFilteringRule {
      * @since 11.0.0
      */
     @ZenCodeType.Method("of")
-    public static CustomFilteringRule ofZen(final Predicate<RecipeHolder<Recipe<Container>>> predicate) {
+    public static CustomFilteringRule ofZen(final Predicate<RecipeHolder<Recipe<RecipeInput>>> predicate) {
         
         return of(GenericUtil.<Predicate<RecipeHolder<?>>>uncheck(predicate));
     }
@@ -101,7 +101,7 @@ public final class CustomFilteringRule implements IFilteringRule {
      * @since 11.0.0
      */
     @ZenCodeType.Method("of")
-    public static CustomFilteringRule ofZen(final BiPredicate<IRecipeManager<Recipe<Container>>, RecipeHolder<Recipe<Container>>> predicate) {
+    public static CustomFilteringRule ofZen(final BiPredicate<IRecipeManager<Recipe<RecipeInput>>, RecipeHolder<Recipe<RecipeInput>>> predicate) {
         
         return of(GenericUtil.<BiPredicate<IRecipeManager<?>, RecipeHolder<?>>>uncheck(predicate));
     }
@@ -118,7 +118,7 @@ public final class CustomFilteringRule implements IFilteringRule {
         return "a custom set of recipes";
     }
     
-    private <C extends Container, T extends Recipe<C>> boolean castFilter(final RecipeHolder<?> holder) {
+    private <C extends RecipeInput, T extends Recipe<C>> boolean castFilter(final RecipeHolder<?> holder) {
         
         final IRecipeManager<? super T> manager = this.requiresComputation ? RecipeTypeBracketHandler.getOrDefault(holder.value()
                 .getType()) : null;

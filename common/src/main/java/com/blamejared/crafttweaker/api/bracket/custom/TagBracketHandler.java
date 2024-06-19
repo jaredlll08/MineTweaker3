@@ -52,7 +52,7 @@ public class TagBracketHandler implements BracketExpressionParser {
         
         final ParsedExpression tagManager = TagManagerBracketHandler.createTagManagerCall(position, tagFolder, loader);
         final ParsedExpressionMember getTag = new ParsedExpressionMember(position, tagManager, "tag", null);
-        final ParsedNewExpression newExpression = ParseUtil.createResourceLocationArgument(position, location);
+        final ParsedExpression newExpression = ParseUtil.createResourceLocationArgument(position, location);
         
         final ParsedCallArguments arguments = new ParsedCallArguments(null, Collections.singletonList(newExpression));
         return new ParsedExpressionCall(position, getTag, arguments);

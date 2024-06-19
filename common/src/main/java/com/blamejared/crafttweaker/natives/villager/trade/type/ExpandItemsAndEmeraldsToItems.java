@@ -2,26 +2,25 @@ package com.blamejared.crafttweaker.natives.villager.trade.type;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.blamejared.crafttweaker_annotations.annotations.NativeConstructor;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.providers.EnchantmentProvider;
 import net.minecraft.world.item.trading.ItemCost;
-import net.minecraft.world.level.ItemLike;
+import org.openzen.zencode.java.ZenCodeType;
+
+import java.util.Optional;
 
 @ZenRegister
 @Document("vanilla/api/villager/trade/type/ItemsAndEmeraldsToItems")
-@NativeTypeRegistration(value = VillagerTrades.ItemsAndEmeraldsToItems.class, zenCodeName = "crafttweaker.api.villager.trade.type.ItemsAndEmeraldsToItems",
-        constructors = {
-                @NativeConstructor({
-                        @NativeConstructor.ConstructorParameter(type = ItemCost.class, name = "fromItem", description = "The secondary item that is being given to the villager", examples = "ItemCost.of(<item:minecraft:dirt>)"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "emeraldCost", description = "The amount of the emeralds that is being given to the villager", examples = "4"),
-                        @NativeConstructor.ConstructorParameter(type = ItemStack.class, name = "toItem", description = "The itemstack that is being sold by the villager", examples = "<item:minecraft:diamond>"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "maxUses", description = "How many times can this trade be used", examples = "1"),
-                        @NativeConstructor.ConstructorParameter(type = int.class, name = "villagerXp", description = "How much experience does this trade reward the villager", examples = "8"),
-                        @NativeConstructor.ConstructorParameter(type = float.class, name = "priceMultiplier", description = "How much the price is affected by demand, Hero of the Village, and village reputation", examples = "0.5"),
-                })
-        })
+@NativeTypeRegistration(value = VillagerTrades.ItemsAndEmeraldsToItems.class, zenCodeName = "crafttweaker.api.villager.trade.type.ItemsAndEmeraldsToItems")
 public class ExpandItemsAndEmeraldsToItems {
+    
+    @ZenCodeType.StaticExpansionMethod
+    public static VillagerTrades.ItemsAndEmeraldsToItems of(ItemCost fromItem, int emeraldCost, ItemStack toItem, int maxUses, int villagerXp, float priceMultiplier, @ZenCodeType.Nullable @ZenCodeType.Optional ResourceKey<EnchantmentProvider> enchantmentProvider) {
+        
+        return new VillagerTrades.ItemsAndEmeraldsToItems(fromItem, emeraldCost, toItem, maxUses, villagerXp, priceMultiplier, Optional.ofNullable(enchantmentProvider));
+    }
+    
 }

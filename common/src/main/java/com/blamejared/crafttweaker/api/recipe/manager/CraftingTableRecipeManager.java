@@ -68,7 +68,7 @@ public class CraftingTableRecipeManager implements IRecipeManager<CraftingRecipe
      * @docParam recipeName "recipe_name"
      * @docParam mirrorAxis MirrorAxis.DIAGONAL
      * @docParam output <item:minecraft:dirt>
-     * @docParam ingredients [[<item:minecraft:diamond>], [<tag:items:minecraft:wool>]]
+     * @docParam ingredients [[<item:minecraft:diamond>], [<tag:item:minecraft:wool>]]
      * @docParam recipeFunction (usualOut as IItemStack, inputs as IItemStack[][]) => {if(inputs[0][0].displayName == "totally real diamond block" ){return usualOut;}return <item:minecraft:clay>.setDisplayName("Diamond");}
      */
     @ZenCodeType.Method

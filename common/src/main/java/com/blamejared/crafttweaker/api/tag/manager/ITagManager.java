@@ -99,7 +99,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
     default boolean exists(String id) {
         
-        return exists(new ResourceLocation(id));
+        return exists(ResourceLocation.parse(id));
     }
     
     /**
@@ -125,7 +125,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
      *
      * @return true if it exists, false otherwise.
      *
-     * @docParam tag <tag:items:minecraft:wool>
+     * @docParam tag <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
@@ -197,7 +197,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
      * @param to     The tag to add to.
      * @param values The registry key of the elements to add.
      *
-     * @docParam to <tag:items:minecraft:wool>
+     * @docParam to <tag:item:minecraft:wool>
      * @docParam values <resource:minecraft:diamond>
      */
     @ZenCodeType.Method
@@ -209,7 +209,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
      * @param from   The tag to remove from.
      * @param values The registry key of the elements to remove.
      *
-     * @docParam from <tag:items:minecraft:wool>
+     * @docParam from <tag:item:minecraft:wool>
      * @docParam values <resource:minecraft:diamond>
      */
     @ZenCodeType.Method
@@ -220,7 +220,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
      *
      * @param from The tag to clear.
      *
-     * @docParam from <tag:items:minecraft:wool>
+     * @docParam from <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     void clear(T from);
@@ -232,7 +232,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
      *
      * @return A List of {@link ResourceLocation} ids of the elements in the given tag.
      *
-     * @docParam of <tag:items:minecraft:wool>
+     * @docParam of <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     default List<ResourceLocation> idElements(T of) {

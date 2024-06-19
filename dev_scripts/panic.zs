@@ -1,2 +1,2 @@
 #noload
-panic "test"
+panic "test";

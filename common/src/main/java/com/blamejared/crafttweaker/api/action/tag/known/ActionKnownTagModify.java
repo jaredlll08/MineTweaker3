@@ -1,6 +1,7 @@
 package com.blamejared.crafttweaker.api.action.tag.known;
 
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.platform.Services;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
@@ -46,8 +47,7 @@ public abstract class ActionKnownTagModify<T> extends ActionKnownTag<T> {
     }
     
     public String describeValues() {
-        
-        return values().stream().map(it -> Services.REGISTRY.maybeGetRegistryKey(it).map(ResourceLocation::toString).orElseGet(() -> Objects.toString(it))).collect(Collectors.joining(", ", "[", "]"));
+        return values().stream().map(it -> Services.REGISTRY.key(GenericUtil.uncheck(this.manager().resourceKey()),it).map(ResourceLocation::toString).orElseGet(() -> Objects.toString(it))).collect(Collectors.joining(", ", "[", "]"));
     }
     
 }

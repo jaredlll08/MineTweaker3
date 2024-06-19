@@ -1,9 +1,11 @@
 package com.blamejared.crafttweaker.natives.item.component;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.openzen.zencode.java.ZenCodeType;
@@ -27,7 +29,7 @@ public class ExpandItemEnchantments {
     @ZenCodeType.Method
     public static int getLevel(ItemEnchantments internal, Enchantment enchantment) {
         
-        return internal.getLevel(enchantment);
+        return internal.getLevel(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment));
     }
     
     @ZenCodeType.Getter("entries")
@@ -80,7 +82,7 @@ public class ExpandItemEnchantments {
         @ZenCodeType.Method
         public static void setEnchantment(ItemEnchantments.Mutable internal, Enchantment enchantment, int level) {
             
-            internal.set(enchantment, level);
+            internal.set(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment), level);
         }
         
         @ZenCodeType.Getter("keySet")
@@ -104,13 +106,13 @@ public class ExpandItemEnchantments {
         @ZenCodeType.Method
         public static void upgrade(ItemEnchantments.Mutable internal, Enchantment enchantment, int level) {
             
-            internal.upgrade(enchantment, level);
+            internal.upgrade(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment), level);
         }
         
         @ZenCodeType.Method
         public static int getLevel(ItemEnchantments.Mutable internal, Enchantment enchantment) {
             
-            return internal.getLevel(enchantment);
+            return internal.getLevel(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment));
         }
         
     }

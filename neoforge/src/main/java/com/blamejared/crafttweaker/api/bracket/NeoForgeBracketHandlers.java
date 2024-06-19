@@ -27,7 +27,7 @@ public final class NeoForgeBracketHandlers {
     @BracketResolver("attachment_type")
     public static AttachmentType<?> getAttachmentType(String tokens) {
         
-        return BracketHandlers.getRegistry(tokens, NeoForgeRegistries.ATTACHMENT_TYPES);
+        return BracketHandlers.getRegistry(tokens, NeoForgeRegistries.Keys.ATTACHMENT_TYPES);
     }
     
 }

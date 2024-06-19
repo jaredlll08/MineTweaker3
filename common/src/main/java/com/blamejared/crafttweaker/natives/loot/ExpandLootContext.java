@@ -44,18 +44,18 @@ public final class ExpandLootContext {
         return internal.getParamOrNull(LootContextParams.DAMAGE_SOURCE);
     }
     
-    @ZenCodeType.Getter("killerEntity")
+    @ZenCodeType.Getter("attackingEntity")
     @ZenCodeType.Nullable
-    public static Entity getKillerEntity(final LootContext internal) {
+    public static Entity getAttackingEntity(final LootContext internal) {
         
-        return internal.getParamOrNull(LootContextParams.KILLER_ENTITY);
+        return internal.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
     }
     
-    @ZenCodeType.Getter("directKillerEntity")
+    @ZenCodeType.Getter("directAttackingEntity")
     @ZenCodeType.Nullable
-    public static Entity getDirectKillerEntity(final LootContext internal) {
+    public static Entity getDirectAttackingEntity(final LootContext internal) {
         
-        return internal.getParamOrNull(LootContextParams.DIRECT_KILLER_ENTITY);
+        return internal.getParamOrNull(LootContextParams.DIRECT_ATTACKING_ENTITY);
     }
     
     @ZenCodeType.Getter("origin")

@@ -5,7 +5,7 @@ import stdlib.List;
 import crafttweaker.api.item.IItemStack;
 
 // Add the soul blocks to the sniffer diggable tag
-<tag:blocks:minecraft:sniffer_diggable_block>.add(<block:minecraft:soul_sand>, <block:minecraft:soul_soil>);
+<tag:block:minecraft:sniffer_diggable_block>.add(<block:minecraft:soul_sand>, <block:minecraft:soul_soil>);
 
 loot.modifiers.register(
     "sniffers",

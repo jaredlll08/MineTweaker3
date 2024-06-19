@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @docParam this <tag:items:minecraft:wool>
+ * @docParam this <tag:item:minecraft:wool>
  */
 @ZenRegister(loaders = {CraftTweakerConstants.DEFAULT_LOADER_NAME, CraftTweakerConstants.TAGS_LOADER_NAME})
 @Document("vanilla/api/tag/MCTag")
@@ -70,7 +70,7 @@ public interface MCTag extends CommandStringDisplayable, Comparable<MCTag> {
      *
      * @param tags The tags to add.
      *
-     * @docParam tags <tag:items:minecraft:wool>
+     * @docParam tags <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     default void add(MCTag... tags) {
@@ -99,7 +99,7 @@ public interface MCTag extends CommandStringDisplayable, Comparable<MCTag> {
      *
      * @param tags The tags to remove.
      *
-     * @docParam tags <tag:items:minecraft:wool>
+     * @docParam tags <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     default void remove(MCTag... tags) {
@@ -166,7 +166,7 @@ public interface MCTag extends CommandStringDisplayable, Comparable<MCTag> {
      *
      * @return true if the tags are equal, false otherwise.
      *
-     * @docParam other <tag:items:minecraft:wool>
+     * @docParam other <tag:item:minecraft:wool>
      */
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)

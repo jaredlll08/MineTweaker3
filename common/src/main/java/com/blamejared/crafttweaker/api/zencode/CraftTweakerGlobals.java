@@ -1,6 +1,5 @@
 package com.blamejared.crafttweaker.api.zencode;
 
-
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;

@@ -54,7 +54,7 @@ public final class ExpandLocationPredicateBuilder {
     @ZenCodeType.Method
     public static LocationPredicate.Builder biome(final LocationPredicate.Builder internal, final String biome) {
         
-        return biome(internal, new ResourceLocation(biome));
+        return biome(internal, ResourceLocation.parse(biome));
     }
     
     @ZenCodeType.Method
@@ -70,7 +70,7 @@ public final class ExpandLocationPredicateBuilder {
     @ZenCodeType.Method
     public static LocationPredicate.Builder structure(final LocationPredicate.Builder internal, final String structure) {
         
-        return structure(internal, new ResourceLocation(structure));
+        return structure(internal, ResourceLocation.parse(structure));
     }
     
     @ZenCodeType.Method
@@ -82,7 +82,7 @@ public final class ExpandLocationPredicateBuilder {
     @ZenCodeType.Method
     public static LocationPredicate.Builder dimension(final LocationPredicate.Builder internal, final String dimension) {
         
-        return dimension(internal, new ResourceLocation(dimension));
+        return dimension(internal, ResourceLocation.parse(dimension));
     }
     
     @ZenCodeType.Method

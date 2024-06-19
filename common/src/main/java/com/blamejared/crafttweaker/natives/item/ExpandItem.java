@@ -167,7 +167,7 @@ public class ExpandItem {
         ItemEnchantments enchantments = internal.components()
                 .getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
         ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
-        mutable.set(enchantment, level);
+        mutable.set(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment), level);
         setComponent(internal, DataComponents.ENCHANTMENTS, mutable.toImmutable());
     }
     

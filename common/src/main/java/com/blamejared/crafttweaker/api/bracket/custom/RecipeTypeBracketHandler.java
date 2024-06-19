@@ -103,7 +103,7 @@ public class RecipeTypeBracketHandler implements BracketExpressionParser {
     @ZenCodeType.Method
     public static <T extends IRecipeManager<?>> T getRecipeManager(String location) {
         
-        RecipeType<?> recipeType = lookup(new ResourceLocation(location));
+        RecipeType<?> recipeType = lookup(ResourceLocation.parse(location));
         if(recipeType == null) {
             throw new IllegalArgumentException("Unknown recipe type: " + location);
         }

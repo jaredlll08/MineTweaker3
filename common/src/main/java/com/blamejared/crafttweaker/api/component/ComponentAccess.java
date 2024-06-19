@@ -65,14 +65,14 @@ import java.util.Optional;
 
 /**
  * An interface exposing methods to handle setting and removing DataComponents.
- * 
+ *
  * DataComponents are the new way of storing data in memory, instead of writing it to NBT data and to disk every time, which has a performance cost.
  * DataComponents now occupy the space that was previously occupied or known as a NBT tag.
- * 
+ *
  * DataComponents are immutable. Operations that set or remove a component return a new instance of the object implementing {@link ComponentAccess}
- * 
- * DataComponents may optionally be persistent. They also may optionally be syncronised. 
- * 
+ *
+ * DataComponents may optionally be persistent. They also may optionally be syncronised.
+ *
  * In most cases, ComponentAccesses are going to be ItemStacks, although in NeoForge FluidStacks are too.
  */
 @ZenRegister
@@ -82,6 +82,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:custom_data&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     // <editor-fold desc="CUSTOM_DATA">
@@ -93,6 +94,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:custom_data&gt;
+     *
      * @return A {@link CustomData} that wraps around a {@link MapData} object containing the data.
      */
     @ZenCodeType.Getter("customData")
@@ -106,9 +108,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @param customData The MapData to set the component to.
      *
-     * @docParam customData {custom_ammo_thing: 1, owner: "Benji"}
-     *
      * @return The new instance with the modified data.
+     *
+     * @docParam customData {custom_ammo_thing: 1, owner: "Benji"}
      */
     @ZenCodeType.Method
     default T withCustomData(MapData customData) {
@@ -140,11 +142,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:max_stack_size&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="MAX_STACK_SIZE">
-    
     @ZenCodeType.Getter("hasMaxStackSize")
     default boolean hasMaxStackSize() {
         
@@ -153,6 +155,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:max_stack_size&gt;
+     *
      * @return An int with the max stack size of the ComponentAccess.
      */
     @ZenCodeType.Getter("maxStackSize")
@@ -168,9 +171,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @param maxStackSize The new maxStackSize of the ComponentAccess.
      *
-     * @docParam maxStackSize 16
-     *
      * @return The new instance with the modified data.
+     *
+     * @docParam maxStackSize 16
      */
     @ZenCodeType.Method
     default T withMaxStackSize(int maxStackSize) {
@@ -191,11 +194,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:max_damage&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="MAX_DAMAGE">
-    
     @ZenCodeType.Getter("hasMaxDamage")
     default boolean hasMaxDamage() {
         
@@ -204,6 +207,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:max_damage&gt;
+     *
      * @return An int returning the maximum durability, damage or uses.
      */
     @ZenCodeType.Getter("maxDamage")
@@ -215,8 +219,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     /**
      * Sets the &lt;componenttype:minecraft:max_damage&gt; of the ComponentAccess to have the given value.
      *
-     * @docParam maxDamage 1024
      * @return The new instance with the modified data.
+     *
+     * @docParam maxDamage 1024
      */
     @ZenCodeType.Method
     default T withMaxDamage(int maxDamage) {
@@ -237,11 +242,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:damage&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="DAMAGE">
-    
     @ZenCodeType.Getter("hasDamage")
     default boolean hasDamage() {
         
@@ -250,6 +255,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:damage&gt;
+     *
      * @return An int returning the current durability, damage or uses.
      */
     @ZenCodeType.Getter("damage")
@@ -264,8 +270,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @param damage The new damage of the ComponentAccess.
      *
-     * @docParam damage 16
      * @return The new instance with the modified data.
+     *
+     * @docParam damage 16
      */
     @ZenCodeType.Method
     default T withDamage(int damage) {
@@ -286,11 +293,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:unbreakable&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="UNBREAKABLE">
-    
     @ZenCodeType.Getter("hasUnbreakable")
     default boolean hasUnbreakable() {
         
@@ -299,6 +306,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:unbreakable&gt;
+     *
      * @return An {@link Unbreakable} containing the configuration of the Component.
      */
     @ZenCodeType.Getter("unbreakable")
@@ -306,7 +314,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
         
         return _get(DataComponents.UNBREAKABLE);
     }
-
+    
     /**
      * Sets the &lt;componenttype:minecraft:unbreakable&gt; of the ComponentAccess.
      * The existance of the component makes the ComponentAccess unbreakable.
@@ -320,7 +328,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
         
         return withUnbreakable(new Unbreakable(showInTooltip));
     }
-
+    
     /**
      * Sets the &lt;componenttype:minecraft:unbreakable&gt; of the ComponentAccess.
      * The existance of the component makes the ComponentAccess unbreakable.
@@ -348,11 +356,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:custom_name&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="CUSTOM_NAME">
-    
     @ZenCodeType.Getter("hasCustomName")
     default boolean hasCustomName() {
         
@@ -371,16 +379,16 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
         
         return _get(DataComponents.CUSTOM_NAME);
     }
-
+    
     /**
      * Sets the &lt;componenttype:minecraft:custom_name&gt; of the ComponentAccess.
      *
      * @param name The component to use.
      *
+     * @return The new instance with the modified data.
+     *
      * @docParam name Component.literal("Fancy Water")
      * @docParam name Component.translatable("mypack.lore.fancy_water")
-     *
-     * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
     default T withCustomName(Component name) {
@@ -401,11 +409,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:item_namegt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="ITEM_NAME">
-    
     @ZenCodeType.Getter("hasItemName")
     default boolean hasItemName() {
         
@@ -431,10 +439,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @return The new instance with the modified data.
      *
+     * @return The new instance with the modified data.
+     *
      * @docParam name Component.literal("Fancy Water")
      * @docParam name Component.translatable("mypack.lore.fancy_water")
-     *
-     * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
     default T withItemName(Component name) {
@@ -455,11 +463,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:lore&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="LORE">
-    
     @ZenCodeType.Getter("hasLore")
     default boolean hasLore() {
         
@@ -468,6 +476,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:lore&gt;
+     *
      * @return A {@link ItemLore} instance, which effectively behaves as a stdlib.List&lt;{@link Component}&gt;.
      */
     @ZenCodeType.Getter("lore")
@@ -484,7 +493,6 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      * @return The new instance with the modified data.
      *
      * @docParam components [Component.literal("Found in a dark cave"), Component.translatable("Belonged to a Dragon")]
-     *
      */
     @ZenCodeType.Method
     default T withLore(List<Component> components) {
@@ -516,11 +524,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:rarity&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="RARITY">
-    
     @ZenCodeType.Getter("hasRarity")
     default boolean hasRarity() {
         
@@ -529,6 +537,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in the &lt;componenttype:minecraft:rarity&gt;
+     *
      * @return A {@link Rarity}
      */
     @ZenCodeType.Getter("rarity")
@@ -565,11 +574,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has the &lt;componenttype:minecraft:enchantments&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="ENCHANTMENTS">
-    
     @ZenCodeType.Getter("hasEnchantments")
     default boolean hasEnchantments() {
         
@@ -578,6 +587,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:enchantments&gt;
+     *
      * @return A {@link ItemEnchantments} instance
      */
     @ZenCodeType.Getter("enchantments")
@@ -602,7 +612,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      * Sets the &lt;componenttype:minecraft:enchantments&gt; of the ComponentAccess to have the given {@link Enchantment} and level.
      *
      * @param enchantment The enchantment to add
-     * @param level The level of the enchantment to set
+     * @param level       The level of the enchantment to set
      *
      * @return The new instance with the modified data.
      *
@@ -613,7 +623,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     default T withEnchantment(Enchantment enchantment, @ZenCodeType.OptionalInt(1) int level) {
         
         ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(hasEnchantments() ? getEnchantments() : ItemEnchantments.EMPTY);
-        mutable.set(enchantment, level);
+        mutable.set(Services.REGISTRY.holderOrThrow(Registries.ENCHANTMENT, enchantment), level);
         return withEnchantments(mutable.toImmutable());
     }
     
@@ -647,6 +657,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:can_place_on&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
@@ -659,6 +670,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:can_place_on&gt;
+     *
      * @return An {@link AdventureModePredicate} instance that holds data on whether a Block is placeable in adventure mode.
      */
     @ZenCodeType.Getter("canPlaceOn")
@@ -672,12 +684,12 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * Any predicate that matches will allow the BlockItem within the ItemStack to be placed.
      *
-     * @param predicates The collection of predicates to test for
+     * @param predicates    The collection of predicates to test for
      * @param showInTooltip Whether to show the restriction in the tooltip or not.
      *
-     * @docParam predicates BlockPredicate.create().of(<block:minecraft:dirt>).build()
-     *
      * @return The new instance with the modified data.
+     *
+     * @docParam predicates BlockPredicate.create().of(<block:minecraft:dirt>).build()
      */
     @ZenCodeType.Method
     default T withCanPlaceOn(List<BlockPredicate> predicates, @ZenCodeType.OptionalBoolean(true) boolean showInTooltip) {
@@ -703,7 +715,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @return The new instance with the modified data.
      */
-
+    
     @ZenCodeType.Method
     default T withoutCanPlaceOn() {
         
@@ -712,11 +724,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:can_break&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
     // <editor-fold desc="CAN_BREAK">
-    
     @ZenCodeType.Getter("hasCanBreak")
     default boolean hasCanBreak() {
         
@@ -739,13 +751,13 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * Any predicate that matches will allow the Block to be broken by this ItemStack.
      *
-     * @param predicates The collection of predicates to test for
+     * @param predicates    The collection of predicates to test for
      * @param showInTooltip Whether to show the ability in the tooltip or not.
+     *
+     * @return The new instance with the modified data.
      *
      * @docParam predicates BlockPredicate.create().of(<block:minecraft:diamond_ore>).build()
      * @docParam showInTooltip true
-     *
-     * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
     default T withCanBreak(List<BlockPredicate> predicates, @ZenCodeType.OptionalBoolean(true) boolean showInTooltip) {
@@ -779,6 +791,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:attribute_modifiers&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     //</editor-fold>
@@ -791,6 +804,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:attribute_modifiers&gt;
+     *
      * @return An {@link ItemAttributeModifiers}.
      */
     @ZenCodeType.Getter("attributeModifiers")
@@ -804,11 +818,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @param modifiers The attributes to give to the item.
      *
-     * @docParam modifiers ItemAttributeModifiers.builder().add(<attribute:minecraft:player.block_break_speed>,
-     *                      AttributeModifier.create("test", 2.0, <constant:minecraft:attribute/operation:add_value>, "596e0826-7c66-42c6-b3da-45a6d667ccf7"),
-     *                      <constant:minecraft:equipmentslot/group:mainhand>).build();
-     *
      * @return The new instance with the modified data.
+     *
+     * @docParam modifiers ItemAttributeModifiers.builder().add(<attribute:minecraft:player.block_break_speed>,
+     * AttributeModifier.create("test", 2.0, <constant:minecraft:attribute/operation:add_value>, "596e0826-7c66-42c6-b3da-45a6d667ccf7"),
+     * <constant:minecraft:equipmentslot/group:mainhand>).build();
      */
     @ZenCodeType.Method
     default T withAttributeModifiers(ItemAttributeModifiers modifiers) {
@@ -844,8 +858,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="CUSTOM_MODEL_DATA">
+    
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:custom_model_data&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     @ZenCodeType.Getter("hasCustomModelData")
@@ -856,6 +872,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:custom_model_data&gt;
+     *
      * @return A {@link CustomModelData}
      */
     @ZenCodeType.Getter("customModelData")
@@ -868,10 +885,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      * Sets the &lt;componenttype:minecraft:custom_data&gt; of the ComponentAccess to have the given {@link CustomData}
      *
      * @param value The value to set the CustomModelData to
-     *              
-     * @docParam value 2
-     * 
+     *
      * @return The new instance with the modified data.
+     *
+     * @docParam value 2
      */
     @ZenCodeType.Method
     default T withCustomModelData(int value) {
@@ -901,11 +918,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:hide_additional_tooltip&gt;
+     *
      * @return A boolean representing whether to hide the additional tooltip.
      */
     //</editor-fold>
     // <editor-fold desc="HIDE_ADDITIONAL_TOOLTIP">
-    
     @ZenCodeType.Getter("hideAdditionalTooltip")
     default boolean hideAdditionalTooltip() {
         
@@ -936,6 +953,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:hide_tooltip&gt;
+     *
      * @return A boolean representing whether to hide the tooltip.
      */
     //</editor-fold>
@@ -970,8 +988,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="REPAIR_COST">
+    
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:repair_cost&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     @ZenCodeType.Getter("hasRepairCost")
@@ -982,6 +1002,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:repair_cost&gt;
+     *
      * @return An int representing the repair cost of the item. Used for anvil and grindstone xp.
      */
     @ZenCodeType.Getter("repairCost")
@@ -995,9 +1016,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @param cost The repair cost
      *
-     * @docParam cost 20
-     *
      * @return The new instance with the modified data.
+     *
+     * @docParam cost 20
      */
     @ZenCodeType.Method
     default T withRepairCost(int cost) {
@@ -1018,8 +1039,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="CREATIVE_SLOT_LOCK">
+    
     /**
      * Gets the data in &lt;componenttype:minecraft:creative_slot_lock&gt;
+     *
      * @return A boolean representing whether to disallow picking up the item from the creative menu.
      */
     @ZenCodeType.Getter("creativeSlotLock")
@@ -1055,6 +1078,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:enchantment_glint_override&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     @ZenCodeType.Getter("hasEnchantmentGlintOverride")
@@ -1085,9 +1109,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
      *
      * @param value The value of the override, as described above
      *
-     * @docParam value true
-     *
      * @return The new instance with the modified data.
+     *
+     * @docParam value true
      */
     @ZenCodeType.Method
     default T withEnchantmentGlintOverride(boolean value) {
@@ -1108,8 +1132,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="INTANGIBLE_PROJECTILE">
+    
     /**
      * Gets the data in &lt;componenttype:minecraft:intangible_projectile&gt;
+     *
      * @return A boolean representing whether the projectile is intangible.
      */
     @ZenCodeType.Getter("isIntangibleProjectile")
@@ -1142,8 +1168,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="FOOD">
+    
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:food&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     @ZenCodeType.Getter("hasFood")
@@ -1154,6 +1182,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:food&gt;
+     *
      * @return A {@link FoodProperties} instance.
      */
     @ZenCodeType.Getter("food")
@@ -1186,8 +1215,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="FIRE_RESISTANT">
+    
     /**
      * Gets the data in &lt;componenttype:minecraft:fire_resistant&gt;
+     *
      * @return A boolean representing whether to disallow picking up the item from the creative menu.
      */
     @ZenCodeType.Getter("isFireResistant")
@@ -1220,8 +1251,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="TOOL">
+    
     /**
      * Checks whether the ComponentAccess has &lt;componenttype:minecraft:tool&gt;
+     *
      * @return Whether the componenttype is stored.
      */
     @ZenCodeType.Getter("hasTool")
@@ -1232,6 +1265,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Gets the data in &lt;componenttype:minecraft:tool&gt;
+     *
      * @return A {@link Tool} instance.
      */
     @ZenCodeType.Getter("tool")
@@ -1444,7 +1478,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withMapDecorations(Map<String, MapDecorations.Entry> decorations) {
         
@@ -1453,7 +1487,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withMapDecorations(MapDecorations decorations) {
         
@@ -1462,7 +1496,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutMapDecorations() {
         
@@ -1486,7 +1520,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withMapPostProcessing(MapPostProcessing value) {
         
@@ -1495,7 +1529,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutMapPostProcessing() {
         
@@ -1518,7 +1552,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withChargedProjectiles(IItemStack item) {
         
@@ -1527,7 +1561,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withChargedProjectiles(List<IItemStack> items) {
         
@@ -1536,7 +1570,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withChargedProjectiles(ChargedProjectiles chargedProjectiles) {
         
@@ -1545,7 +1579,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutChargedProjectiles() {
         
@@ -1568,7 +1602,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBundleContents(List<IItemStack> contents) {
         
@@ -1577,7 +1611,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBundleContents(BundleContents contents) {
         
@@ -1586,7 +1620,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBundleContents() {
         
@@ -1610,7 +1644,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(Potion potion) {
         
@@ -1620,7 +1654,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(Potion potion, List<MobEffectInstance> customEffects) {
         
@@ -1629,7 +1663,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(Potion potion, int customColor, List<MobEffectInstance> customEffects) {
         
@@ -1638,7 +1672,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(PotionContents contents) {
         
@@ -1647,7 +1681,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutPotionContents() {
         
@@ -1671,7 +1705,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withSuspiciousStewEffects(List<SuspiciousStewEffects.Entry> effects) {
         
@@ -1680,7 +1714,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withSuspiciousStewEffects(SuspiciousStewEffects suspiciousStewEffects) {
         
@@ -1689,7 +1723,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutSuspiciousStewEffects() {
         
@@ -1712,7 +1746,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withWritableBookContent(List<Filterable<String>> pages) {
         
@@ -1721,7 +1755,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withWritableBookContent(WritableBookContent content) {
         
@@ -1730,7 +1764,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutWritableBookContent() {
         
@@ -1753,7 +1787,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withWrittenBookContent(WrittenBookContent content) {
         
@@ -1762,7 +1796,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutWrittenBookContent() {
         
@@ -1785,7 +1819,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withTrim(ArmorTrim trim) {
         
@@ -1794,7 +1828,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutTrim() {
         
@@ -1818,7 +1852,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withDebugStickState(DebugStickState state) {
         
@@ -1827,7 +1861,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutDebugStickState() {
         
@@ -1850,7 +1884,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withEntityData(MapData data) {
         
@@ -1859,7 +1893,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withEntityData(CustomData data) {
         
@@ -1868,7 +1902,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutEntityDate() {
         
@@ -1892,7 +1926,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBucketEntityData(MapData data) {
         
@@ -1901,7 +1935,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBucketEntityData(CustomData data) {
         
@@ -1910,7 +1944,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBucketEntityData() {
         
@@ -1934,7 +1968,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBlockEntityData(MapData data) {
         
@@ -1943,7 +1977,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBlockEntityData(CustomData data) {
         
@@ -1952,7 +1986,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBlockEntityData() {
         
@@ -1976,7 +2010,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withInstrument(Instrument instrument) {
         
@@ -1985,7 +2019,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutInstrument() {
         
@@ -2008,7 +2042,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withOminousBottleAmplifier(int amplifier) {
         
@@ -2017,7 +2051,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutOminousBottleAmplifier() {
         
@@ -2040,7 +2074,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withRecipes(List<ResourceLocation> recipes) {
         
@@ -2049,7 +2083,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutRecipes() {
         
@@ -2072,7 +2106,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withLodestoneTracker(LodestoneTracker tracker) {
         
@@ -2081,7 +2115,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutLodestoneTracker() {
         
@@ -2105,7 +2139,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withFireworkExplosion(FireworkExplosion explosion) {
         
@@ -2114,7 +2148,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutFireworkExplosion() {
         
@@ -2137,7 +2171,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withFireworks(int flightDuration, List<FireworkExplosion> explosions) {
         
@@ -2146,7 +2180,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withFireworks(Fireworks fireworks) {
         
@@ -2186,7 +2220,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutProfile() {
         
@@ -2210,7 +2244,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withNoteBlockSound(ResourceLocation sound) {
         
@@ -2219,7 +2253,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutNoteBlockSound() {
         
@@ -2243,7 +2277,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBannerPatterns(List<BannerPatternLayers.Layer> layers) {
         
@@ -2252,7 +2286,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBannerPatterns(BannerPatternLayers layers) {
         
@@ -2261,7 +2295,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBannerPatterns() {
         
@@ -2285,7 +2319,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBaseColor(DyeColor color) {
         
@@ -2294,7 +2328,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBaseColor() {
         
@@ -2318,7 +2352,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotDecorations(Item back, Item left, Item right, Item front) {
         
@@ -2327,7 +2361,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotDecorations(PotDecorations decorations) {
         
@@ -2336,7 +2370,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutPotDecorations() {
         
@@ -2360,7 +2394,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainer(List<IItemStack> contents) {
         
@@ -2369,7 +2403,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainer(ItemContainerContents contents) {
         
@@ -2378,7 +2412,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutContainer() {
         
@@ -2402,7 +2436,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBlockState(BlockItemStateProperties properties) {
         
@@ -2411,7 +2445,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBlockState() {
         
@@ -2434,7 +2468,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBees(List<BeehiveBlockEntity.Occupant> occupants) {
         
@@ -2443,7 +2477,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBees() {
         
@@ -2466,7 +2500,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withLock(String code) {
         
@@ -2475,7 +2509,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withLock(LockCode lock) {
         
@@ -2484,7 +2518,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutLock() {
         
@@ -2508,7 +2542,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainerLoot(ResourceKey<LootTable> lootTable, long seed) {
         
@@ -2517,7 +2551,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainerLoot(SeededContainerLoot loot) {
         
@@ -2526,7 +2560,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutContainerLoot() {
         

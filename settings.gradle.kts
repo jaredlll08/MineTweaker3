@@ -15,13 +15,11 @@ pluginManagement {
                 includeGroup("fabric-loom")
             }
         }
-        maven("https://maven.neoforged.net/releases")
-        // Add the maven repository for the ModDevGradle plugin.
-        maven("https://prmaven.neoforged.net/ModDevGradle/pr1") {
+        maven("https://maven.neoforged.net/releases") {
             content {
-                includeModule("net.neoforged.moddev", "net.neoforged.moddev.gradle.plugin")
-                includeModule("net.neoforged.moddev.junit", "net.neoforged.moddev.junit.gradle.plugin")
-                includeModule("net.neoforged", "moddev-gradle")
+//                includeModule("net.neoforged.moddev", "net.neoforged.moddev.gradle.plugin")
+//                includeModule("net.neoforged.moddev.junit", "net.neoforged.moddev.junit.gradle.plugin")
+                includeGroupAndSubgroups("net.neoforged")
             }
         }
         exclusiveContent {

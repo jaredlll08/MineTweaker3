@@ -11,6 +11,7 @@ import com.blamejared.crafttweaker.natives.loot.condition.ExpandMatchTool;
 import com.blamejared.crafttweaker.natives.predicate.ExpandEnchantmentPredicate;
 import com.blamejared.crafttweaker.natives.predicate.ExpandItemPredicate;
 import com.blamejared.crafttweaker.natives.predicate.ExpandStatePropertiesPredicate;
+import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -18,6 +19,7 @@ import net.minecraft.advancements.critereon.ItemSubPredicates;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
 import org.openzen.zencode.java.ZenCodeType;
@@ -88,7 +90,7 @@ public final class ModifierSpecificExpandBlockState {
                                 .withSubPredicate(ItemSubPredicates.ENCHANTMENTS,
                                         ItemEnchantmentsPredicate.enchantments(List.of(
                                                 ExpandEnchantmentPredicate.create(
-                                                        Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1)))))))
+                                                        Services.REGISTRY.getOrThrow(Registries.ENCHANTMENT, Enchantments.SILK_TOUCH), MinMaxBounds.Ints.atLeast(1)))))))
                 ),
                 
                 modifier

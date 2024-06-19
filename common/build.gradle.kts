@@ -3,12 +3,12 @@ import com.blamejared.crafttweaker.gradle.Versions
 
 plugins {
     id("crafttweaker.java-conventions")
-    id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
+    id("net.neoforged.moddev") version ("0.1.94")
 }
 
-minecraft {
-    version(Versions.MINECRAFT)
-    accessWideners(project.file("src/main/resources/${Properties.MOD_ID}.accesswidener"))
+neoForge {
+    neoFormVersion = Versions.NEO_FORM
+    accessTransformers.add(project.file("src/main/resources/META-INF/accesstransformer.cfg").absolutePath)
 }
 
 dependencies {

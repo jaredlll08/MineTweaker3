@@ -3,6 +3,7 @@ package com.blamejared.crafttweaker.natives.entity.attribute;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.openzen.zencode.java.ZenCodeType;
@@ -57,35 +58,22 @@ public class ExpandAttributeInstance {
     }
     
     @ZenCodeType.Method
-    public static boolean hasModifier(AttributeInstance internal, AttributeModifier modifier) {
+    public static boolean hasModifier(AttributeInstance internal, ResourceLocation id) {
         
-        return internal.hasModifier(modifier);
+        return internal.hasModifier(id);
     }
     
     @ZenCodeType.Method
     @ZenCodeType.Nullable
-    public static AttributeModifier getModifier(AttributeInstance internal, UUID uuid) {
+    public static AttributeModifier getModifier(AttributeInstance internal, ResourceLocation id) {
         
-        return internal.getModifier(uuid);
+        return internal.getModifier(id);
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Nullable
-    public static AttributeModifier getModifier(AttributeInstance internal, String uuid) {
+    public static void removeModifier(AttributeInstance internal, ResourceLocation id) {
         
-        return internal.getModifier(UUID.fromString(uuid));
-    }
-    
-    @ZenCodeType.Method
-    public static void removeModifier(AttributeInstance internal, UUID modifier) {
-        
-        internal.removeModifier(modifier);
-    }
-    
-    @ZenCodeType.Method
-    public static void removeModifier(AttributeInstance internal, String uuid) {
-        
-        internal.removeModifier(UUID.fromString(uuid));
+        internal.removeModifier(id);
     }
     
 }

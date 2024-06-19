@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -16,9 +17,7 @@ import org.openzen.zencode.java.ZenCodeType;
                 @NativeConstructor(value = {
                         @NativeConstructor.ConstructorParameter(name = "level", type = Level.class, description = "The level the entity is in.", examples = "level"),
                         @NativeConstructor.ConstructorParameter(name = "owner", type = LivingEntity.class, description = "The owner of the skull, used for position.", examples = "entity"),
-                        @NativeConstructor.ConstructorParameter(name = "xPower", type = double.class, description = "The xPower of the entity.", examples = "9"),
-                        @NativeConstructor.ConstructorParameter(name = "yPower", type = double.class, description = "The yPower of the entity.", examples = "9"),
-                        @NativeConstructor.ConstructorParameter(name = "zPower", type = double.class, description = "The zPower of the entity.", examples = "9"),
+                        @NativeConstructor.ConstructorParameter(name = "direction", type = Vec3.class, description = "The direction that the skull is moving in", examples = "new Vec3(1, 2, 3)")
                 })
         })
 public class ExpandWitherSkull {

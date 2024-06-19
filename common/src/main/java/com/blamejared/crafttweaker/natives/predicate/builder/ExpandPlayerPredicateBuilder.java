@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.GameTypePredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.PlayerPredicate;
 import net.minecraft.core.Holder;
@@ -40,19 +41,19 @@ public final class ExpandPlayerPredicateBuilder {
     @ZenCodeType.Method
     public static PlayerPredicate.Builder statistic(final PlayerPredicate.Builder internal, final ResourceLocation type, final String name, final MinMaxBounds.Ints value) {
         
-        return statistic(internal, type, new ResourceLocation(name), value);
+        return statistic(internal, type, ResourceLocation.parse(name), value);
     }
     
     @ZenCodeType.Method
     public static PlayerPredicate.Builder statistic(final PlayerPredicate.Builder internal, final String type, final ResourceLocation name, final MinMaxBounds.Ints value) {
         
-        return statistic(internal, new ResourceLocation(type), name, value);
+        return statistic(internal, ResourceLocation.parse(type), name, value);
     }
     
     @ZenCodeType.Method
     public static PlayerPredicate.Builder statistic(final PlayerPredicate.Builder internal, final String type, final String name, final MinMaxBounds.Ints value) {
         
-        return statistic(internal, type, new ResourceLocation(name), value);
+        return statistic(internal, type, ResourceLocation.parse(name), value);
     }
     
     @ZenCodeType.Method
@@ -64,13 +65,12 @@ public final class ExpandPlayerPredicateBuilder {
     @ZenCodeType.Method
     public static PlayerPredicate.Builder recipe(final PlayerPredicate.Builder internal, final String name, @ZenCodeType.OptionalBoolean(true) final boolean unlocked) {
         
-        return recipe(internal, new ResourceLocation(name), unlocked);
+        return recipe(internal, ResourceLocation.parse(name), unlocked);
     }
     
     @ZenCodeType.Method
-    public static PlayerPredicate.Builder gameType(final PlayerPredicate.Builder internal, final GameType type) {
-        
-        return internal.setGameType(type);
+    public static PlayerPredicate.Builder gameType(final PlayerPredicate.Builder internal, final GameTypePredicate predicate) {
+        return internal.setGameType(predicate);
     }
     
     @ZenCodeType.Method
@@ -88,7 +88,7 @@ public final class ExpandPlayerPredicateBuilder {
     @ZenCodeType.Method
     public static PlayerPredicate.Builder advancement(final PlayerPredicate.Builder internal, final String name, @ZenCodeType.OptionalBoolean(true) final boolean completed) {
         
-        return advancement(internal, new ResourceLocation(name), completed);
+        return advancement(internal, ResourceLocation.parse(name), completed);
     }
     
     @ZenCodeType.Method
@@ -100,7 +100,7 @@ public final class ExpandPlayerPredicateBuilder {
     @ZenCodeType.Method
     public static PlayerPredicate.Builder advancementCriteria(final PlayerPredicate.Builder internal, final String name, final Map<String, Boolean> criteria) {
         
-        return advancementCriteria(internal, new ResourceLocation(name), criteria);
+        return advancementCriteria(internal, ResourceLocation.parse(name), criteria);
     }
     
     @ZenCodeType.Method
@@ -114,7 +114,7 @@ public final class ExpandPlayerPredicateBuilder {
     public static PlayerPredicate.Builder advancementCriterion(final PlayerPredicate.Builder internal, final String name, final String criterion,
                                                                @ZenCodeType.OptionalBoolean(true) final boolean completed) {
         
-        return advancementCriterion(internal, new ResourceLocation(name), criterion, completed);
+        return advancementCriterion(internal, ResourceLocation.parse(name), criterion, completed);
     }
     
     @ZenCodeType.Method

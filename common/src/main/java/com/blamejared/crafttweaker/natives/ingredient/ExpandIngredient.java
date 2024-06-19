@@ -1,4 +1,4 @@
-package com.blamejared.crafttweaker.natives.item;
+package com.blamejared.crafttweaker.natives.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
@@ -14,11 +14,10 @@ import org.openzen.zencode.java.ZenCodeType;
  * This type can automatically be cast from and to {@link IIngredient}, though.
  */
 @ZenRegister
-@Document("vanilla/api/item/Ingredient")
-@NativeTypeRegistration(value = Ingredient.class, zenCodeName = "crafttweaker.api.item.Ingredient")
+@Document("vanilla/api/ingredient/Ingredient")
+@NativeTypeRegistration(value = Ingredient.class, zenCodeName = "crafttweaker.api.ingredient.Ingredient")
 public class ExpandIngredient {
     
-    //TODO 1.21 move to the ingredient package
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IIngredient asIIngredient(Ingredient internal) {

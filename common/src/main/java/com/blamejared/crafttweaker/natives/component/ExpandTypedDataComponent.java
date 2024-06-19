@@ -1,11 +1,15 @@
 package com.blamejared.crafttweaker.natives.component;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import com.mojang.serialization.DataResult;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,6 +39,20 @@ public class ExpandTypedDataComponent {
     public static <T> DataComponentType<T> type(TypedDataComponent<T> internal, Class<T> tClass) {
         
         return internal.type();
+    }
+    
+    @ZenCodeType.Getter("registryName")
+    public static ResourceLocation getRegistryName(TypedDataComponent internal) {
+        
+        return ExpandDataComponentType.getRegistryName(internal.type());
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static IData asIData(TypedDataComponent internal) {
+        
+        DataResult<IData> dataResult = internal.encodeValue(IDataOps.INSTANCE);
+        return dataResult.getOrThrow();
     }
     
 }

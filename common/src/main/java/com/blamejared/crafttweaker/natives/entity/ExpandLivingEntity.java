@@ -82,13 +82,6 @@ public class ExpandLivingEntity {
     }
     
     @ZenCodeType.Method
-    @ZenCodeType.Getter("canBreatheUnderwater")
-    public static boolean canSpawnSoulSpeedParticle(LivingEntity internal) {
-        
-        return internal.canSpawnSoulSpeedParticle();
-    }
-    
-    @ZenCodeType.Method
     @ZenCodeType.Getter("isBaby")
     public static boolean isBaby(LivingEntity internal) {
         

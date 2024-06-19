@@ -157,7 +157,6 @@ public final class HandCommands {
                             .append(Component.literal(attributeCS).withStyle(ChatFormatting.GREEN)), attributeCS);
                     
                     attributeModifiers.forEach(attributeModifier -> {
-                        sendAttributePropertyInformation(source, "Name", attributeModifier.name());
                         sendAttributePropertyInformation(source, "ID", attributeModifier.id().toString());
                         sendAttributePropertyInformation(source, "Operation", attributeModifier.operation().name());
                         sendAttributePropertyInformation(source, "Amount", String.valueOf(attributeModifier.amount()));

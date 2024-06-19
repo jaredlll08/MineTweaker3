@@ -38,7 +38,7 @@ public class SmithingRecipeManager implements IRecipeManager<SmithingRecipe> {
      * @docParam recipeName "recipe_name"
      * @docParam result <item:minecraft:golden_apple>
      * @docParam base <item:minecraft:apple>
-     * @docParam addition <tag:items:forge:ingots/gold>
+     * @docParam addition <tag:item:forge:ingots/gold>
      */
     @ZenCodeType.Method
     public void addTrimRecipe(String recipeName, IIngredient template, IIngredient base, IIngredient addition) {
@@ -59,7 +59,7 @@ public class SmithingRecipeManager implements IRecipeManager<SmithingRecipe> {
      * @docParam recipeName "recipe_name"
      * @docParam result <item:minecraft:golden_apple>
      * @docParam base <item:minecraft:apple>
-     * @docParam addition <tag:items:forge:ingots/gold>
+     * @docParam addition <tag:item:forge:ingots/gold>
      */
     @ZenCodeType.Method
     public void addTransformRecipe(String recipeName, IItemStack result, IIngredient template, IIngredient base, IIngredient addition) {

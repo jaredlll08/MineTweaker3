@@ -9,10 +9,10 @@ import org.openzen.zenscript.lexer.ZSTokenParser;
 import org.openzen.zenscript.lexer.ZSTokenType;
 import org.openzen.zenscript.parser.expression.ParsedCallArguments;
 import org.openzen.zenscript.parser.expression.ParsedExpression;
+import org.openzen.zenscript.parser.expression.ParsedExpressionCall;
 import org.openzen.zenscript.parser.expression.ParsedExpressionMember;
 import org.openzen.zenscript.parser.expression.ParsedExpressionString;
 import org.openzen.zenscript.parser.expression.ParsedExpressionVariable;
-import org.openzen.zenscript.parser.expression.ParsedNewExpression;
 import org.openzen.zenscript.parser.type.IParsedType;
 import org.openzen.zenscript.parser.type.ParsedTypeBasic;
 
@@ -69,13 +69,16 @@ public final class ParseUtil {
         return builder.toString();
     }
     
-    public static ParsedNewExpression createResourceLocationArgument(CodePosition position, ResourceLocation location) throws ParseException {
+    public static ParsedExpression createResourceLocationArgument(CodePosition position, ResourceLocation location) throws ParseException {
         
         final List<ParsedExpression> arguments = new ArrayList<>(2);
         arguments.add(new ParsedExpressionString(position, location.getNamespace(), false));
         arguments.add(new ParsedExpressionString(position, location.getPath(), false));
-        final ParsedCallArguments newCallArguments = new ParsedCallArguments(null, arguments);
-        return new ParsedNewExpression(position, ParseUtil.readParsedType(ExpandResourceLocation.ZC_CLASS_NAME, position), newCallArguments);
+        final ParsedCallArguments callArguments = new ParsedCallArguments(null, arguments);
+        
+        final ParsedExpression classCall = ParseUtil.staticMemberExpression(position, ExpandResourceLocation.ZC_CLASS_NAME);
+        final ParsedExpression parseCall = new ParsedExpressionMember(position, classCall, "fromNamespaceAndPath", null);
+        return new ParsedExpressionCall(position, parseCall, callArguments);
     }
     
 }

@@ -6,12 +6,12 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id("crafttweaker.modloader-conventions")
-    id("net.neoforged.moddev") version "0.1.52-pr-1-pr-publish"
+    id("net.neoforged.moddev") version ("0.1.94")
 }
 
 neoForge {
-    version = "20.6.104-beta-pr-959-features-gradle-metadata"
-
+    version = Versions.NEO_FORGE
+    accessTransformers.add(project(":common").file("src/main/resources/META-INF/accesstransformer.cfg").absolutePath)
     runs {
         configureEach {
             environment("crafttweaker.logger.forward_to_latest_log", "true")
@@ -35,8 +35,9 @@ neoForge {
 }
 
 dependencies {
-    localOnlyRuntime("dev.architectury:architectury-neoforge:12.1.3")
-    localOnlyRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
+//    localOnlyRuntime("dev.architectury:architectury-neoforge:12.1.3")
+//    localOnlyRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
+    runtimeOnly("mezz.jei:jei-${Versions.MINECRAFT}-neoforge:${Versions.JEI}")
 }
 
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {

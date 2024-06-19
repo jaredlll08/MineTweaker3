@@ -31,16 +31,16 @@ import java.util.Map;
 public final class ExpandLootContextParams {
     
     private static final Map<ResourceLocation, LootContextParam<?>> PRE_REGISTERED_PARAMS = Util.make(new HashMap<>(), (map) -> {
-        map.put(new ResourceLocation("this_entity"), LootContextParams.THIS_ENTITY);
-        map.put(new ResourceLocation("last_damage_player"), LootContextParams.LAST_DAMAGE_PLAYER);
-        map.put(new ResourceLocation("damage_source"), LootContextParams.DAMAGE_SOURCE);
-        map.put(new ResourceLocation("killer_entity"), LootContextParams.KILLER_ENTITY);
-        map.put(new ResourceLocation("direct_killer_entity"), LootContextParams.DIRECT_KILLER_ENTITY);
-        map.put(new ResourceLocation("origin"), LootContextParams.ORIGIN);
-        map.put(new ResourceLocation("block_state"), LootContextParams.BLOCK_STATE);
-        map.put(new ResourceLocation("block_entity"), LootContextParams.BLOCK_ENTITY);
-        map.put(new ResourceLocation("tool"), LootContextParams.TOOL);
-        map.put(new ResourceLocation("explosion_radius"), LootContextParams.EXPLOSION_RADIUS);
+        map.put(ResourceLocation.parse("this_entity"), LootContextParams.THIS_ENTITY);
+        map.put(ResourceLocation.parse("last_damage_player"), LootContextParams.LAST_DAMAGE_PLAYER);
+        map.put(ResourceLocation.parse("damage_source"), LootContextParams.DAMAGE_SOURCE);
+        map.put(ResourceLocation.parse("attacking_entity"), LootContextParams.ATTACKING_ENTITY);
+        map.put(ResourceLocation.parse("direct_attacking_entity"), LootContextParams.DIRECT_ATTACKING_ENTITY);
+        map.put(ResourceLocation.parse("origin"), LootContextParams.ORIGIN);
+        map.put(ResourceLocation.parse("block_state"), LootContextParams.BLOCK_STATE);
+        map.put(ResourceLocation.parse("block_entity"), LootContextParams.BLOCK_ENTITY);
+        map.put(ResourceLocation.parse("tool"), LootContextParams.TOOL);
+        map.put(ResourceLocation.parse("explosion_radius"), LootContextParams.EXPLOSION_RADIUS);
     });
     
     /**
@@ -77,25 +77,25 @@ public final class ExpandLootContextParams {
     }
     
     /**
-     * Gets the 'killer_entity' param.
+     * Gets the 'attacking_entity' param.
      *
-     * @return The 'killer_entity' param.
+     * @return The 'attacking_entity' param.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static LootContextParam<Entity> killerEntity() {
+    public static LootContextParam<Entity> attackingEntity() {
         
-        return LootContextParams.KILLER_ENTITY;
+        return LootContextParams.ATTACKING_ENTITY;
     }
     
     /**
-     * Gets the 'direct_killer_entity' param.
+     * Gets the 'direct_attacking_entity' param.
      *
-     * @return The 'direct_killer_entity' param.
+     * @return The 'direct_attacking_entity' param.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static LootContextParam<Entity> directKillerEntity() {
+    public static LootContextParam<Entity> directAttackingEntity() {
         
-        return LootContextParams.DIRECT_KILLER_ENTITY;
+        return LootContextParams.DIRECT_ATTACKING_ENTITY;
     }
     
     /**

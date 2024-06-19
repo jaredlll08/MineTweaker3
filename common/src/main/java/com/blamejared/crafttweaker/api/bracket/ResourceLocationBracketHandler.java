@@ -29,7 +29,7 @@ public class ResourceLocationBracketHandler {
     @BracketResolver("resource")
     public static ResourceLocation getResourceLocation(String tokens) {
         
-        return new ResourceLocation(tokens);
+        return ResourceLocation.parse(tokens);
     }
     
 }

@@ -5,17 +5,48 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.StringData;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import com.blamejared.crafttweaker_annotations.annotations.NativeConstructor;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister(loaders = {CraftTweakerConstants.DEFAULT_LOADER_NAME, CraftTweakerConstants.TAGS_LOADER_NAME})
 @Document("vanilla/api/resource/ResourceLocation")
-@NativeTypeRegistration(value = ResourceLocation.class, zenCodeName = ExpandResourceLocation.ZC_CLASS_NAME, constructors = @NativeConstructor({@NativeConstructor.ConstructorParameter(name = "namespace", type = String.class, description = "Usually a ModId"), @NativeConstructor.ConstructorParameter(name = "path", type = String.class, description = "May only contain lower-cased alphanumeric values, as well as / and _")}))
+@NativeTypeRegistration(value = ResourceLocation.class, zenCodeName = ExpandResourceLocation.ZC_CLASS_NAME)
 public class ExpandResourceLocation {
     
     public static final String ZC_CLASS_NAME = "crafttweaker.api.resource.ResourceLocation";
+    
+    /**
+     * Creates a new ResourceLocation from the given string.
+     *
+     * @param id The ResourceLocation to parse.
+     *
+     * @return A new ResourceLocation from the given id
+     *
+     * @docParam id "crafttweaker:some-path/to.1"
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static ResourceLocation parse(String id) {
+        
+        return ResourceLocation.parse(id);
+    }
+    
+    /**
+     * Creates a new ResourceLocation from the given namespace and path
+     *
+     * @param namespace The namespace of the resource, usually a modid
+     * @param path      The path of the resource, May only contain lower-cased alphanumeric values, as well as / and _
+     *
+     * @return A new ResourceLocation from the given values.
+     *
+     * @docParam namespace "crafttweaker"
+     * @docParam path "some-path/to.1"
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static ResourceLocation fromNamespaceAndPath(String namespace, String path) {
+        
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    }
     
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.COMPARE)

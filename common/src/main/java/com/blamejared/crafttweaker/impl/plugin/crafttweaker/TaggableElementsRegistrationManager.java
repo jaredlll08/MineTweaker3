@@ -54,7 +54,7 @@ final class TaggableElementsRegistrationManager {
     private void tryElementRegistration(final Class<?> clazz, final TaggableElement data, final ITaggableElementRegistrationHandler handler) {
         
         try {
-            final ResourceLocation id = new ResourceLocation(data.value());
+            final ResourceLocation id = ResourceLocation.parse(data.value());
             final ResourceKey<Registry<Object>> registryKey = ResourceKey.createRegistryKey(id);
             handler.registerTaggableElement(registryKey, GenericUtil.uncheck(clazz));
         } catch(final ResourceLocationException e) {
@@ -65,7 +65,7 @@ final class TaggableElementsRegistrationManager {
     private void tryManagerRegistration(final Class<?> clazz, final TaggableElementManagerFactory data, final ITaggableElementRegistrationHandler handler) {
         
         try {
-            final ResourceLocation id = new ResourceLocation(data.value());
+            final ResourceLocation id = ResourceLocation.parse(data.value());
             final ResourceKey<Registry<Object>> registryKey = ResourceKey.createRegistryKey(id);
             
             handler.registerManager(GenericUtil.uncheck(registryKey), InstantiationUtil.getOrCreateInstance((Class<? extends TagManagerFactory<Registry<Object>, ITagManager<?>>>) clazz));

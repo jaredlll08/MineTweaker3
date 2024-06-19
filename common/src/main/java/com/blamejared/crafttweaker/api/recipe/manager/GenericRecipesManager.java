@@ -30,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.openzen.zencode.java.ZenCodeGlobals;
 import org.openzen.zencode.java.ZenCodeType;
@@ -110,7 +111,7 @@ public class GenericRecipesManager {
         
         final ResourceLocation serializerKey = Util.make(() -> {
             try {
-                return new ResourceLocation(requestedSerializer.getAsString());
+                return ResourceLocation.parse(requestedSerializer.getAsString());
             } catch (final ClassCastException | IllegalStateException | ResourceLocationException ex) {
                 throw new IllegalArgumentException("Expected 'type' field to be a valid resource location", ex);
             }
@@ -128,9 +129,9 @@ public class GenericRecipesManager {
     }
     
     @ZenCodeType.Method
-    public RecipeHolder<Recipe<Container>> getRecipeByName(String name) {
+    public RecipeHolder<Recipe<RecipeInput>> getRecipeByName(String name) {
         
-        RecipeHolder<Recipe<Container>> recipe = getRecipeMap().get(new ResourceLocation(name));
+        RecipeHolder<Recipe<RecipeInput>> recipe = getRecipeMap().get(ResourceLocation.parse(name));
         if(recipe == null) {
             throw new IllegalArgumentException("No recipe found with name: \"" + name + "\"");
         }
@@ -138,7 +139,7 @@ public class GenericRecipesManager {
     }
     
     @ZenCodeType.Method
-    public List<RecipeHolder<Recipe<Container>>> getRecipesByOutput(IIngredient output) {
+    public List<RecipeHolder<Recipe<RecipeInput>>> getRecipesByOutput(IIngredient output) {
         
         return getAllRecipes().stream()
                 .filter(recipe -> output.matches(IItemStack.of(AccessibleElementsProvider.get()
@@ -147,7 +148,7 @@ public class GenericRecipesManager {
     }
     
     @ZenCodeType.Method
-    public List<RecipeHolder<Recipe<Container>>> getRecipesMatching(Predicate<RecipeHolder<Recipe<Container>>> predicate) {
+    public List<RecipeHolder<Recipe<RecipeInput>>> getRecipesMatching(Predicate<RecipeHolder<Recipe<RecipeInput>>> predicate) {
         
         return getAllRecipes().stream()
                 .filter(predicate)
@@ -156,7 +157,7 @@ public class GenericRecipesManager {
     
     @ZenCodeType.Method
     @ZenCodeType.Getter("allRecipes")
-    public List<RecipeHolder<Recipe<Container>>> getAllRecipes() {
+    public List<RecipeHolder<Recipe<RecipeInput>>> getAllRecipes() {
         
         return GenericUtil.uncheck(getAllManagers().stream()
                 .map(IRecipeManager::getAllRecipes)
@@ -179,7 +180,7 @@ public class GenericRecipesManager {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("recipeMap")
-    public Map<ResourceLocation, RecipeHolder<Recipe<Container>>> getRecipeMap() {
+    public Map<ResourceLocation, RecipeHolder<Recipe<RecipeInput>>> getRecipeMap() {
         
         return GenericUtil.uncheck(getAllManagers().stream()
                 .map(IRecipeManager::getRecipeMap)
@@ -228,7 +229,7 @@ public class GenericRecipesManager {
     public void removeByName(String... names) {
         
         CraftTweakerAPI.apply(new ActionRemoveGenericRecipeByName(Arrays.stream(names)
-                .map(ResourceLocation::new)
+                .map(ResourceLocation::parse)
                 .toArray(ResourceLocation[]::new)));
     }
     
@@ -286,7 +287,7 @@ public class GenericRecipesManager {
      * @docParam predicate (holder) => "wool" in holder.id.path
      */
     @ZenCodeType.Method
-    public void removeMatching(Predicate<RecipeHolder<Recipe<Container>>> predicate) {
+    public void removeMatching(Predicate<RecipeHolder<Recipe<RecipeInput>>> predicate) {
         
         CraftTweakerAPI.apply(new ActionRemoveGenericRecipe(predicate));
     }

@@ -5,7 +5,6 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketDumper;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.natives.block.ExpandBlock;
 import com.blamejared.crafttweaker.natives.block.entity.ExpandBannerPattern;
@@ -22,12 +21,13 @@ import com.blamejared.crafttweaker.natives.sound.ExpandSoundEvent;
 import com.blamejared.crafttweaker.natives.villager.ExpandVillagerProfession;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceKey;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @ZenRegister
@@ -35,104 +35,79 @@ import java.util.stream.Collectors;
 @Document("vanilla/api/BracketDumpers")
 public class BracketDumpers {
     
+    public static <T> Collection<String> dumpRegistry(ResourceKey<Registry<T>> key, Function<T, String> toString) {
+        
+        return Services.REGISTRY.registryOrThrow(key).stream().map(toString).collect(Collectors.toSet());
+    }
+    
     @ZenCodeType.Method
     @BracketDumper("attribute")
     public static Collection<String> getAttributeDump() {
         
-        return BuiltInRegistries.ATTRIBUTE
-                .stream()
-                .map(ExpandAttribute::getCommandString)
-                .collect(Collectors.toSet());
+        return dumpRegistry(Registries.ATTRIBUTE, ExpandAttribute::getCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("block")
     public static Collection<String> getBlockDump() {
         
-        return BuiltInRegistries.BLOCK
-                .stream()
-                .map(ExpandBlock::getCommandString)
-                .collect(Collectors.toSet());
-    }
-    
-    @ZenCodeType.StaticExpansionMethod
-    @BracketDumper("fluid")
-    public static Collection<String> getFluidStackDump() {
-        
-        return BuiltInRegistries.FLUID.stream()
-                .map(fluid -> IFluidStack.of(fluid, 1).getCommandString())
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.BLOCK, ExpandBlock::getCommandString);
     }
     
     @ZenCodeType.Method
-    @BracketDumper("mobeffect")
+    @BracketDumper("fluid")
+    public static Collection<String> getFluidStackDump() {
+        
+        return dumpRegistry(Registries.FLUID, fluid -> IFluidStack.of(fluid, 1).getCommandString());
+    }
+    
+    @ZenCodeType.Method
+    @BracketDumper("effect")
     public static Collection<String> getEffectDump() {
         
-        return BuiltInRegistries.MOB_EFFECT
-                .stream()
-                .map(ExpandMobEffect::getCommandString)
-                .collect(Collectors.toSet());
+        return dumpRegistry(Registries.MOB_EFFECT, ExpandMobEffect::getCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("enchantment")
     public static Collection<String> getEnchantmentDump() {
         
-        return BuiltInRegistries.ENCHANTMENT
-                .stream()
-                .map(ExpandEnchantment::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.ENCHANTMENT, ExpandEnchantment::getCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("entitytype")
     public static Collection<String> getEntityTypeDump() {
         
-        return BuiltInRegistries.ENTITY_TYPE
-                .stream()
-                .map(internal -> ExpandEntityType.getCommandString(GenericUtil.uncheck(internal)))
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.ENTITY_TYPE, ExpandEntityType::rawGetCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("item")
     public static Collection<String> getItemBracketDump() {
         
-        return BuiltInRegistries.ITEM
-                .stream()
-                .map(Item::getDefaultInstance)
-                .map(ItemStackUtil::getCommandString)
-                .collect(Collectors.toSet());
+        return dumpRegistry(Registries.ITEM, ItemStackUtil::getCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("potion")
     public static Collection<String> getPotionTypeDump() {
         
-        return BuiltInRegistries.POTION
-                .stream()
-                .map(ExpandPotion::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.POTION, ExpandPotion::getCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("profession")
     public static Collection<String> getProfessionDump() {
         
-        return BuiltInRegistries.VILLAGER_PROFESSION
-                .stream()
-                .map(ExpandVillagerProfession::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.VILLAGER_PROFESSION, ExpandVillagerProfession::getCommandString);
     }
     
     @ZenCodeType.Method
     @BracketDumper("soundevent")
     public static Collection<String> getSoundEventDump() {
         
-        return BuiltInRegistries.SOUND_EVENT
-                .stream()
-                .map(ExpandSoundEvent::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.SOUND_EVENT, ExpandSoundEvent::getCommandString);
     }
     
     @ZenCodeType.Method
@@ -147,49 +122,39 @@ public class BracketDumpers {
                 .collect(Collectors.toList());
     }
     
+    @ZenCodeType.Method
     @BracketDumper("componenttype")
     public static Collection<String> getComponentTypes() {
         
-        return BuiltInRegistries.DATA_COMPONENT_TYPE
-                .stream()
-                .map(ExpandDataComponentType::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.DATA_COMPONENT_TYPE, ExpandDataComponentType::getCommandString);
     }
     
+    @ZenCodeType.Method
     @BracketDumper("bannerpattern")
     public static Collection<String> getBannerPatterns() {
         
-        return Services.REGISTRY.registryOrThrow(Registries.BANNER_PATTERN)
-                .stream()
-                .map(ExpandBannerPattern::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.BANNER_PATTERN, ExpandBannerPattern::getCommandString);
     }
     
+    @ZenCodeType.Method
     @BracketDumper("instrument")
     public static Collection<String> getInstruments() {
         
-        return Services.REGISTRY.registryOrThrow(Registries.INSTRUMENT)
-                .stream()
-                .map(ExpandInstrument::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.INSTRUMENT, ExpandInstrument::getCommandString);
     }
     
+    @ZenCodeType.Method
     @BracketDumper("trimpattern")
-    public static Collection<String> getTrimpatterns() {
+    public static Collection<String> getTrimPatterns() {
         
-        return Services.REGISTRY.registryOrThrow(Registries.TRIM_PATTERN)
-                .stream()
-                .map(ExpandTrimPattern::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.TRIM_PATTERN, ExpandTrimPattern::getCommandString);
     }
     
+    @ZenCodeType.Method
     @BracketDumper("trimmaterial")
     public static Collection<String> getTrimMaterials() {
         
-        return Services.REGISTRY.registryOrThrow(Registries.TRIM_MATERIAL)
-                .stream()
-                .map(ExpandTrimMaterial::getCommandString)
-                .collect(Collectors.toList());
+        return dumpRegistry(Registries.TRIM_MATERIAL, ExpandTrimMaterial::getCommandString);
     }
     
 }

@@ -39,10 +39,10 @@ public class ExpandDamageSource {
         return internal.getFoodExhaustion();
     }
     
-    @ZenCodeType.Getter("indirect")
-    public static boolean isIndirect(DamageSource internal) {
+    @ZenCodeType.Getter("isDirect")
+    public static boolean isDirect(DamageSource internal) {
         
-        return internal.isIndirect();
+        return internal.isDirect();
     }
     
     @ZenCodeType.Nullable

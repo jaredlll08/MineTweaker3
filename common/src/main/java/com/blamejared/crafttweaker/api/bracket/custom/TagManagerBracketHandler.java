@@ -110,7 +110,7 @@ public class TagManagerBracketHandler implements BracketExpressionParser {
     static void confirmTagFolderExists(String tagFolder, CodePosition position) throws ParseException {
         
         try {
-            ResourceLocation location = new ResourceLocation(tagFolder);
+            ResourceLocation location = ResourceLocation.parse(tagFolder);
             if(CraftTweakerTagRegistry.INSTANCE.tagManagerFromFolder(location).isEmpty()) {
                 if(CraftTweakerTagRegistry.INSTANCE.isServerOnly(location)) {
                     throw new ParseException(position, "Unable to access tag manager '" + tagFolder + "' as it is only available on the server! Put your code into an '#onlyif side server ... #endif' expression to make it only load on the server!");
