@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 import org.openzen.zencode.shared.CodePosition;
@@ -50,7 +51,7 @@ public class RecipeTypeBracketHandler implements BracketExpressionParser {
     private static final Object LOCK = new Object();
     
     private static final Map<RecipeType<Recipe<?>>, IRecipeManager<Recipe<?>>> registeredTypes = new HashMap<>();
-    private static final Map<Class<? extends IRecipeManager<Recipe<?>>>, IRecipeManager<Recipe<?>>> managerInstances = new HashMap<>();
+    private static final Map<Class<? extends IRecipeManager<Recipe<? extends RecipeInput>>>, IRecipeManager<Recipe<?>>> managerInstances = new HashMap<>();
     
     private static volatile Runnable enqueuedRegistration = null;
     
@@ -72,7 +73,7 @@ public class RecipeTypeBracketHandler implements BracketExpressionParser {
         };
     }
     
-    public static Collection<IRecipeManager<Recipe<?>>> getManagerInstances() {
+    public static Collection<IRecipeManager<Recipe<? extends RecipeInput>>> getManagerInstances() {
         
         if(enqueuedRegistration != null) {
             synchronized(LOCK) {

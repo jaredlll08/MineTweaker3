@@ -17,6 +17,7 @@ import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.logging.CommonLoggers;
+import com.blamejared.crafttweaker.api.recipe.RecipeList;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.NameUtil;
@@ -112,7 +113,7 @@ public class GenericRecipesManager {
         final ResourceLocation serializerKey = Util.make(() -> {
             try {
                 return ResourceLocation.parse(requestedSerializer.getAsString());
-            } catch (final ClassCastException | IllegalStateException | ResourceLocationException ex) {
+            } catch(final ClassCastException | IllegalStateException | ResourceLocationException ex) {
                 throw new IllegalArgumentException("Expected 'type' field to be a valid resource location", ex);
             }
         });
@@ -121,7 +122,10 @@ public class GenericRecipesManager {
                 .orElseThrow(() -> new IllegalArgumentException("Recipe Serializer '%s' does not exist.".formatted(requestedSerializer)));
         
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
-        final Recipe<?> recipe = serializer.codec().codec().parse(IDataOps.INSTANCE.withRegistryAccess(), data).getOrThrow(IllegalArgumentException::new);
+        final Recipe<?> recipe = serializer.codec()
+                .codec()
+                .parse(IDataOps.INSTANCE.withRegistryAccess(), data)
+                .getOrThrow(IllegalArgumentException::new);
         
         final IRecipeManager<?> manager = RecipeTypeBracketHandler.getOrDefault(recipe.getType());
         final RecipeHolder<?> holder = new RecipeHolder<>(recipeName, recipe);
@@ -159,18 +163,12 @@ public class GenericRecipesManager {
     @ZenCodeType.Getter("allRecipes")
     public List<RecipeHolder<Recipe<RecipeInput>>> getAllRecipes() {
         
-        return GenericUtil.uncheck(getAllManagers().stream()
-                .map(IRecipeManager::getAllRecipes)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList()));
+        return GenericUtil.uncheck(getAllRecipesRaw());
     }
     
     public List<RecipeHolder<?>> getAllRecipesRaw() {
         
-        return getAllManagers().stream()
-                .map(IRecipeManager::getAllRecipes)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        return new ArrayList<>(getRecipeMap().values());
     }
     
     /**
@@ -182,12 +180,9 @@ public class GenericRecipesManager {
     @ZenCodeType.Getter("recipeMap")
     public Map<ResourceLocation, RecipeHolder<Recipe<RecipeInput>>> getRecipeMap() {
         
-        return GenericUtil.uncheck(getAllManagers().stream()
-                .map(IRecipeManager::getRecipeMap)
-                .flatMap(recipeMap -> recipeMap
-                        .entrySet()
-                        .stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        return GenericUtil.uncheck(CraftTweakerAPI.getAccessibleElementsProvider()
+                .accessibleRecipeManager()
+                .crafttweaker$getByName());
     }
     
     /**
