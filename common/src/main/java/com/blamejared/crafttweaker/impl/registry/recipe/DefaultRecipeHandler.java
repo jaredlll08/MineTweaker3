@@ -59,7 +59,7 @@ final class DefaultRecipeHandler implements IRecipeHandler<Recipe<?>> {
             
             return result.result()
                     .map(it ->
-                            "<recipetype:%s>.addJsonRecipe(\"%s\", %s)".formatted(
+                            "<recipetype:%s>.addJsonRecipe(\"%s\", %s);".formatted(
                                     BuiltInRegistries.RECIPE_TYPE.getKey(manager.getRecipeType()),
                                     holder.id(),
                                     it.toString()
