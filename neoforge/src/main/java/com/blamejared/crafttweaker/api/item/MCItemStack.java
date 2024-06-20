@@ -103,6 +103,12 @@ public class MCItemStack implements NeoForgeItemStack {
     }
     
     @Override
+    public int hashCode() {
+        
+        return ItemStack.hashItemAndComponents(this.getInternal());
+    }
+    
+    @Override
     @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
     public boolean equals(Object o) {
         
