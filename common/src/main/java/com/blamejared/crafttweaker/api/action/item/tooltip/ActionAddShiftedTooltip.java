@@ -2,9 +2,7 @@ package com.blamejared.crafttweaker.api.action.item.tooltip;
 
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.tooltip.ITooltipFunction;
-import com.blamejared.crafttweaker.platform.Services;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class ActionAddShiftedTooltip extends ActionTooltipBase {
@@ -18,9 +16,7 @@ public class ActionAddShiftedTooltip extends ActionTooltipBase {
         this.content = content;
         this.function = (stack1, tooltip, context, flag) -> {
             
-            final KeyMapping keyBindSneak = Minecraft.getInstance().options.keyShift;
-            
-            if(Services.CLIENT.isKeyDownExtra(keyBindSneak)) {
+            if(Screen.hasShiftDown()) {
                 tooltip.add(content);
             } else {
                 if(showMessage != null && !showMessage.getString().isEmpty()) {

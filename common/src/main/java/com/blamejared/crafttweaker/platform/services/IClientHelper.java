@@ -63,7 +63,7 @@ public interface IClientHelper {
             }
             Services.CLIENT.getTooltips().get(ingredient).forEach(function -> {
                 try {
-                    function.apply(ctStack, lines,context, flag);
+                    function.apply(ctStack, lines, context, flag);
                 } catch(final Exception exception) {
                     CommonLoggers.api().error(
                             "Unable to run one of the tooltip functions for {} on {} due to an error (for experts, refer to {})",
