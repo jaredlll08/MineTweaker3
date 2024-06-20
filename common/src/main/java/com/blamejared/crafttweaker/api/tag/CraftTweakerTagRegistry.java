@@ -318,7 +318,9 @@ public final class CraftTweakerTagRegistry {
     }
     
     public String makeTagFolder(ResourceKey<?> key) {
-        
+        if(key.location().getNamespace().equals("minecraft")) {
+            return key.location().getPath();
+        }
         return key.location().toString();
     }
     
