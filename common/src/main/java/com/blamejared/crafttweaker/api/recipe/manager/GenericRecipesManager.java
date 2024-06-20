@@ -24,6 +24,7 @@ import com.blamejared.crafttweaker.api.util.NameUtil;
 import com.blamejared.crafttweaker.api.zencode.util.PositionUtil;
 import com.blamejared.crafttweaker.impl.helper.AccessibleElementsProvider;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.mojang.serialization.DataResult;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -130,6 +131,18 @@ public class GenericRecipesManager {
         final IRecipeManager<?> manager = RecipeTypeBracketHandler.getOrDefault(recipe.getType());
         final RecipeHolder<?> holder = new RecipeHolder<>(recipeName, recipe);
         CraftTweakerAPI.apply(new ActionAddRecipe<>(manager, GenericUtil.uncheck(holder)));
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Nullable
+    public IData getRecipeAsJson(String name) {
+        
+        RecipeHolder<Recipe<RecipeInput>> recipeByName = getRecipeByName(name);
+        if(recipeByName != null) {
+            DataResult<IData> iDataDataResult = Recipe.CODEC.encodeStart(IDataOps.INSTANCE, recipeByName.value());
+            return iDataDataResult.getOrThrow();
+        }
+        return null;
     }
     
     @ZenCodeType.Method

@@ -22,6 +22,8 @@ import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.NameUtil;
 import com.blamejared.crafttweaker.api.zencode.util.PositionUtil;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,6 +33,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 import org.openzen.zencode.shared.CodePosition;
 
@@ -115,6 +118,18 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         
         final RecipeHolder<T> holder = new RecipeHolder<>(recipeName, recipe);
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, holder));
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Nullable
+    default IData getRecipeAsJson(String name) {
+        
+        if(getRecipeList().has(name)) {
+            T recipe = getRecipeList().get(name).value();
+            DataResult<IData> iDataDataResult = Recipe.CODEC.encodeStart(IDataOps.INSTANCE, recipe);
+            return iDataDataResult.getOrThrow();
+        }
+        return null;
     }
     
     @ZenCodeType.Method
