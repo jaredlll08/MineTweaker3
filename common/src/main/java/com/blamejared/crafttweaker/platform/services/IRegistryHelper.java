@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public interface IRegistryHelper {
     
-    default Set<ResourceKey<?>> serverOnlyRegistries() {
+    default Set<ResourceKey<? extends Registry<?>>> serverOnlyRegistries() {
         
         return AccessRegistrySynchronization.crafttweaker$callOwnedNetworkableRegistries(CraftTweakerAPI.getAccessibleElementsProvider()
                 .registryAccess()).map(RegistryAccess.RegistryEntry::key).collect(Collectors.toSet());

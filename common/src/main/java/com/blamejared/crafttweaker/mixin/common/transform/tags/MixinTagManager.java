@@ -36,7 +36,6 @@ public class MixinTagManager {
             IAccessibleServerElementsProvider asep = CraftTweakerAPI.getAccessibleElementsProvider().server();
             asep.registryAccess(this.registryAccess);
             
-            
             final ScriptRunConfiguration configuration = new ScriptRunConfiguration(
                     CraftTweakerConstants.TAGS_LOADER_NAME,
                     CraftTweakerConstants.RELOAD_LISTENER_SOURCE_ID, // TODO("Custom load source?")

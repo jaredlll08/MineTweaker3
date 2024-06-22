@@ -13,6 +13,7 @@ import com.blamejared.crafttweaker.mixin.common.access.tag.AccessTagNetworkSeria
 import com.blamejared.crafttweaker.platform.Services;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagManager;
@@ -272,7 +273,7 @@ public final class CraftTweakerTagRegistry {
             
             bind(results, context);
         });
-
+        
     }
     
     /**
@@ -317,11 +318,15 @@ public final class CraftTweakerTagRegistry {
         }
     }
     
-    public String makeTagFolder(ResourceKey<?> key) {
-        if(key.location().getNamespace().equals("minecraft")) {
-            return key.location().getPath();
+    public String makeTagFolder(ResourceKey<? extends Registry<?>> key) {
+        
+        String tagDir = Registries.tagsDirPath(key);
+        
+        // Modders would *really* need to go out of their way to use a different folder, if they do, that's on them
+        if(tagDir.startsWith("tags/")) {
+            tagDir = tagDir.substring("tags/".length());
         }
-        return key.location().toString();
+        return tagDir;
     }
     
     public record BindContext(boolean registerKnownManagers) {
