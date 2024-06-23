@@ -57,24 +57,24 @@ public interface IClientHelper {
     default void applyTooltips(ItemStack stack, Item.TooltipContext context, TooltipFlag flag, List<Component> lines) {
         
         IItemStack ctStack = IItemStack.of(stack);
-        for(IIngredient ingredient : Services.CLIENT.getTooltips().keySet()) {
-            if(!ingredient.matches(ctStack)) {
-                continue;
+        Services.CLIENT.getTooltips().forEach((ingredient, functions) -> {
+            
+            if(ingredient.matches(ctStack)) {
+                functions.forEach(function -> {
+                    try {
+                        function.apply(ctStack, lines, context, flag);
+                    } catch(final Exception exception) {
+                        CommonLoggers.api().error(
+                                "Unable to run one of the tooltip functions for {} on {} due to an error (for experts, refer to {})",
+                                ingredient.getCommandString(),
+                                ctStack.getCommandString(),
+                                function.getClass().getName(),
+                                exception
+                        );
+                    }
+                });
             }
-            Services.CLIENT.getTooltips().get(ingredient).forEach(function -> {
-                try {
-                    function.apply(ctStack, lines, context, flag);
-                } catch(final Exception exception) {
-                    CommonLoggers.api().error(
-                            "Unable to run one of the tooltip functions for {} on {} due to an error (for experts, refer to {})",
-                            ingredient.getCommandString(),
-                            ctStack.getCommandString(),
-                            function.getClass().getName(),
-                            exception
-                    );
-                }
-            });
-        }
+        });
     }
     
 }
