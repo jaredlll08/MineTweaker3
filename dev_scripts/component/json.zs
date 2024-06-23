@@ -1,5 +1,6 @@
 import crafttweaker.api.item.component.CustomData;
 import crafttweaker.api.food.FoodProperties;
+import crafttweaker.api.text.Component;
 
 println(<item:minecraft:diamond_pickaxe>.withJsonComponent(<componenttype:minecraft:max_stack_size>, 5).remove(<componenttype:minecraft:tool>).commandString);
 // is the same as
@@ -14,3 +15,7 @@ println(<item:minecraft:sponge>.withJsonComponent(<componenttype:minecraft:food>
 // is the same as
 var food = FoodProperties.create(3, 1, true, 2.4);
 println(<item:minecraft:sponge>.with<FoodProperties>(<componenttype:minecraft:food>, food).commandString);
+
+
+<item:minecraft:diamond>.definition.setJsonComponent(<componenttype:minecraft:lore>, ["line1", "line2", "line3"]);
+<item:minecraft:diamond>.definition.setJsonComponent(<componenttype:minecraft:lore>, [Component.translatable("tooltip.test.line1"), Component.translatable("tooltip.test.line2")]);

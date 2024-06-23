@@ -1,10 +1,13 @@
 package com.blamejared.crafttweaker.natives.text;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import org.openzen.zencode.java.ZenCodeType;
@@ -102,6 +105,14 @@ public class ExpandComponent {
     public static MutableComponent copy(Component internal) {
         
         return internal.copy();
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static IData asIData(Component internal) {
+        
+        return ComponentSerialization.FLAT_CODEC.encodeStart(IDataOps.INSTANCE.withRegistryAccess(), internal)
+                .getOrThrow(IllegalArgumentException::new);
     }
     
 }
