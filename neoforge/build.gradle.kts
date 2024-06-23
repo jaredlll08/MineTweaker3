@@ -37,7 +37,7 @@ neoForge {
 dependencies {
 //    localOnlyRuntime("dev.architectury:architectury-neoforge:12.1.3")
 //    localOnlyRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:${Versions.REI}")
-    runtimeOnly("mezz.jei:jei-${Versions.MINECRAFT}-neoforge:${Versions.JEI}")
+    localOnlyRuntime("mezz.jei:jei-${Versions.MINECRAFT}-neoforge:${Versions.JEI}")
 }
 
 tasks.create<TaskPublishCurseForge>("publishCurseForge") {
