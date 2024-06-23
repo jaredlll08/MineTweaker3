@@ -6,7 +6,7 @@ body:
             value: |
                 If this bug occurs in a modpack, please report this to the modpack author.
                 
-                If you are using an unnofficial version of CraftTweaker please report it to the person who gave you the version.
+                If you are using an unofficial version of CraftTweaker please report it to the person who gave you the version.
                 
                 Please also look at the other issues to make sure that you are not creating a duplicate.
     -   type: textarea
@@ -75,20 +75,21 @@ body:
         attributes:
             label: Modloader
             description: |
-                What Modloader are you using?
+                Which Modloader are you using?
                 
-                If you have tested on both modloaders and the issue affects both, then select all
+                If you have tested on all modloaders and the issue affects all, then select all
             options:
                 - All
                 - Fabric
                 - Forge
+                - NeoForge
         validations:
             required: true
     -   type: input
         attributes:
             label: Modloader version
-            description: What version of Forge / Fabric loader are you using?
-            placeholder: 39.1.0 / 0.12.12
+            description: What version of Fabric Loader / Forge / NeoForge are you using?
+            placeholder: 0.12.12 / 39.1.0 / 21.0.30
         validations:
             required: true
     -   type: input

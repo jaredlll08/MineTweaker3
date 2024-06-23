@@ -47,10 +47,11 @@ body:
         attributes:
             label: Modloader
             description: |
-                What modloader would you like this on?
+                Which modloader would you like this on?
             options:
                 - All
                 - Fabric
                 - Forge
+                - NeoForge
         validations:
             required: true
