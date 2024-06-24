@@ -13,15 +13,19 @@ import java.util.LinkedList;
 public abstract class ActionTooltipBase extends CraftTweakerAction implements IUndoableAction {
     
     protected final IIngredient stack;
+    private LinkedList<ITooltipFunction> functions;
     
     public ActionTooltipBase(IIngredient stack) {
         
         this.stack = stack;
+        this.functions = null;
     }
     
     public LinkedList<ITooltipFunction> getTooltip() {
-        
-        return Services.CLIENT.getTooltips().computeIfAbsent(stack, iItemStack -> new LinkedList<>());
+        if(functions == null) {
+            functions = Services.CLIENT.getTooltips().computeIfAbsent(stack, iItemStack -> new LinkedList<>());
+        }
+        return functions;
     }
     
     @Override
