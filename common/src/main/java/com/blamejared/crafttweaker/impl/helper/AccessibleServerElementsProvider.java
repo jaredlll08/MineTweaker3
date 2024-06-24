@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.impl.helper;
 
+import com.blamejared.crafttweaker.api.registry.TagAddingRegistryLookup;
 import com.blamejared.crafttweaker.mixin.common.access.server.AccessReloadableServerResources;
 import com.blamejared.crafttweaker.platform.helper.IAccessibleServerElementsProvider;
 import com.google.common.base.Suppliers;
@@ -18,6 +19,7 @@ public final class AccessibleServerElementsProvider implements IAccessibleServer
     private static final Supplier<AccessibleServerElementsProvider> INSTANCE = Suppliers.memoize(AccessibleServerElementsProvider::new);
     
     private ReloadableServerResources resources;
+    private TagAddingRegistryLookup tagAddingRegistryLookup;
     private RegistryAccess registryAccess;
     private final List<Consumer<RegistryAccess>> waitingForRegistryAccess;
     
@@ -25,6 +27,7 @@ public final class AccessibleServerElementsProvider implements IAccessibleServer
         
         this.resources = null;
         this.registryAccess = null;
+        this.tagAddingRegistryLookup = null;
         this.waitingForRegistryAccess = new ArrayList<>();
     }
     
@@ -67,6 +70,7 @@ public final class AccessibleServerElementsProvider implements IAccessibleServer
     public void registryAccess(RegistryAccess registryAccess) {
         
         this.registryAccess = registryAccess;
+        this.tagAddingRegistryLookup = new TagAddingRegistryLookup(this.registryAccess);
         Iterator<Consumer<RegistryAccess>> iterator = waitingForRegistryAccess.iterator();
         while(iterator.hasNext()) {
             iterator.next().accept(this.registryAccess);
@@ -88,6 +92,12 @@ public final class AccessibleServerElementsProvider implements IAccessibleServer
     public boolean hasRegistryAccess() {
         
         return this.registryAccess != null;
+    }
+    
+    @Override
+    public TagAddingRegistryLookup tagAddingRegistryLookup() {
+        
+        return this.tagAddingRegistryLookup;
     }
     
 }

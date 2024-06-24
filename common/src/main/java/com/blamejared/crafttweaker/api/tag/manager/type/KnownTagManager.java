@@ -78,7 +78,7 @@ public class KnownTagManager<T> implements ITagManager<KnownTag<T>> {
             CraftTweakerAPI.apply(new ActionKnownTagCreate<>(to));
         }
         List<T> actualValues = Arrays.stream(values)
-                .map(resourceLocation -> Services.REGISTRY.holderOrThrow(resourceKey(), resourceLocation))
+                .map(resourceLocation -> Services.REGISTRY.holderFromLocationOrThrow(resourceKey(), resourceLocation))
                 .map(Holder::value)
                 .map(o -> (T) o)
                 .toList();
@@ -93,7 +93,7 @@ public class KnownTagManager<T> implements ITagManager<KnownTag<T>> {
             throw new IllegalArgumentException("Cannot remove elements from empty tag: " + from);
         }
         List<T> actualValues = Arrays.stream(values)
-                .map(resourceLocation -> Services.REGISTRY.holderOrThrow(resourceKey(), resourceLocation))
+                .map(resourceLocation -> Services.REGISTRY.holderFromLocationOrThrow(resourceKey(), resourceLocation))
                 .map(Holder::value)
                 .map(o -> (T) o)
                 .toList();

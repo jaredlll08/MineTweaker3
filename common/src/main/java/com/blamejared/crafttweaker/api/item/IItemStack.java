@@ -203,7 +203,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
                 itemStack.remove(type);
             } else {
                 Codec<?> codec = type.codecOrThrow();
-                DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
+                DataResult<? extends Pair<?, IData>> decode = codec.decode(IDataOps.INSTANCE.withTagAddingRegistryAccess(), value);
                 itemStack.set(type, decode.getOrThrow().getFirst());
             }
         });
@@ -213,7 +213,7 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default IItemStack withJsonComponents(IData value) {
         
         return modify(itemStack -> {
-            DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
+            DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withTagAddingRegistryAccess(), value);
             Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
             itemStack.applyComponents(pair.getFirst());
         });

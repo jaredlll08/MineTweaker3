@@ -78,7 +78,7 @@ public class MCFluidStackMutable implements IFluidStack {
     @Override
     public IFluidStack withJsonComponent(DataComponentType type, @ZenCodeType.Nullable IData value) {
         
-        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
+        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withTagAddingRegistryAccess(), value);
         Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
         getInternal().applyComponents(pair.getFirst());
         return this;
@@ -87,7 +87,7 @@ public class MCFluidStackMutable implements IFluidStack {
     @Override
     public IFluidStack withJsonComponents(IData value) {
         
-        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withRegistryAccess(), value);
+        DataResult<Pair<DataComponentPatch, IData>> decoded = DataComponentPatch.CODEC.decode(IDataOps.INSTANCE.withTagAddingRegistryAccess(), value);
         Pair<DataComponentPatch, IData> pair = decoded.getOrThrow();
         getInternal().applyComponents(pair.getFirst());
         return this;

@@ -53,6 +53,14 @@ public final class IDataOps implements DynamicOps<IData> {
         return withRegistryAccess(CraftTweakerAPI.getAccessibleElementsProvider().registryAccess());
     }
     
+    public RegistryOps<IData> withTagAddingRegistryAccess() {
+        
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+                .server()
+                .tagAddingRegistryLookup()
+                .createSerializationContext(this);
+    }
+    
     public RegistryOps<IData> withRegistryAccess(RegistryAccess access) {
         
         return access.createSerializationContext(this);

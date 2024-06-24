@@ -7,3 +7,7 @@ import crafttweaker.api.text.Component;
 <item:minecraft:dirt>.modifyTooltip((stack, tooltip, context, flag) => {
     tooltip.insert(1, Component.literal("Your game will *not* crash"));
 });
+
+<item:minecraft:diamond>.modifyTooltip((stack, tooltip, context, flag) => {
+    tooltip.insert(1, Component.translatable("test.aaa.test").append(Component.translatable("test.bbb.test")));
+});

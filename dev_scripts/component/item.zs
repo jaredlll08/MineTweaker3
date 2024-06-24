@@ -17,3 +17,11 @@ attributes.add(<attribute:minecraft:generic.jump_strength>, AttributeModifier.cr
 
 
 <item:minecraft:stick>.definition.setJsonComponent(<componenttype:minecraft:max_stack_size>, 5);
+
+
+import crafttweaker.api.item.component.AdventureModePredicate;
+
+<tag:block:c:all_blocks>.addId(<resource:minecraft:cobblestone>);
+
+<item:minecraft:flint_and_steel>.getDefinition().setJsonComponent(<componenttype:minecraft:can_place_on>, {blocks: '#c:all_blocks', show_in_tooltip: true});
+// <item:minecraft:flint_and_steel>.getDefinition().setComponent<AdventureModePredicate>(<componenttype:minecraft:can_place_on>, AdventureModePredicate.ofTags([<tag:block:c:stones>], true));

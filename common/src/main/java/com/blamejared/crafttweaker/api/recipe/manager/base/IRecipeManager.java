@@ -101,7 +101,7 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
         final T recipe = serializer.codec()
                 .codec()
-                .parse(IDataOps.INSTANCE.withRegistryAccess(), mapData)
+                .parse(IDataOps.INSTANCE.withTagAddingRegistryAccess(), mapData)
                 .getOrThrow(IllegalStateException::new);
         
         final RecipeType<?> recipeType = recipe.getType();

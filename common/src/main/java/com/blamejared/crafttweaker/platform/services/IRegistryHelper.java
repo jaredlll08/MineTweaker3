@@ -65,13 +65,15 @@ public interface IRegistryHelper {
                 .getKey(thing));
     }
     
+    default <T> Holder<T> holderFromLocationOrThrow(ResourceKey<?> registry, ResourceLocation location) {
+        Registry<T> reg = registryOrThrow(GenericUtil.uncheck(registry));
+        
+        return reg.getHolderOrThrow(ResourceKey.create(reg.key(),location));
+    }
     
     default <T> Holder<T> holderOrThrow(ResourceKey<?> registry, T thing) {
         
-        return CraftTweakerAPI.getAccessibleElementsProvider()
-                .registryAccess()
-                .<T> registryOrThrow(GenericUtil.uncheck(registry))
-                .wrapAsHolder(thing);
+        return this.<T>registryOrThrow(GenericUtil.uncheck(registry)).wrapAsHolder(thing);
     }
     
     default <T> Holder<T> holderOrThrow(ResourceKey<Registry<T>> registry, ResourceLocation location) {

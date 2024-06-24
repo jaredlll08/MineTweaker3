@@ -125,7 +125,7 @@ public class GenericRecipesManager {
         final ResourceLocation recipeName = CraftTweakerConstants.rl(fixedName);
         final Recipe<?> recipe = serializer.codec()
                 .codec()
-                .parse(IDataOps.INSTANCE.withRegistryAccess(), data)
+                .parse(IDataOps.INSTANCE.withTagAddingRegistryAccess(), data)
                 .getOrThrow(IllegalArgumentException::new);
         
         final IRecipeManager<?> manager = RecipeTypeBracketHandler.getOrDefault(recipe.getType());
