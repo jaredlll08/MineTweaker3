@@ -16,7 +16,7 @@ object Versions {
     const val FORGE_LOADER = "49"  // 1.20.4
 
     const val NEO_FORM = "1.21-20240613.152323" // https://projects.neoforged.net/neoforged/neoform
-    const val NEO_FORGE = "21.0.20-beta"
+    const val NEO_FORGE = "21.0.37-beta"
     const val NEO_FORGE_LOADER = "4"
 
     const val MIXIN = "0.8.5"
@@ -27,7 +27,7 @@ object Versions {
     const val CRAFTTWEAKER_ANNOTATION_PROCESSOR = "3.0.0.16"
 
     const val FAUX_CUSTOM_ENTITY_DATA = "12.0.1"
-    const val JEI = "19.0.0.7"
+    const val JEI = "19.0.0.11"
     const val REI = "16.0.729"
 
     const val HAMCREST = "2.2"

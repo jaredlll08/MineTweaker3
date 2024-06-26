@@ -19,7 +19,7 @@ config = "${MOD_ID}.neoforge.mixins.json"
 [[dependencies.${MOD_ID}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[${NEO_FORGE_LOADER},)"
+versionRange = "[${NEO_FORGE},)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.${MOD_ID}]]
