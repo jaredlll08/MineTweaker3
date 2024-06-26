@@ -1,14 +1,17 @@
-import com.blamejared.crafttweaker.gradle.Properties
 import com.blamejared.crafttweaker.gradle.Versions
 
 plugins {
     id("crafttweaker.java-conventions")
-    id("net.neoforged.moddev") version ("0.1.94")
+    id("net.neoforged.moddev")
 }
 
 neoForge {
     neoFormVersion = Versions.NEO_FORM
     accessTransformers.add(project.file("src/main/resources/META-INF/accesstransformer.cfg").absolutePath)
+    parchment {
+        minecraftVersion = Versions.PARCHMENT_MINECRAFT
+        mappingsVersion = Versions.PARCHMENT
+    }
 }
 
 dependencies {

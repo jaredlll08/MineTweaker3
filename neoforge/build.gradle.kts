@@ -6,12 +6,16 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id("crafttweaker.modloader-conventions")
-    id("net.neoforged.moddev") version ("0.1.94")
+    id("net.neoforged.moddev")
 }
 
 neoForge {
     version = Versions.NEO_FORGE
     accessTransformers.add(project(":common").file("src/main/resources/META-INF/accesstransformer.cfg").absolutePath)
+    parchment {
+        minecraftVersion = Versions.PARCHMENT_MINECRAFT
+        mappingsVersion = Versions.PARCHMENT
+    }
     runs {
         configureEach {
             environment("crafttweaker.logger.forward_to_latest_log", "true")

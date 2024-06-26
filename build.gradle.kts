@@ -10,7 +10,8 @@ import java.util.*
 plugins {
     java
     idea
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.7"
+    id("net.neoforged.moddev") version ("0.1.112") apply false
+    id("fabric-loom") version "1.7-SNAPSHOT" apply false
 }
 
 version = GMUtils.updatingVersion(Versions.MOD)
