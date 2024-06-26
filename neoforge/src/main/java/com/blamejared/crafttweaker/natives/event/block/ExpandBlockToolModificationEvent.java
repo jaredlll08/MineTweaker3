@@ -11,7 +11,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -40,10 +40,10 @@ public class ExpandBlockToolModificationEvent {
         return IItemStack.of(internal.getHeldItemStack());
     }
     
-    @ZenCodeType.Getter("toolAction")
-    public static ToolAction getToolAction(BlockEvent.BlockToolModificationEvent internal) {
+    @ZenCodeType.Getter("itemAbility")
+    public static ItemAbility getItemAbility(BlockEvent.BlockToolModificationEvent internal) {
         
-        return internal.getToolAction();
+        return internal.getItemAbility();
     }
     
     @ZenCodeType.Getter("isSimulated")

@@ -3,7 +3,7 @@ package com.blamejared.crafttweaker.api.item;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.neoforged.neoforge.capabilities.ItemCapability;
-import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -26,14 +26,14 @@ public class ExpandIItemStackNeoForge {
     }
     
     /**
-     * Checks if this item can perform the given ToolAction.
+     * Checks if this item can perform the given {@link ItemAbility}.
      *
      * @param action The action to perform.
      *
      * @return True if it can perform the action, false otherwise.
      */
     @ZenCodeType.Method
-    public static boolean canPerformAction(IItemStack internal, ToolAction action) {
+    public static boolean canPerformAction(IItemStack internal, ItemAbility action) {
         
         return internal.getInternal().canPerformAction(action);
     }

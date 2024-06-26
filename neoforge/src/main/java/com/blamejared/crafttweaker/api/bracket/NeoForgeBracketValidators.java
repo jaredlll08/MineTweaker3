@@ -14,8 +14,8 @@ public final class NeoForgeBracketValidators {
     }
 
     @ZenCodeType.StaticExpansionMethod
-    @BracketValidator("toolaction")
-    public static boolean validateToolActionBracket(String tokens) {
+    @BracketValidator("item_ability")
+    public static boolean validateItemAbilityBracket(String tokens) {
 
         return tokens.chars().allMatch(c -> ('a' <= c && c <= 'z') || c == '_');
     }
