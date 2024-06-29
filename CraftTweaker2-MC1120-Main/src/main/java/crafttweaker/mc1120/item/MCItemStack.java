@@ -562,12 +562,12 @@ public class MCItemStack implements IItemStack {
     
     @Override
     public IEntityItem createEntityItem(IWorld world, int x, int y, int z) {
-        return CraftTweakerMC.getIEntityItem(new EntityItem(CraftTweakerMC.getWorld(world), x, y, z, stack));
+        return CraftTweakerMC.getIEntityItem(new EntityItem(CraftTweakerMC.getWorld(world), x, y, z, stack.copy()));
     }
     
     @Override
     public IEntityItem createEntityItem(IWorld world, float x, float y, float z) {
-        return CraftTweakerMC.getIEntityItem(new EntityItem(CraftTweakerMC.getWorld(world), x, y, z, stack));
+        return CraftTweakerMC.getIEntityItem(new EntityItem(CraftTweakerMC.getWorld(world), x, y, z, stack.copy()));
     }
     
     @Override
