@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.impl.helper;
 
+import com.blamejared.crafttweaker.api.registry.TagAddingRegistryLookup;
 import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
 import com.blamejared.crafttweaker.platform.helper.IAccessibleClientElementsProvider;
 import com.blamejared.crafttweaker.platform.helper.IAccessibleElementsProvider;
@@ -72,6 +73,16 @@ public final class AccessibleElementsProvider implements IAccessibleElementsProv
     public IAccessibleServerElementsProvider server() {
         
         return AccessibleServerElementsProvider.get();
+    }
+    
+    @Override
+    public TagAddingRegistryLookup tagAddingRegistryLookup() {
+        if(this.server().hasRegistryAccess()) {
+            return this.server().tagAddingRegistryLookup();
+        } else if(this.client().hasRegistryAccess()) {
+            return this.client().tagAddingRegistryLookup();
+        }
+        throw new NullPointerException("Registry access is unavailable");
     }
     
 }

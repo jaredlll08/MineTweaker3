@@ -133,17 +133,18 @@ public class GenericRecipesManager {
         CraftTweakerAPI.apply(new ActionAddRecipe<>(manager, GenericUtil.uncheck(holder)));
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Nullable
-    public IData getRecipeAsJson(String name) {
-        
-        RecipeHolder<Recipe<RecipeInput>> recipeByName = getRecipeByName(name);
-        if(recipeByName != null) {
-            DataResult<IData> iDataDataResult = Recipe.CODEC.encodeStart(IDataOps.INSTANCE, recipeByName.value());
-            return iDataDataResult.getOrThrow();
-        }
-        return null;
-    }
+    // ShapedRecipes received from the network cannot be serialized in a codec...
+//    @ZenCodeType.Method
+//    @ZenCodeType.Nullable
+//    public IData getRecipeAsJson(String name) {
+//
+//        RecipeHolder<Recipe<RecipeInput>> recipeByName = getRecipeByName(name);
+//        if(recipeByName != null) {
+//            DataResult<IData> iDataDataResult = Recipe.CODEC.encodeStart(IDataOps.INSTANCE, recipeByName.value());
+//            return iDataDataResult.getOrThrow();
+//        }
+//        return null;
+//    }
     
     @ZenCodeType.Method
     public RecipeHolder<Recipe<RecipeInput>> getRecipeByName(String name) {

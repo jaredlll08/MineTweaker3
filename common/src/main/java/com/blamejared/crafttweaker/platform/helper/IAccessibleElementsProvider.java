@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.platform.helper;
 
+import com.blamejared.crafttweaker.api.registry.TagAddingRegistryLookup;
 import com.blamejared.crafttweaker.mixin.common.access.recipe.AccessRecipeManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -35,5 +36,7 @@ public interface IAccessibleElementsProvider {
     IAccessibleClientElementsProvider client();
     
     IAccessibleServerElementsProvider server();
+    
+    TagAddingRegistryLookup tagAddingRegistryLookup();
     
 }

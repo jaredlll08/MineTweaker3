@@ -18,10 +18,3 @@ craftingTable.addJsonRecipe("json_recipe_test",
   }
 }
 );
-
-val acacia_boat = craftingTable.getRecipeAsJson("minecraft:acacia_boat");
-println(acacia_boat.getAsString());
-craftingTable.addJsonRecipe("diamond_boat", acacia_boat.map(data => {
-    data["key"]["#"] = <item:minecraft:diamond>;
-    return data;
-}));

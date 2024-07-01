@@ -120,17 +120,18 @@ public interface IRecipeManager<T extends Recipe<?>> extends CommandStringDispla
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, holder));
     }
     
-    @ZenCodeType.Method
-    @ZenCodeType.Nullable
-    default IData getRecipeAsJson(String name) {
-        
-        if(getRecipeList().has(name)) {
-            T recipe = getRecipeList().get(name).value();
-            DataResult<IData> iDataDataResult = Recipe.CODEC.encodeStart(IDataOps.INSTANCE, recipe);
-            return iDataDataResult.getOrThrow();
-        }
-        return null;
-    }
+    // ShapedRecipes received from the network cannot be serialized in a codec...
+//    @ZenCodeType.Method
+//    @ZenCodeType.Nullable
+//    default IData getRecipeAsJson(String name) {
+//
+//        if(getRecipeList().has(name)) {
+//            T recipe = getRecipeList().get(name).value();
+//            DataResult<IData> iDataDataResult = Recipe.CODEC.encodeStart(IDataOps.INSTANCE, recipe);
+//            return iDataDataResult.getOrThrow();
+//        }
+//        return null;
+//    }
     
     @ZenCodeType.Method
     @ZenCodeType.Nullable

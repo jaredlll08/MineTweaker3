@@ -1,5 +1,6 @@
 package com.blamejared.crafttweaker.platform.helper;
 
+import com.blamejared.crafttweaker.api.registry.TagAddingRegistryLookup;
 import net.minecraft.core.RegistryAccess;
 
 import java.util.function.Consumer;
@@ -14,5 +15,7 @@ public interface IAccessibleClientElementsProvider {
     void runWithRegistryAccess(final Consumer<RegistryAccess> consumer);
     
     boolean hasRegistryAccess();
+    
+    TagAddingRegistryLookup tagAddingRegistryLookup();
     
 }

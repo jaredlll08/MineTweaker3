@@ -56,7 +56,6 @@ public final class IDataOps implements DynamicOps<IData> {
     public RegistryOps<IData> withTagAddingRegistryAccess() {
         
         return CraftTweakerAPI.getAccessibleElementsProvider()
-                .server()
                 .tagAddingRegistryLookup()
                 .createSerializationContext(this);
     }
