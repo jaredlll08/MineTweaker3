@@ -11,6 +11,16 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = MapId.class, zenCodeName = "crafttweaker.api.item.component.MapId")
 public class ExpandMapId {
     
+    /**
+     * The map id to assign to the new object.
+     * @param value A map id. These are assigned by vanilla on the server side.
+     * @return A new MapId instance.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static MapId of(int value) {
+        return new MapId(value);
+    }
+    
     @ZenCodeType.Getter("id")
     public static int getId(MapId internal) {
         return internal.id();
