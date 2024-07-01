@@ -885,7 +885,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Sets the &lt;componenttype:minecraft:custom_data&gt; of the ComponentAccess to have the given {@link CustomData}
+     * Sets the &lt;componenttype:minecraft:custom_model_data&gt; of the ComponentAccess to have the given value.
      *
      * @param value The value to set the CustomModelData to
      *
@@ -1560,7 +1560,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Gets the data in &lt;componenttype:minecraft:custom_data&gt;
+     * Gets the data in &lt;componenttype:minecraft:map_decorations&gt;
      * @return A {@link MapDecorations}.
      */
     @ZenCodeType.Getter("mapDecorations")
@@ -1666,7 +1666,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Gets the data in &lt;componenttype:minecraft:custom_data&gt;
+     * Gets the data in &lt;componenttype:minecraft:charged_projectiles&gt;
      * @return A {@link ChargedProjectiles}.
      */
     @ZenCodeType.Getter("chargedProjectiles")
@@ -1691,9 +1691,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Sets the &lt;componenttype:minecraft:custom_data&gt; of the ComponentAccess to have the given items.
+     * Sets the &lt;componenttype:minecraft:charged_projectiles&gt; of the ComponentAccess to have the given items.
      *
-     * @param items The item to store within.
+     * @param items The items to store within.
      *
      * @docParam items [<item:minecraft:arrow>]
      *
