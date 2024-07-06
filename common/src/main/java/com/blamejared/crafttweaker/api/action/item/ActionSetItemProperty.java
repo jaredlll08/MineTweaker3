@@ -9,7 +9,6 @@ import com.blamejared.crafttweaker.natives.item.ExpandItem;
 import com.blamejared.crafttweaker.platform.Services;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.Logger;
@@ -31,11 +30,9 @@ public class ActionSetItemProperty<T> extends CraftTweakerAction implements IUnd
     @Override
     public void apply() {
         // components are interned on Item, and we don't want to change *all* items
-        if(item.components() == DataComponents.COMMON_ITEM_COMPONENTS) {
-            ((AccessItem) item).crafttweaker$setComponents(DataComponentMap.builder()
-                    .addAll(item.components())
-                    .build());
-        }
+        ((AccessItem) item).crafttweaker$setComponents(DataComponentMap.builder()
+                .addAll(item.components())
+                .build());
         
         if(item.components() instanceof DataComponentMap.Builder.SimpleMap map) {
             if(newValue == null) {
@@ -61,11 +58,9 @@ public class ActionSetItemProperty<T> extends CraftTweakerAction implements IUnd
     @Override
     public void undo() {
         
-        if(item.components() == DataComponents.COMMON_ITEM_COMPONENTS) {
-            ((AccessItem) item).crafttweaker$setComponents(DataComponentMap.builder()
-                    .addAll(item.components())
-                    .build());
-        }
+        ((AccessItem) item).crafttweaker$setComponents(DataComponentMap.builder()
+                .addAll(item.components())
+                .build());
         
         if(item.components() instanceof DataComponentMap.Builder.SimpleMap map) {
             if(oldValue == null) {

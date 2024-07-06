@@ -4,7 +4,7 @@ var tool = <item:minecraft:diamond_pickaxe>.getComponent<Tool>(<componenttype:mi
 println(tool.damagePerBlock);
 
 val rules = [
-    ToolRule.minesAndDrops(<tag:blocks:minecraft:planks>, 6.0f)
+    ToolRule.minesAndDrops(<tag:block:minecraft:planks>, 6.0f)
 ];
 val myStickAxe = <item:minecraft:stick>.withTool(rules, 0.25f, 2)
     .withMaxDamage(10)
