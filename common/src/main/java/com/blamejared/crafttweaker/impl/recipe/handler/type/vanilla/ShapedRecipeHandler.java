@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
+import com.blamejared.crafttweaker.api.recipe.handler.helper.CraftingTableRecipeConflictChecker;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.RecipeUtil;
@@ -49,7 +50,7 @@ public final class ShapedRecipeHandler implements IRecipeHandler<ShapedRecipe> {
     @Override
     public <U extends Recipe<?>> boolean doesConflict(final IRecipeManager<? super ShapedRecipe> manager, final ShapedRecipe firstRecipe, final U secondRecipe) {
         
-        return Services.PLATFORM.doCraftingTableRecipesConflict(manager, firstRecipe, secondRecipe);
+        return CraftingTableRecipeConflictChecker.checkConflicts(manager, firstRecipe, secondRecipe);
     }
     
     @Override

@@ -24,16 +24,16 @@ public class ExpandLivingChangeTargetEvent {
             NeoForgeEventCancellationCarrier.of()
     );
     
-    @ZenCodeType.Getter("newTarget")
-    public static LivingEntity getNewTarget(LivingChangeTargetEvent internal) {
+    @ZenCodeType.Getter("newAboutToBeSetTarget")
+    public static LivingEntity getNewAboutToBeSetTarget(LivingChangeTargetEvent internal) {
         
-        return internal.getNewTarget();
+        return internal.getNewAboutToBeSetTarget();
     }
     
-    @ZenCodeType.Setter("newTarget")
-    public static void setNewTarget(LivingChangeTargetEvent internal, LivingEntity newTarget) {
+    @ZenCodeType.Setter("newAboutToBeSetTarget")
+    public static void setNewAboutToBeSetTarget(LivingChangeTargetEvent internal, LivingEntity newTarget) {
         
-        internal.setNewTarget(newTarget);
+        internal.setNewAboutToBeSetTarget(newTarget);
     }
     
     @ZenCodeType.Getter("targetType")
@@ -42,10 +42,10 @@ public class ExpandLivingChangeTargetEvent {
         return internal.getTargetType();
     }
     
-    @ZenCodeType.Getter("originalTarget")
-    public static LivingEntity getOriginalTarget(LivingChangeTargetEvent internal) {
+    @ZenCodeType.Getter("originalAboutToBeSetTarget")
+    public static LivingEntity getOriginalAboutToBeSetTarget(LivingChangeTargetEvent internal) {
         
-        return internal.getOriginalTarget();
+        return internal.getOriginalAboutToBeSetTarget();
     }
     
 }

@@ -2,9 +2,12 @@ package com.blamejared.crafttweaker.api.recipe.handler.helper;
 
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandlerRegistry;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
-import com.blamejared.crafttweaker.api.util.*;
+import com.blamejared.crafttweaker.api.util.GenericUtil;
+import com.blamejared.crafttweaker.api.util.IngredientUtil;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import java.util.List;
 import java.util.stream.Collectors;

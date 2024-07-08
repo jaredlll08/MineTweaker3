@@ -16,7 +16,7 @@ object Versions {
     const val FORGE_LOADER = "49"  // 1.20.4
 
     const val NEO_FORM = "1.21-20240613.152323" // https://projects.neoforged.net/neoforged/neoform
-    const val NEO_FORGE = "21.0.40-beta"
+    const val NEO_FORGE = "21.0.76-beta"
     const val NEO_FORGE_LOADER = "4"
 
     const val MIXIN = "0.8.5"

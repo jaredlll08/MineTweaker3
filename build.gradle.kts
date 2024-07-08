@@ -10,7 +10,7 @@ import java.util.*
 plugins {
     java
     idea
-    id("net.neoforged.moddev") version ("0.1.112") apply false
+    id("net.neoforged.moddev") version ("0.1.126") apply false
     id("fabric-loom") version "1.7-SNAPSHOT" apply false
 }
 

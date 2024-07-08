@@ -8,6 +8,7 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.loot.modifier.ILootModifier;
 import com.blamejared.crafttweaker.api.mod.Mod;
 import com.blamejared.crafttweaker.api.mod.PlatformMod;
+import com.blamejared.crafttweaker.api.recipe.handler.helper.CraftingTableRecipeConflictChecker;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.villager.trade.type.IBasicItemListing;
 import com.blamejared.crafttweaker.mixin.common.access.item.AccessIngredient;
@@ -109,7 +110,14 @@ public interface IPlatformHelper {
     
     IInventoryWrapper getPlayerInventory(Player player);
     
-    boolean doCraftingTableRecipesConflict(final IRecipeManager<?> manager, final Recipe<?> first, final Recipe<?> second);
+    /**
+     * @deprecated use CraftingTableRecipeConflictChecker.checkConflicts directly instead
+     */
+    @Deprecated(forRemoval = true)
+    default boolean doCraftingTableRecipesConflict(final IRecipeManager<?> manager, final Recipe<?> first, final Recipe<?> second) {
+        
+        return CraftingTableRecipeConflictChecker.checkConflicts(manager, first, second);
+    }
     
     Set<MutableComponent> getFluidsForDump(ItemStack stack, Player player, InteractionHand hand);
     

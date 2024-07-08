@@ -233,12 +233,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
     
     @Override
-    public boolean doCraftingTableRecipesConflict(IRecipeManager<?> manager, Recipe<?> first, Recipe<?> second) {
-        
-        return CraftingTableRecipeConflictChecker.checkConflicts(manager, first, second);
-    }
-    
-    @Override
     public Set<MutableComponent> getFluidsForDump(ItemStack stack, Player player, InteractionHand hand) {
         
         IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);

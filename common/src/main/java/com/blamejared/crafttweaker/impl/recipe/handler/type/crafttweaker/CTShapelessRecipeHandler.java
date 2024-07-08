@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.fun.RecipeFunction1D;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
+import com.blamejared.crafttweaker.api.recipe.handler.helper.CraftingTableRecipeConflictChecker;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.recipe.type.CTShapelessRecipe;
 import com.blamejared.crafttweaker.api.util.StringUtil;
@@ -41,7 +42,7 @@ public final class CTShapelessRecipeHandler implements IRecipeHandler<CTShapeles
     @Override
     public <U extends Recipe<?>> boolean doesConflict(final IRecipeManager<? super CTShapelessRecipe> manager, final CTShapelessRecipe firstRecipe, final U secondRecipe) {
         
-        return Services.PLATFORM.doCraftingTableRecipesConflict(manager, firstRecipe, secondRecipe);
+        return CraftingTableRecipeConflictChecker.checkConflicts(manager, firstRecipe, secondRecipe);
     }
     
     @Override
