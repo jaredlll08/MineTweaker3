@@ -215,6 +215,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     /**
      * Sets the &lt;componenttype:minecraft:max_damage&gt; of the ComponentAccess to have the given value.
      *
+     * It is likely that you need to call withDamage(0) in order for some things to function properly.
+     *
      * @docParam maxDamage 1024
      * @return The new instance with the modified data.
      */
@@ -260,7 +262,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     /**
      * Sets the &lt;componenttype:minecraft:damage&gt; of the ComponentAccess to have the given value.
-     * Damage is related to durability.
+     * Damage is related to durability. Using this on an item that has no maxDamage may have unforeseen issues.
      *
      * @param damage The new damage of the ComponentAccess.
      *
@@ -865,7 +867,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Sets the &lt;componenttype:minecraft:custom_data&gt; of the ComponentAccess to have the given {@link CustomData}
+     * Sets the &lt;componenttype:minecraft:custom_model_data&gt; of the ComponentAccess to have the given value.
      *
      * @param value The value to set the CustomModelData to
      *              
@@ -1119,7 +1121,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Sets the &lt;componenttype:minecraft:intangible_projectile&gt; of the ComponentAccess to have exist.
+     * Sets the &lt;componenttype:minecraft:intangible_projectile&gt; of the ComponentAccess to exist.
      *
      * @return The new instance with the modified data.
      */
@@ -1188,7 +1190,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     // <editor-fold desc="FIRE_RESISTANT">
     /**
      * Gets the data in &lt;componenttype:minecraft:fire_resistant&gt;
-     * @return A boolean representing whether to disallow picking up the item from the creative menu.
+     * @return A boolean representing whether to resist fire.
      */
     @ZenCodeType.Getter("isFireResistant")
     default boolean isFireResistant() {
@@ -1241,6 +1243,17 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:tool&gt; of the ComponentAccess to have the given data.
+     * A {@link Tool} instance is constructed from the parameters.
+     *
+     * @param rules The list of rules the new Tool instance will have
+     * @param defaultMiningSpeed The default mining speed of the new tool
+     * @param damagePerBlock The damage or durability that is dealt to the Tool after use.
+     *
+     * @docParam rules [ToolRule.minesAndDrops(<tag:blocks:minecraft:planks>, 6.0f)]
+     * @docParam defaultMiningSpeed 0.25f
+     * @docParam damagePerBlock 1
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1273,12 +1286,24 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="STORED_ENCHANTMENTS">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:stored_enchantments&gt;
+     *
+     * The stored enchantments component is only present in enchanted books, since it just stores the enchantments
+     * under a lid for future use. The item is not enchanted.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasStoredEnchantments")
     default boolean hasStoredEnchantments() {
         
         return _has(DataComponents.STORED_ENCHANTMENTS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:stored_enchantments&gt;
+     * @return An {@link ItemEnchantments} instance.
+     */
     @ZenCodeType.Getter("storedEnchantments")
     default ItemEnchantments getStoredEnchantments() {
         
@@ -1286,6 +1311,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:stored_enchantments&gt; of the ComponentAccess to have the given {@link ItemEnchantments}
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1295,6 +1322,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:stored_enchantments&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1305,12 +1334,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="DYED_COLOR">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:dyed_color&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasDyedColor")
     default boolean hasDyedColor() {
         
         return _has(DataComponents.DYED_COLOR);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:dye_color&gt;
+     * @return A {@link DyedItemColor} instance.
+     */
     @ZenCodeType.Getter("dyedColor")
     default DyedItemColor getDyedColor() {
         
@@ -1318,6 +1355,14 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:dyed_color&gt; of the ComponentAccess.
+     *
+     * @param rgb The colour to dye this item with
+     * @param showInTooltip Whether to show this information in a tooltip
+     *
+     * @docParam rgb 0xFFFF00
+     * @docParam showInTooltip true
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1327,6 +1372,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:dyed_color&gt; of the ComponentAccess to have the given {@link DyedItemColor}
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1336,6 +1383,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:dyed_color&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1346,12 +1395,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="MAP_COLOR">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:map_color&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasMapColor")
     default boolean hasMapColor() {
         
         return _has(DataComponents.MAP_COLOR);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:map_color&gt;
+     * @return A {@link MapItemColor} that stores an RGB color..
+     */
     @ZenCodeType.Getter("mapColor")
     default MapItemColor getMapColor() {
         
@@ -1359,6 +1416,12 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_color&gt; of the ComponentAccess.
+     *
+     * @param rgb The new map colour
+     *
+     * @docParam rgb 0xFF0000
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1368,6 +1431,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_color&gt; of the ComponentAccess to have the given {@link MapItemColor}
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1377,6 +1442,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:map_color&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1387,13 +1454,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="MAP_ID">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:map_id&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasMapId")
     default boolean hasMapId() {
         
         return _has(DataComponents.MAP_ID);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:map_id&gt;
+     * @return A {@link MapId}
+     */
     @ZenCodeType.Getter("mapId")
     default MapId getMapId() {
         
@@ -1401,6 +1475,11 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_id&gt; of the ComponentAccess to have the given value.
+     *
+     * A map id is only useful after the game generates one to store data.
+     * Therefore, you should always pass in the parameter for an id you know is available.
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1410,6 +1489,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_id&gt; of the ComponentAccess to have the given {@link MapId}
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1419,6 +1500,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:map_id&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -1429,13 +1512,23 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="MAP_DECORATIONS">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:map_decorations&gt;
+     *
+     * MapDecorations are additional elements that render on a map, such as waypoints.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasMapDecorations")
     default boolean hasMapDecorations() {
         
         return _has(DataComponents.MAP_DECORATIONS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:map_decorations&gt;
+     * @return A {@link MapDecorations}.
+     */
     @ZenCodeType.Getter("mapDecorations")
     default MapDecorations getMapDecorations() {
         
@@ -1443,8 +1536,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_decorations&gt; of the ComponentAccess to have the given values.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withMapDecorations(Map<String, MapDecorations.Entry> decorations) {
         
@@ -1452,8 +1547,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_decorations&gt; of the ComponentAccess to have the given {@link MapDecorations}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withMapDecorations(MapDecorations decorations) {
         
@@ -1461,8 +1558,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:map_decorations&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutMapDecorations() {
         
@@ -1472,12 +1571,23 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     //</editor-fold>
     // <editor-fold desc="MAP_POST_PROCESSING">
     
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:map_post_processing&gt;
+     *
+     * This componenet stores additional info on the map, such as the scale or whether to lock it.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasMapPostProcessing")
     default boolean hasMapPostProcessing() {
         
         return _has(DataComponents.MAP_POST_PROCESSING);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:map_post_processing&gt;
+     * @return A {@link MapPostProcessing}
+     */
     @ZenCodeType.Getter("mapPostProcessing")
     default MapPostProcessing getMapPostProcessing() {
         
@@ -1485,8 +1595,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:map_post_processing&gt; of the ComponentAccess to have the given {@link MapPostProcessing}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withMapPostProcessing(MapPostProcessing value) {
         
@@ -1494,8 +1606,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:map_post_processing&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutMapPostProcessing() {
         
@@ -1504,12 +1618,23 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="CHARGED_PROJECTILES">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:charged_projectiles&gt;
+     *
+     * This component is used for crossbows.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasChargedProjectiles")
     default boolean hasChargedProjectiles() {
         
         return _has(DataComponents.CHARGED_PROJECTILES);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:charged_projectiles&gt;
+     * @return A {@link ChargedProjectiles}.
+     */
     @ZenCodeType.Getter("chargedProjectiles")
     default ChargedProjectiles getChargedProjectiles() {
         
@@ -1517,8 +1642,14 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:charged_projectiles&gt; of the ComponentAccess to have the given {@link IItemStack}
+     *
+     * @param item The item to store within.
+     *
+     * @docParam item <item:minecraft:arrow>
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withChargedProjectiles(IItemStack item) {
         
@@ -1526,8 +1657,14 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:charged_projectiles&gt; of the ComponentAccess to have the given items.
+     *
+     * @param items The items to store within.
+     *
+     * @docParam items [<item:minecraft:arrow>]
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withChargedProjectiles(List<IItemStack> items) {
         
@@ -1535,8 +1672,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:charged_projectiles&gt; of the ComponentAccess to have the given {@link ChargedProjectiles}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withChargedProjectiles(ChargedProjectiles chargedProjectiles) {
         
@@ -1544,8 +1683,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:charged_projectiles&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutChargedProjectiles() {
         
@@ -1554,12 +1695,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BUNDLE_CONTENTS">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:bundle_contents&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBundleContents")
     default boolean hasBundleContents() {
         
         return _has(DataComponents.BUNDLE_CONTENTS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:bundle_contents&gt;
+     * @return A {@link BundleContents}.
+     */
     @ZenCodeType.Getter("bundleContents")
     default BundleContents getBundleContents() {
         
@@ -1567,8 +1716,14 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:bundle_contents&gt; of the ComponentAccess to have the given contents
+     *
+     * @param contents A list of items to store within.
+     *
+     * @docParam contents [<item:minecraft:diamond> * 64]
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBundleContents(List<IItemStack> contents) {
         
@@ -1576,8 +1731,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:bundle_contents&gt; of the ComponentAccess to have the given {@link BundleContents}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBundleContents(BundleContents contents) {
         
@@ -1585,8 +1742,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:bundle_contents&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBundleContents() {
         
@@ -1595,13 +1754,23 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="POTION_CONTENTS">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:potion_contents&gt;
+     *
+     * Stores Potion Data on an item.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasPotionContents")
     default boolean hasPotionContents() {
         
         return _has(DataComponents.POTION_CONTENTS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:potion_contents&gt;
+     * @return A {@link PotionContents}.
+     */
     @ZenCodeType.Getter("potionContents")
     default PotionContents getPotionContents() {
         
@@ -1609,8 +1778,15 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:potion_contents&gt; of the ComponentAccess to have the given {@link Potion}
+     * and no custom effects
+     *
+     * @param potion The potion to store within
+     *
+     * @docParam potion <potion:minecraft:swiftness>
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(Potion potion) {
         
@@ -1619,8 +1795,17 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:potion_contents&gt; of the ComponentAccess to have the given {@link Potion}
+     * and the given {@link MobEffectInstance} effects.
+     *
+     * @param potion The potion to store within.
+     * @param customEffects The effects to grant upon consuming this potion.
+     *
+     * @docParam potion <potion:minecraft:swiftness>
+     * @docParam customEffects [MobEffectInstance.of(<mobeffect:minecraft:strength>, 20 * 20, 1, false, false, true)]
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(Potion potion, List<MobEffectInstance> customEffects) {
         
@@ -1628,8 +1813,19 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:potion_contents&gt; of the ComponentAccess to have the given {@link Potion}
+     * and the given {@link MobEffectInstance} effects.
+     *
+     * @param potion The potion to store within.
+     * @param customColor The ARGB color the potion will have.
+     * @param customEffects The effects to grant upon consuming this potion.
+     *
+     * @docParam potion <potion:minecraft:swiftness>
+     * @docParam customColor 0xFFFFFF00
+     * @docParam customEffects [MobEffectInstance.of(<mobeffect:minecraft:strength>, 20 * 20, 1, false, false, true)]
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(Potion potion, int customColor, List<MobEffectInstance> customEffects) {
         
@@ -1637,8 +1833,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:potion_contents&gt; of the ComponentAccess to have the given {@link PotionContents}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotionContents(PotionContents contents) {
         
@@ -1646,8 +1844,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:potion_contents&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutPotionContents() {
         
@@ -1656,13 +1856,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="SUSPICIOUS_STEW_EFFECTS">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:suspicious_stew_effects&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasSuspiciousStewEffects")
     default boolean hasSuspiciousStewEffects() {
         
         return _has(DataComponents.SUSPICIOUS_STEW_EFFECTS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:suspicious_stew_effects&gt;
+     * @return A {@link SuspiciousStewEffects}.
+     */
     @ZenCodeType.Getter("suspiciousStewEffects")
     default SuspiciousStewEffects getSuspiciousStewEffects() {
         
@@ -1670,8 +1877,13 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:suspicious_stew_effects&gt; of the ComponentAccess to have the given {@link SuspiciousStewEffects}
+     * {@link SuspiciousStewEffects.Entry} is effectively a pair of Effect and duration.
+     * 
+     * @param effects The list of effects to grant on consumption.
+     * 
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withSuspiciousStewEffects(List<SuspiciousStewEffects.Entry> effects) {
         
@@ -1679,8 +1891,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:suspicious_stew_effects&gt; of the ComponentAccess to have the given {@link SuspiciousStewEffects}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withSuspiciousStewEffects(SuspiciousStewEffects suspiciousStewEffects) {
         
@@ -1688,8 +1902,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:suspicious_stew_effects&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutSuspiciousStewEffects() {
         
@@ -1698,12 +1914,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="WRITABLE_BOOK_CONTENT">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:writable_book_content&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasWritableBookContent")
     default boolean hasWritableBookContent() {
         
         return _has(DataComponents.WRITABLE_BOOK_CONTENT);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:writable_book_content&gt;
+     * @return A {@link WritableBookContent}.
+     */
     @ZenCodeType.Getter("writableBookContent")
     default WritableBookContent getWritableBookContent() {
         
@@ -1720,8 +1944,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:writable_book_content&gt; of the ComponentAccess to have the given {@link WritableBookContent}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withWritableBookContent(WritableBookContent content) {
         
@@ -1729,8 +1955,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:writable_book_content&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutWritableBookContent() {
         
@@ -1739,12 +1967,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="WRITTEN_BOOK_CONTENT">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:written_book_content&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasWrittenBookContent")
     default boolean hasWrittenBookContent() {
         
         return _has(DataComponents.WRITABLE_BOOK_CONTENT);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:written_book_content&gt;
+     * @return A {@link WrittenBookContent}.
+     */
     @ZenCodeType.Getter("writtenBookContent")
     default WrittenBookContent getWrittenBookContent() {
         
@@ -1752,8 +1988,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:written_book_content&gt; of the ComponentAccess to have the given {@link WrittenBookContent}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withWrittenBookContent(WrittenBookContent content) {
         
@@ -1761,8 +1999,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:written_book_content&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutWrittenBookContent() {
         
@@ -1771,12 +2011,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="TRIM">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:trim&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasTrim")
     default boolean hasTrim() {
         
         return _has(DataComponents.TRIM);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:trim&gt;
+     * @return A {@link ArmorTrim}.
+     */
     @ZenCodeType.Getter("trim")
     default ArmorTrim getTrim() {
         
@@ -1784,8 +2032,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:trim&gt; of the ComponentAccess to have the given {@link ArmorTrim}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withTrim(ArmorTrim trim) {
         
@@ -1793,8 +2043,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:trim&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutTrim() {
         
@@ -1803,13 +2055,19 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="DEBUG_STICK_STATE">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:debug_stick_state&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasDebugStickState")
     default boolean hasDebugStickState() {
         
         return _has(DataComponents.DEBUG_STICK_STATE);
     }
-    
+    /**
+     * Gets the data in &lt;componenttype:minecraft:debug_stick_state&gt;
+     * @return A {@link DebugStickState}.
+     */
     @ZenCodeType.Getter("debugStickState")
     default DebugStickState getDebugStickState() {
         
@@ -1817,8 +2075,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:debug_stick_state&gt; of the ComponentAccess to have the given {@link DebugStickState}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withDebugStickState(DebugStickState state) {
         
@@ -1826,8 +2086,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:debug_stick_state&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutDebugStickState() {
         
@@ -1836,12 +2098,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="ENTITY_DATA">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:entity_data&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasEntityData")
     default boolean hasEntityData() {
         
         return _has(DataComponents.ENTITY_DATA);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:entity_data&gt;
+     * @return A {@link CustomData}.
+     */
     @ZenCodeType.Getter("entityData")
     default CustomData getEntityData() {
         
@@ -1849,8 +2119,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:entity_data&gt; of the ComponentAccess to have the given {@link MapData}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withEntityData(MapData data) {
         
@@ -1858,8 +2130,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:entity_data&gt; of the ComponentAccess to have the given {@link CustomData}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withEntityData(CustomData data) {
         
@@ -1867,8 +2141,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:entity_data&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutEntityDate() {
         
@@ -1877,13 +2153,19 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BUCKET_ENTITY_DATA">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:bucket_entity_data&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBucketEntityData")
     default boolean hasBucketEntityData() {
         
         return _has(DataComponents.BUCKET_ENTITY_DATA);
     }
-    
+    /**
+     * Gets the data in &lt;componenttype:minecraft:bucket_entity_data&gt;
+     * @return A {@link CustomData}.
+     */
     @ZenCodeType.Getter("bucketEntityData")
     default CustomData getBucketEntityData() {
         
@@ -1891,8 +2173,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:bucket_entity_data&gt; of the ComponentAccess to have the given {@link MapData}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBucketEntityData(MapData data) {
         
@@ -1900,8 +2184,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:bucket_entity_data&gt; of the ComponentAccess to have the given {@link CustomData}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBucketEntityData(CustomData data) {
         
@@ -1909,8 +2195,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:bucket_entity_data&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBucketEntityData() {
         
@@ -1919,13 +2207,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BLOCK_ENTITY_DATA">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:block_entity_data&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBlockEntityData")
     default boolean hasBlockEntityData() {
         
         return _has(DataComponents.BLOCK_ENTITY_DATA);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:block_entity_data&gt;
+     * @return A {@link CustomData}.
+     */
     @ZenCodeType.Getter("blockEntityData")
     default CustomData getBlockEntityData() {
         
@@ -1933,8 +2228,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:block_entity_data&gt; of the ComponentAccess to have the given {@link MapData}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBlockEntityData(MapData data) {
         
@@ -1942,8 +2239,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:block_entity_data&gt; of the ComponentAccess to have the given {@link CustomData}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBlockEntityData(CustomData data) {
         
@@ -1951,8 +2250,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:block_entity_data&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBlockEntityData() {
         
@@ -1961,13 +2262,19 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="INSTRUMENT">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:instrument&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasInstrument")
     default boolean hasInstrument() {
         
         return _has(DataComponents.INSTRUMENT);
     }
-    
+    /**
+     * Gets the data in &lt;componenttype:minecraft:instrument&gt;
+     * @return A {@link Instrument}.
+     */
     @ZenCodeType.Getter("instrument")
     default Instrument getInstrument() {
         
@@ -1975,8 +2282,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:instrument&gt; of the ComponentAccess to have the given {@link Instrument}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withInstrument(Instrument instrument) {
         
@@ -1984,8 +2293,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:instrument&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutInstrument() {
         
@@ -1994,12 +2305,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="OMINOUS_BOTTLE_AMPLIFIER">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:ominous_bottle_amplifier&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasOminousBottleAmplifier")
     default boolean hasOminousBottleAmplifier() {
         
         return _has(DataComponents.OMINOUS_BOTTLE_AMPLIFIER);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:ominous_bottle_amplifier&gt;
+     * @return The amplifier number.
+     */
     @ZenCodeType.Getter("ominousBottleAmplifier")
     default int getOminousBottleAmplifier() {
         
@@ -2007,8 +2326,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:ominous_bottle_amplifier&gt; of the ComponentAccess to have the given amplifier.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withOminousBottleAmplifier(int amplifier) {
         
@@ -2016,8 +2337,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:ominous_bottle_amplifier&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutOminousBottleAmplifier() {
         
@@ -2026,12 +2349,23 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="RECIPES">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:recipes&gt;
+     *
+     * Used for Knowledge Books.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasRecipes")
     default boolean hasRecipes() {
         
         return _has(DataComponents.RECIPES);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:recipes&gt;
+     * @return A {@link List<ResourceLocation>}.
+     */
     @ZenCodeType.Getter("recipes")
     default List<ResourceLocation> getRecipes() {
         
@@ -2039,8 +2373,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:recipes&gt; of the ComponentAccess to have the given {@link List<ResourceLocation>}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withRecipes(List<ResourceLocation> recipes) {
         
@@ -2048,8 +2384,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:recipes&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutRecipes() {
         
@@ -2058,12 +2396,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="LODESTONE_TRACKER">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:lodestone_tracker&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasLodestoneTracker")
     default boolean hasLodestoneTracker() {
         
         return _has(DataComponents.LODESTONE_TRACKER);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:lodestone_tracker&gt;
+     * @return A {@link LodestoneTracker}.
+     */
     @ZenCodeType.Getter("lodestoneTracker")
     default LodestoneTracker getLodestoneTracker() {
         
@@ -2071,8 +2417,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:lodestone_tracker&gt; of the ComponentAccess to have the given {@link LodestoneTracker}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withLodestoneTracker(LodestoneTracker tracker) {
         
@@ -2080,8 +2428,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:lodestone_tracker&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutLodestoneTracker() {
         
@@ -2090,13 +2440,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="FIREWORK_EXPLOSION">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:firework_explosion&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasFireworkExplosion")
     default boolean hasFireworkExplosion() {
         
         return _has(DataComponents.FIREWORK_EXPLOSION);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:firework_explosion&gt;
+     * @return A {@link FireworkExplosion}.
+     */
     @ZenCodeType.Getter("fireworkExplosion")
     default FireworkExplosion getFireworkExplosion() {
         
@@ -2104,8 +2461,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:firework_explosion&gt; of the ComponentAccess to have the given {@link FireworkExplosion}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withFireworkExplosion(FireworkExplosion explosion) {
         
@@ -2113,8 +2472,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:firework_explosion&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutFireworkExplosion() {
         
@@ -2123,12 +2484,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="FIREWORKS">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:fireworks&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasFireworks")
     default boolean hasFireworks() {
         
         return _has(DataComponents.FIREWORKS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:fireworks&gt;
+     * @return A {@link Fireworks}.
+     */
     @ZenCodeType.Getter("fireworks")
     default Fireworks getFireworks() {
         
@@ -2136,8 +2505,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:fireworks&gt; of the ComponentAccess to have the given duration and explosions.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withFireworks(int flightDuration, List<FireworkExplosion> explosions) {
         
@@ -2145,8 +2516,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:fireworks&gt; of the ComponentAccess to have the given {@link Fireworks}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withFireworks(Fireworks fireworks) {
         
@@ -2155,6 +2528,8 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     
     /**
+     * Removes the &lt;componenttype:minecraft:fireworks&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
@@ -2165,19 +2540,31 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="PROFILE">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:profile&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasProfile")
     default boolean hasProfile() {
         
         return _has(DataComponents.PROFILE);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:profile&gt;
+     * @return A {@link ResolvableProfile}.
+     */
     @ZenCodeType.Getter("profile")
     default ResolvableProfile getProfile() {
         
         return _get(DataComponents.PROFILE);
     }
     
+    /**
+     * Sets the &lt;componenttype:minecraft:profile&gt; of the ComponentAccess to have the given {@link ResolvableProfile}
+     *
+     * @return The new instance with the modified data.
+     */
     @ZenCodeType.Method
     default T withProfile(ResolvableProfile profile) {
         
@@ -2185,8 +2572,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:profile&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutProfile() {
         
@@ -2195,13 +2584,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="NOTE_BLOCK_SOUND">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:note_block_sound&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasNoteBlockSound")
     default boolean hasNoteBlockSound() {
         
         return _has(DataComponents.NOTE_BLOCK_SOUND);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:note_block_sound&gt;
+     * @return A {@link ResourceLocation}.
+     */
     @ZenCodeType.Getter("noteBlockSound")
     default ResourceLocation getNoteBlockSound() {
         
@@ -2209,8 +2605,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:note_block_sound&gt; of the ComponentAccess to have the given {@link ResourceLocation}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withNoteBlockSound(ResourceLocation sound) {
         
@@ -2218,8 +2616,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:note_block_sound&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutNoteBlockSound() {
         
@@ -2228,13 +2628,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BANNER_PATTERNS">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:banner_patterns&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBannerPatterns")
     default boolean hasBannerPatterns() {
         
         return _has(DataComponents.BANNER_PATTERNS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:banner_patterns&gt;
+     * @return A {@link BannerPatternLayers}.
+     */
     @ZenCodeType.Getter("bannerPatterns")
     default BannerPatternLayers getBannerPatterns() {
         
@@ -2242,8 +2649,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:banner_patterns&gt; of the ComponentAccess to have the given {@link List<BannerPatternLayers.Layer>}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBannerPatterns(List<BannerPatternLayers.Layer> layers) {
         
@@ -2251,8 +2660,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:banner_patterns&gt; of the ComponentAccess to have the given {@link BannerPatternLayers}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBannerPatterns(BannerPatternLayers layers) {
         
@@ -2260,8 +2671,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:banner_patterns&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBannerPatterns() {
         
@@ -2270,22 +2683,35 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BASE_COLOR">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:base_color&gt;
+     *
+     * Used for shield colouring.
+     *
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBaseColor")
     default boolean hasBaseColor() {
         
         return _has(DataComponents.BASE_COLOR);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:base_color&gt;
+     * @return A {@link DyeColor}.
+     */
     @ZenCodeType.Getter("baseColor")
     default DyeColor getBaseColor() {
         
         return _get(DataComponents.BASE_COLOR);
     }
     
+    
     /**
+     * Sets the &lt;componenttype:minecraft:base_color&gt; of the ComponentAccess to have the given {@link DyeColor}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBaseColor(DyeColor color) {
         
@@ -2293,8 +2719,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:base_color&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBaseColor() {
         
@@ -2303,13 +2731,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="POT_DECORATIONS">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:pot_decorations&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasPotDecorations")
     default boolean hasPotDecorations() {
         
         return _has(DataComponents.POT_DECORATIONS);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:pot_decorations&gt;
+     * @return A {@link PotDecorations}.
+     */
     @ZenCodeType.Getter("potDecorations")
     default PotDecorations getPotDecorations() {
         
@@ -2317,8 +2752,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:pot_decorations&gt; of the ComponentAccess to have the given items.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotDecorations(Item back, Item left, Item right, Item front) {
         
@@ -2326,8 +2763,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:pot_decorations&gt; of the ComponentAccess to have the given {@link PotDecorations}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withPotDecorations(PotDecorations decorations) {
         
@@ -2335,8 +2774,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:pot_decorations&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutPotDecorations() {
         
@@ -2345,13 +2786,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="CONTAINER">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:container&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasContainer")
     default boolean hasContainer() {
         
         return _has(DataComponents.CONTAINER);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:container&gt;
+     * @return A {@link ItemContainerContents}.
+     */
     @ZenCodeType.Getter("container")
     default ItemContainerContents getContainer() {
         
@@ -2359,8 +2807,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:container&gt; of the ComponentAccess to have the given values.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainer(List<IItemStack> contents) {
         
@@ -2368,8 +2818,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:container&gt; of the ComponentAccess to have the given {@link ItemContainerContents}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainer(ItemContainerContents contents) {
         
@@ -2377,8 +2829,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:container&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutContainer() {
         
@@ -2387,13 +2841,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BLOCK_STATE">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:block_state&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBlockState")
     default boolean hasBlockState() {
         
         return _has(DataComponents.BLOCK_STATE);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:block_state&gt;
+     * @return A {@link BlockItemStateProperties}.
+     */
     @ZenCodeType.Getter("blockState")
     default BlockItemStateProperties getBlockState() {
         
@@ -2401,8 +2862,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:block_state&gt; of the ComponentAccess to have the given {@link BlockItemStateProperties}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBlockState(BlockItemStateProperties properties) {
         
@@ -2410,8 +2873,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:block_state&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBlockState() {
         
@@ -2420,12 +2885,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="BEES">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:bees&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasBees")
     default boolean hasBees() {
         
         return _has(DataComponents.BEES);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:bees&gt;
+     * @return A {@link List<BeehiveBlockEntity.Occupant>}.
+     */
     @ZenCodeType.Getter("bees")
     default List<BeehiveBlockEntity.Occupant> getBees() {
         
@@ -2433,8 +2906,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:bees&gt; of the ComponentAccess to have the given occupants
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withBees(List<BeehiveBlockEntity.Occupant> occupants) {
         
@@ -2442,8 +2917,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:bees&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutBees() {
         
@@ -2452,12 +2929,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="LOCK">
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:lock&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasLock")
     default boolean hasLock() {
         
         return _has(DataComponents.LOCK);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:lock&gt;
+     * @return A {@link LockCode}.
+     */
     @ZenCodeType.Getter("lockComponent")
     default LockCode getLock() {
         
@@ -2465,8 +2950,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:lock&gt; of the ComponentAccess to have the given string.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withLock(String code) {
         
@@ -2474,8 +2961,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:lock&gt; of the ComponentAccess to have the given {@link LockCode}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withLock(LockCode lock) {
         
@@ -2483,8 +2972,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:lock&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutLock() {
         
@@ -2493,13 +2984,20 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     
     //</editor-fold>
     // <editor-fold desc="CONTAINER_LOOT">
-    
+    /**
+     * Checks whether the ComponentAccess has &lt;componenttype:minecraft:container_loot&gt;
+     * @return Whether the componenttype is stored.
+     */
     @ZenCodeType.Getter("hasContainerLoot")
     default boolean hasContainerLoot() {
         
         return _has(DataComponents.CONTAINER_LOOT);
     }
     
+    /**
+     * Gets the data in &lt;componenttype:minecraft:container_loot&gt;
+     * @return A {@link SeededContainerLoot}.
+     */
     @ZenCodeType.Getter("containerLoot")
     default SeededContainerLoot getContainerLoot() {
         
@@ -2507,8 +3005,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:container_loot&gt; of the ComponentAccess to have the given loot table and seed.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainerLoot(ResourceKey<LootTable> lootTable, long seed) {
         
@@ -2516,8 +3016,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Sets the &lt;componenttype:minecraft:container_loot&gt; of the ComponentAccess to have the given {@link SeededContainerLoot}
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withContainerLoot(SeededContainerLoot loot) {
         
@@ -2525,8 +3027,10 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
+     * Removes the &lt;componenttype:minecraft:container_loot&gt; from the ComponentAccess.
+     *
      * @return The new instance with the modified data.
-     */ 
+     */
     @ZenCodeType.Method
     default T withoutContainerLoot() {
         
