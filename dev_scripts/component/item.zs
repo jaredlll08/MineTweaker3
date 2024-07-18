@@ -25,3 +25,6 @@ import crafttweaker.api.item.component.AdventureModePredicate;
 
 <item:minecraft:flint_and_steel>.getDefinition().setJsonComponent(<componenttype:minecraft:can_place_on>, {blocks: '#c:all_blocks', show_in_tooltip: true});
 // <item:minecraft:flint_and_steel>.getDefinition().setComponent<AdventureModePredicate>(<componenttype:minecraft:can_place_on>, AdventureModePredicate.ofTags([<tag:block:c:stones>], true));
+
+
+<item:minecraft:cake>.definition.setComponent<int?>(<componenttype:minecraft:max_stack_size>, 8);
