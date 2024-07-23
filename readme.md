@@ -76,13 +76,13 @@ dependencies {
 }
 ```
 
-### Forge [![Maven](https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Fblamejared%2Fcrafttweaker%2FCraftTweaker-forge-1.21%2Fmaven-metadata.xml&style=flat-square)](https://maven.blamejared.com/com/blamejared/crafttweaker/CraftTweaker-forge-1.21/)
+### NeoForge [![Maven](https://img.shields.io/maven-metadata/v?color=C71A36&label=Latest%20version&logo=Latest%20version&metadataUrl=https%3A%2F%2Fmaven.blamejared.com%2Fcom%2Fblamejared%2Fcrafttweaker%2FCraftTweaker-neoforge-1.21%2Fmaven-metadata.xml&style=flat-square)](https://maven.blamejared.com/com/blamejared/crafttweaker/CraftTweaker-neoforge-1.21/)
 
 
 ```groovy
-    compileOnly(fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.21:[VERSION]'))
+    compileOnly(fg.deobf('com.blamejared.crafttweaker:CraftTweaker-neoforge-1.21:[VERSION]'))
     // Example:
-    // compileOnly(fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.21:17.0.0'))
+    // compileOnly(fg.deobf('com.blamejared.crafttweaker:CraftTweaker-neoforge-1.21:17.0.0'))
 }
 ```
 
