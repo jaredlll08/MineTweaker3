@@ -10,6 +10,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 @ZenRegister
+@ZenEvent
 @Document("forge/api/event/tick/LivingTickEvent")
 @NativeTypeRegistration(value = LivingEvent.LivingTickEvent.class, zenCodeName = "crafttweaker.forge.api.event.tick.LivingTickEvent")
 public class ExpandLivingTickEvent {
