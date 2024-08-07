@@ -3,7 +3,9 @@ package com.blamejared.crafttweaker.api.ingredient.type;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.condition.IIngredientCondition;
 import com.blamejared.crafttweaker.api.ingredient.condition.IngredientConditions;
+import com.blamejared.crafttweaker.api.ingredient.transformer.IIngredientTransformer;
 import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransformers;
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientAny;
 import com.blamejared.crafttweaker.api.item.IItemStack;
@@ -60,9 +62,30 @@ public class IIngredientAny implements IIngredient {
     }
     
     @Override
+    public IIngredient transform(IIngredientTransformer transformer) {
+        if(this == INSTANCE) {
+            IIngredientAny newIngredient = new IIngredientAny();
+            newIngredient.transformers().add(transformer);
+            return newIngredient;
+        }
+        return IIngredient.super.transform(transformer);
+    }
+    
+    
+    @Override
     public IngredientTransformers transformers() {
         
         return transformers;
+    }
+    
+    @Override
+    public IIngredient condition(IIngredientCondition condition) {
+        if(this == INSTANCE) {
+            IIngredientAny newIngredient = new IIngredientAny();
+            newIngredient.conditions().add(condition);
+            return newIngredient;
+        }
+        return IIngredient.super.condition(condition);
     }
     
     @Override

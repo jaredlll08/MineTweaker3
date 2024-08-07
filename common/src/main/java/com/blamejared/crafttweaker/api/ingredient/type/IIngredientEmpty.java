@@ -58,6 +58,18 @@ public class IIngredientEmpty implements IIngredient {
     }
     
     @Override
+    public IIngredient transform(IIngredientTransformer transformer) {
+        
+        return this;
+    }
+    
+    @Override
+    public IIngredient condition(IIngredientCondition condition) {
+        
+        return this;
+    }
+    
+    @Override
     public IngredientTransformers transformers() {
         
         return IngredientTransformers.EMPTY;
