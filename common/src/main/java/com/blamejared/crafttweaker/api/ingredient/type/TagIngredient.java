@@ -58,7 +58,7 @@ public class TagIngredient implements IIngredient {
                 .stream()
                 .map(GenericUtil::<Holder<Item>>uncheck)
                 .map(Holder::value)
-                .map(ExpandItem::getDefaultInstance)
+                .map(item -> IItemStack.of(item.getDefaultInstance(), this.conditions(), this.transformers()))
                 .toArray(IItemStack[]::new);
     }
     

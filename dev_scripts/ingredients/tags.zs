@@ -1,0 +1,2 @@
+craftingTable.addShapeless("waxed_oxidized_cut_copper_dewax", <item:minecraft:oxidized_cut_copper>,
+    [<item:minecraft:waxed_oxidized_cut_copper>, <tag:item:minecraft:axes>.asIIngredient().anyDamage().transformDamage()]);

@@ -63,7 +63,7 @@ public class WrappingIIngredient implements IIngredient {
     public IItemStack[] getItems() {
         
         return Arrays.stream(ingredient.getItems())
-                .map(IItemStack::of)
+                .map(itemStack -> IItemStack.of(itemStack, this.conditions(), this.transformers()))
                 .toArray(IItemStack[]::new);
     }
     
