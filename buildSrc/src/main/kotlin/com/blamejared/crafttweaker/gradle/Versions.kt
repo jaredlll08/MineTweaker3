@@ -2,32 +2,32 @@ package com.blamejared.crafttweaker.gradle
 
 object Versions {
 
-    const val MINECRAFT = "1.21"
-    const val MOD = "20.0"
+    const val MINECRAFT = "1.21.1"
+    const val MOD = "21.0"
     const val ZENCODE = "0.3.8"
 
     const val MOD_JAVA = "21"
     const val ZENCODE_JAVA = "8"
 
-    const val FABRIC = "0.100.1+1.21"
+    const val FABRIC = "0.102.1+1.21.1"
     const val FABRIC_LOADER = "0.15.11"
 
     const val FORGE = "49.0.19"  // 1.20.4
     const val FORGE_LOADER = "49"  // 1.20.4
 
-    const val NEO_FORM = "1.21-20240613.152323" // https://projects.neoforged.net/neoforged/neoform
-    const val NEO_FORGE = "21.0.76-beta"
+    const val NEO_FORM = "1.21.1-20240808.144430" // https://projects.neoforged.net/neoforged/neoform
+    const val NEO_FORGE = "21.1.8"
     const val NEO_FORGE_LOADER = "4"
 
     const val MIXIN = "0.8.5"
 
     const val PARCHMENT = "2024.06.23"
-    const val PARCHMENT_MINECRAFT = MINECRAFT
+    const val PARCHMENT_MINECRAFT = "1.21"
 
     const val CRAFTTWEAKER_ANNOTATION_PROCESSOR = "3.0.0.16"
 
-    const val FAUX_CUSTOM_ENTITY_DATA = "12.0.1"
-    const val JEI = "19.0.0.11"
+    const val FAUX_CUSTOM_ENTITY_DATA = "13.0.1"
+    const val JEI = "19.8.4.113"
     const val REI = "16.0.729"
 
     const val HAMCREST = "2.2"
