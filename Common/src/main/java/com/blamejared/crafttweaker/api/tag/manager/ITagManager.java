@@ -99,7 +99,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
     default boolean exists(String id) {
         
-        return exists(new ResourceLocation(id));
+        return tagMap().containsKey(new ResourceLocation(id));
     }
     
     /**
@@ -115,7 +115,7 @@ public interface ITagManager<T extends MCTag> extends CommandStringDisplayable, 
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
     default boolean exists(ResourceLocation id) {
         
-        return tagKeys().contains(id);
+        return tagMap().containsKey(id);
     }
     
     /**
