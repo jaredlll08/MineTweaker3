@@ -57,7 +57,7 @@ public class ExpandTrimMaterial {
     @ZenCodeType.Getter("commandString")
     public static String getCommandString(TrimMaterial internal) {
         
-        return "trimmaterial:" + Services.REGISTRY.keyOrThrow(Registries.TRIM_MATERIAL, internal) + ">";
+        return "<trimmaterial:" + Services.REGISTRY.keyOrThrow(Registries.TRIM_MATERIAL, internal) + ">";
     }
     
 }
