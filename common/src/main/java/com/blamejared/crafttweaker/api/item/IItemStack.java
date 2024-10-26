@@ -16,7 +16,6 @@ import com.blamejared.crafttweaker.api.ingredient.transformer.IngredientTransfor
 import com.blamejared.crafttweaker.api.ingredient.vanilla.type.IngredientIItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
-import com.blamejared.crafttweaker.mixin.common.access.item.AccessItem;
 import com.blamejared.crafttweaker.platform.Services;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mojang.datafixers.util.Pair;
@@ -32,6 +31,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,6 +41,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
+import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
@@ -49,7 +51,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -478,6 +479,22 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default int getBurnTime() {
         
         return Services.EVENT.getBurnTime(this);
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("potPatternId")
+    @ZenCodeType.Nullable
+    default ResourceKey<DecoratedPotPattern> getPotPatternId() {
+        
+        return DecoratedPotPatterns.getPatternFromItem(getInternal().getItem());
+    }
+    
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("potPattern")
+    @ZenCodeType.Nullable
+    default DecoratedPotPattern getPotPattern() {
+        
+        return BuiltInRegistries.DECORATED_POT_PATTERN.get(this.getPotPatternId());
     }
     
     @ZenCodeType.Method
