@@ -7,6 +7,8 @@ import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.world.InteractionResultHolder;
 import crafttweaker.neoforge.api.event.item.ItemTossEvent;
 import crafttweaker.neoforge.api.event.interact.RightClickBlockEvent;
+import crafttweaker.api.world.RandomizableContainer;
+import crafttweaker.api.block.entity.BlockEntity;
 
 events.register<PotionBrewEventPre>(event => {
     println("PotionBrewEventPre fired");
@@ -37,4 +39,21 @@ events.register<ArrowNockEvent>(event => {
 
 events.register<RightClickBlockEvent>(event => {
     println("called thing");
+});
+
+events.register<RightClickBlockEvent>(event => {
+    val pos = event.blockPos;
+    val level = event.entity.level;
+    if !level.isClientSide && level.getBlockState(pos).block == <block:minecraft:chest> {
+        val maybeBe = level.getBlockEntity(pos);
+        if maybeBe is BlockEntity && (maybeBe as BlockEntity) is RandomizableContainer {
+            val be as RandomizableContainer = maybeBe as BlockEntity;
+            if <item:minecraft:book>.matches(event.entity.getMainHandItem()) {
+                be.setLootTable(<resource:minecraft:blocks/anvil>);
+            }
+            if be.lootTable != null {
+                println(be.lootTable.location());
+            }
+        }
+    }
 });
