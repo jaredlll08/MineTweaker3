@@ -34,6 +34,7 @@ import net.minecraft.world.item.armortrim.TrimPattern;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.block.state.BlockState;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -153,7 +154,7 @@ public class BracketHandlers {
         return getBlockState(BuiltInRegistries.BLOCK.get(ResourceLocation.parse(name)), properties);
     }
     
-    public static BlockState getBlockState(Block block,  String properties) {
+    public static BlockState getBlockState(Block block, String properties) {
         
         BlockState blockState = block.defaultBlockState();
         if(properties != null && !properties.isEmpty()) {
@@ -437,6 +438,20 @@ public class BracketHandlers {
         
         FloatProviderType<?> registry = getRegistry(tokens, Registries.FLOAT_PROVIDER_TYPE);
         return getRegistry(tokens, Registries.TRIM_MATERIAL);
+    }
+    
+    /**
+     * Gets a decorated pot pattern based on registry name. Throws an exception if it can't find the pattern.
+     *
+     * @param tokens The decorated pot pattern's resource location.
+     *
+     * @return The found decorated pot pattern.
+     */
+    @ZenCodeType.Method
+    @BracketResolver("decoratedpotpattern")
+    public static DecoratedPotPattern getDecoratedPotPattern(String tokens) {
+        
+        return getRegistry(tokens, Registries.DECORATED_POT_PATTERN);
     }
     
 }

@@ -263,4 +263,16 @@ public class BracketValidators {
         return validateBracket("trimmaterial", tokens, BracketHandlers::getTrimMaterial);
     }
     
+    @ZenCodeType.Method
+    @BracketValidator("decoratedpotpattern")
+    public static boolean validateDecoratedPotPattern(String tokens) {
+        
+        if(tokens.split(":").length != 2) {
+            CommonLoggers.zenCode()
+                    .error("Invalid Bracket Syntax: <decoratedpotpattern:{}>! Syntax is <decoratedpotpattern:modid:name>", tokens);
+            return false;
+        }
+        
+        return validateBracket("decoratedpotpattern", tokens, BracketHandlers::getDecoratedPotPattern);
+    }
 }
