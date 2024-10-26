@@ -48,7 +48,6 @@ public class ExpandPotDecorations {
         return internal.left().orElse(null);
     }
     
-    @ZenCodeType.Nullable
     @ZenCodeType.Getter("ordered")
     public static List<Item> ordered(PotDecorations internal) {
         
