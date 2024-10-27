@@ -8,6 +8,7 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.natives.block.ExpandBlock;
 import com.blamejared.crafttweaker.natives.block.entity.ExpandBannerPattern;
+import com.blamejared.crafttweaker.natives.block.entity.ExpandDecoratedPotPattern;
 import com.blamejared.crafttweaker.natives.component.ExpandDataComponentType;
 import com.blamejared.crafttweaker.natives.entity.ExpandEntityType;
 import com.blamejared.crafttweaker.natives.entity.attribute.ExpandAttribute;
@@ -155,6 +156,13 @@ public class BracketDumpers {
     public static Collection<String> getTrimMaterials() {
         
         return dumpRegistry(Registries.TRIM_MATERIAL, ExpandTrimMaterial::getCommandString);
+    }
+    
+    @ZenCodeType.Method
+    @BracketDumper("decoratedpotpattern")
+    public static Collection<String> getDecoratedPotPatterns() {
+        
+        return dumpRegistry(Registries.DECORATED_POT_PATTERN, ExpandDecoratedPotPattern::getCommandString);
     }
     
 }
