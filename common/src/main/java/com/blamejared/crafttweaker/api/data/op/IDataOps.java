@@ -214,7 +214,7 @@ public final class IDataOps implements DynamicOps<IData> {
     @Override
     public IData emptyList() {
         
-        return this.empty();
+        return new ListData();
     }
     
     @Override
@@ -279,7 +279,7 @@ public final class IDataOps implements DynamicOps<IData> {
     public DataResult<IData> mergeToList(final IData list, final List<IData> values) {
         
         return values.stream().reduce(
-                DataResult.success(list),
+                DataResult.success(list == empty() ? new ListData() : list),
                 (result, value) -> result.flatMap(l -> this.mergeToList(l, value)),
                 OpUtils.noCombiner()
         );
@@ -289,7 +289,7 @@ public final class IDataOps implements DynamicOps<IData> {
     public DataResult<IData> mergeToMap(final IData map, final Map<IData, IData> values) {
         
         return values.entrySet().stream().reduce(
-                DataResult.success(map),
+                DataResult.success(map == empty() ? new MapData() : map),
                 (result, entry) -> result.flatMap(m -> this.mergeToMap(m, entry.getKey(), entry.getValue())),
                 OpUtils.noCombiner()
         );
@@ -299,7 +299,7 @@ public final class IDataOps implements DynamicOps<IData> {
     public DataResult<IData> mergeToMap(final IData map, final MapLike<IData> values) {
         
         return values.entries().reduce(
-                DataResult.success(map),
+                DataResult.success(map == empty() ? new MapData() : map),
                 (result, pair) -> result.flatMap(m -> this.mergeToMap(m, pair.getFirst(), pair.getSecond())),
                 OpUtils.noCombiner()
         );
