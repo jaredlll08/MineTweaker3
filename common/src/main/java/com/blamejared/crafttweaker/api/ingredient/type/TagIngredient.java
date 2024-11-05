@@ -35,7 +35,7 @@ public class TagIngredient implements IIngredient {
     @Override
     public boolean matches(IItemStack stack) {
         
-        return Arrays.stream(getItems()).anyMatch(item -> item.matches(stack));
+        return internal.contains(stack.getInternal().getItem()) && this.conditions().test(stack);
     }
     
     
