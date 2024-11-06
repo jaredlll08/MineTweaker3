@@ -34,6 +34,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
@@ -269,6 +270,20 @@ public class FabricPlatformHelper implements IPlatformHelper {
     public CompoundTag getPersistentData(ServerPlayer player) {
         
         return CustomDataHelper.getPersistentData(player);
+    }
+    
+    @Override
+    public boolean isCustomIngredient(Ingredient ingredient) {
+        
+        return ingredient.getCustomIngredient() != null;
+    }
+    
+    @Override
+    public Stream<ItemStack> getCustomIngredientItems(Ingredient ingredient) {
+        
+        return ingredient.getCustomIngredient() == null ? Stream.empty() : ingredient.getCustomIngredient()
+                .getMatchingStacks()
+                .stream();
     }
     
     @Override

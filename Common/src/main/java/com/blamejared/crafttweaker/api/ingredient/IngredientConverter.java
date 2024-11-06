@@ -9,6 +9,7 @@ import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
 import com.blamejared.crafttweaker.api.tag.expand.ExpandItemTag;
 import com.blamejared.crafttweaker.mixin.common.access.item.AccessIngredient;
 import com.blamejared.crafttweaker.mixin.common.access.item.AccessIngredientTagValue;
+import com.blamejared.crafttweaker.platform.Services;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,7 +20,11 @@ public class IngredientConverter {
     
     public static IIngredient fromIngredient(Ingredient ingredient) {
         
-        // TODO: this needs to be overhauled to handle empty values and the fabric ingredient system
+        if(ingredient == Ingredient.EMPTY) {
+            return empty();
+        }
+        
+        // TODO: this needs to be overhauled to handle empty values
         //noinspection ConstantConditions
         if(((Object) ingredient) instanceof IngredientCraftTweakerBase base) {
             return base.getCrTIngredient();
@@ -30,8 +35,10 @@ public class IngredientConverter {
             return single.getInstance();
         }
         
-        if(ingredient == Ingredient.EMPTY) {
-            return empty();
+        if(Services.PLATFORM.isCustomIngredient(ingredient)) {
+            return new IIngredientList(Services.PLATFORM.getCustomIngredientItems(ingredient)
+                    .map(IItemStack::of)
+                    .toArray(IIngredient[]::new));
         }
         
         return fromIItemLists(((AccessIngredient) (Object) ingredient).crafttweaker$getValues());

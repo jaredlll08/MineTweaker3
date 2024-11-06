@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -144,6 +145,13 @@ public interface IPlatformHelper {
             ((AccessIngredient) (Object) ingredient).crafttweaker$setItemStacks(null);
         });
         ingredients.clear();
+    }
+    
+    boolean isCustomIngredient(Ingredient ingredient);
+    
+    default Stream<ItemStack> getCustomIngredientItems(Ingredient ingredient) {
+        // Default for forge
+        return Arrays.stream(ingredient.getItems());
     }
     
     Stream<GameProfile> fakePlayers();

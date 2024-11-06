@@ -378,7 +378,13 @@ public class ForgePlatformHelper implements IPlatformHelper {
         ((AccessFoodPropertiesForge) internal).crafttweaker$getEffects()
                 .removeIf(pair -> pair.getFirst() != null && pair.getFirst().get().getEffect() == effect);
     }
-
+    
+    @Override
+    public boolean isCustomIngredient(Ingredient ingredient) {
+        
+        return !ingredient.isVanilla();
+    }
+    
     @Override
     public void invalidateIngredients(List<Ingredient> ingredients) {
 
