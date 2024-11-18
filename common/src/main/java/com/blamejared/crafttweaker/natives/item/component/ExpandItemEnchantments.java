@@ -70,8 +70,8 @@ public class ExpandItemEnchantments {
     @NativeTypeRegistration(value = ItemEnchantments.Mutable.class, zenCodeName = "crafttweaker.api.item.component.ItemEnchantmentsMutable")
     public static class ExpandItemEnchantmentsMutable {
         
-        @ZenCodeType.Method
-        public static ItemEnchantments.Mutable of(ItemEnchantments.Mutable internal, @ZenCodeType.Optional ItemEnchantments enchantments) {
+        @ZenCodeType.StaticExpansionMethod
+        public static ItemEnchantments.Mutable of(@ZenCodeType.Optional ItemEnchantments enchantments) {
             
             if(enchantments == null) {
                 enchantments = ItemEnchantments.EMPTY;
