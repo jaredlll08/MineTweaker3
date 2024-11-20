@@ -189,29 +189,11 @@ public interface IIngredient extends CommandStringDisplayable {
     }
     
     /**
-     * Adds an AttributeModifier to this IIngredient using a specific UUID.
+     * This method no longer works and is deprecated, it is left in so it doesn't cause breaking changes.
      *
-     * The id can be used to override an existing attribute on an ItemStack with this new modifier.
-     * You can use `/ct hand attributes` to get the id of the attributes on an ItemStack.
-     *
-     * Attributes added with this method appear on all ItemStacks that match this IIngredient,
-     * regardless of how or when the ItemStack was made, if you want to have the attribute on a
-     * single specific ItemStack (such as a specific Diamond Sword made in a recipe), then you should use
-     * IItemStack#withAttributeModifier
-     *
-     * @param id        The id of the attribute modifier.
-     * @param attribute The Attribute of the modifier.
-     * @param value     The value of the modifier.
-     * @param operation The operation of the modifier.
-     * @param slotTypes What slots the modifier is valid for.
-     *
-     * @docParam attribute <attribute:minecraft:generic.attack_damage>
-     * @docParam uuid IItemStack.BASE_ATTACK_DAMAGE_UUID
-     * @docParam name "Extra Power"
-     * @docParam value 10
-     * @docParam operation AttributeOperation.ADDITION
-     * @docParam slotTypes [<constant:minecraft:equipmentslot:chest>]
+     * Please use Item Components instead.
      */
+    @Deprecated(forRemoval = true)
     @ZenCodeType.Method
     default void addGlobalAttributeModifier(Attribute attribute, ResourceLocation id, double value, AttributeModifier.Operation operation, EquipmentSlot[] slotTypes) {
         
@@ -219,6 +201,7 @@ public interface IIngredient extends CommandStringDisplayable {
         addModifier(attribute, slotTypes, modifier);
     }
     
+    @Deprecated
     private void addModifier(Attribute attribute, EquipmentSlot[] slotTypes, AttributeModifier modifier) {
         
         final Set<EquipmentSlot> validSlots = new HashSet<>(Arrays.asList(slotTypes));
@@ -233,22 +216,11 @@ public interface IIngredient extends CommandStringDisplayable {
     }
     
     /**
-     * Removes all AttributeModifiers that use the given Attribute from this IIngredient.
+     * This method no longer works and is deprecated, it is left in so it doesn't cause breaking changes.
      *
-     * Attributes removed with this method are removed from ItemStacks that match this IIngredient,
-     * regardless of how or when the ItemStack was made, if you want to remove the attribute on a
-     * single specific ItemStack (such as a specific Diamond Sword made in a recipe), then you should use
-     * IItemStack#withoutAttribute.
-     *
-     * This method can only remove default Attributes from an ItemStack, it is still possible that
-     * an ItemStack can override it.
-     *
-     * @param attribute The attribute to remove.
-     * @param slotTypes The slot types to remove it from.
-     *
-     * @docParam attribute <attribute:minecraft:generic.attack_damage>
-     * @docParam slotTypes [<constant:minecraft:equipmentslot:chest>]
+     * Please use Item Components instead.
      */
+    @Deprecated(forRemoval = true)
     @ZenCodeType.Method
     default void removeGlobalAttribute(Attribute attribute, EquipmentSlot[] slotTypes) {
         
@@ -262,14 +234,11 @@ public interface IIngredient extends CommandStringDisplayable {
     }
     
     /**
-     * Removes all AttributeModifiers who's ID is the same as the given uuid from this IIngredient.
+     * This method no longer works and is deprecated, it is left in so it doesn't cause breaking changes.
      *
-     * @param uuid      The unique id of the AttributeModifier to remove.
-     * @param slotTypes The slot types to remove it from.
-     *
-     * @docParam uuid "8c1b5535-9f79-448b-87ae-52d81480aaa3"
-     * @docParam slotTypes [<constant:minecraft:equipmentslot:chest>]
+     * Please use Item Components instead.
      */
+    @Deprecated(forRemoval = true)
     @ZenCodeType.Method
     default void removeGlobalAttributeModifier(String uuid, EquipmentSlot[] slotTypes) {
         
@@ -277,14 +246,11 @@ public interface IIngredient extends CommandStringDisplayable {
     }
     
     /**
-     * Removes all AttributeModifiers who's ID is the same as the given uuid from this IIngredient.
+     * This method no longer works and is deprecated, it is left in so it doesn't cause breaking changes.
      *
-     * @param uuid      The unique id of the AttributeModifier to remove.
-     * @param slotTypes The slot types to remove it from.
-     *
-     * @docParam uuid IItemStack.BASE_ATTACK_DAMAGE_UUID
-     * @docParam slotTypes [<constant:minecraft:equipmentslot:chest>]
+     * Please use Item Components instead.
      */
+    @Deprecated(forRemoval = true)
     @ZenCodeType.Method
     default void removeGlobalAttributeModifier(UUID uuid, EquipmentSlot[] slotTypes) {
         
