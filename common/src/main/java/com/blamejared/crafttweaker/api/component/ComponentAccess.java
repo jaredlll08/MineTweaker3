@@ -59,6 +59,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -424,7 +425,7 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     }
     
     /**
-     * Gets the data in the &lt;componenttype:minecraft:custom_name&gt;
+     * Gets the data in the &lt;componenttype:minecraft:item_name&gt;
      *
      * In the case of items, an item name is set by the make to make a special instance of an item, such as with
      * ominous banners.
@@ -501,6 +502,12 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     default T withLore(List<Component> components) {
         
         return withLore(new ItemLore(components));
+    }
+    
+    @ZenCodeType.Method
+    default T withLore(Component components) {
+        
+        return withLore(new ItemLore(Collections.singletonList(components)));
     }
     
     /**
@@ -1913,9 +1920,9 @@ public interface ComponentAccess<T extends ComponentAccess<T>> {
     /**
      * Sets the &lt;componenttype:minecraft:suspicious_stew_effects&gt; of the ComponentAccess to have the given {@link SuspiciousStewEffects}
      * {@link SuspiciousStewEffects.Entry} is effectively a pair of Effect and duration.
-     * 
+     *
      * @param effects The list of effects to grant on consumption.
-     * 
+     *
      * @return The new instance with the modified data.
      */
     @ZenCodeType.Method
