@@ -23,6 +23,7 @@ public class ActionModifyTooltip extends ActionTooltipBase {
     public void undo() {
         
         getTooltip().remove(function);
+        this.pruneTooltips();
     }
     
     @Override

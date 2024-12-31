@@ -40,6 +40,7 @@ public class ActionAddShiftedTooltip extends ActionTooltipBase {
     public void undo() {
         
         getTooltip().remove(function);
+        this.pruneTooltips();
     }
     
     @Override

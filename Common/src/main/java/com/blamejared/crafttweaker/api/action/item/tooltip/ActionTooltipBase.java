@@ -24,6 +24,12 @@ public abstract class ActionTooltipBase extends CraftTweakerAction implements IU
         return Services.CLIENT.getTooltips().computeIfAbsent(stack, iItemStack -> new LinkedList<>());
     }
     
+    protected void pruneTooltips() {
+        if(getTooltip().isEmpty()) {
+            Services.CLIENT.getTooltips().remove(this.stack);
+        }
+    }
+    
     @Override
     public boolean shouldApplyOn(final IScriptLoadSource source, final Logger logger) {
         
