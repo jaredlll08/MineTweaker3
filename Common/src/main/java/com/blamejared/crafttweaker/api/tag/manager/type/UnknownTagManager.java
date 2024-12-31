@@ -96,11 +96,10 @@ public class UnknownTagManager implements ITagManager<UnknownTag> {
     @Override
     public void recalculate() {
         
-        this.tagCache = backingResult.tagMap()
-                .keySet()
-                .stream()
-                .map(id -> Pair.of(id, new UnknownTag(id, this)))
-                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+        this.tagCache.clear();
+        for(ResourceLocation id : this.backingResult.tagMap().keySet()) {
+            tagCache.put(id, new UnknownTag(id, this));
+        }
     }
     
     @ZenCodeType.Method

@@ -157,11 +157,10 @@ public class KnownTagManager<T> implements ITagManager<KnownTag<T>> {
     @Override
     public void recalculate() {
         
-        this.tagCache = backingResult.tagMap()
-                .keySet()
-                .stream()
-                .map(id -> Pair.of(id, new KnownTag<>(id, this)))
-                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+        this.tagCache.clear();
+        for(ResourceLocation id : this.backingResult.tagMap().keySet()) {
+            tagCache.put(id, new KnownTag<>(id, this));
+        }
     }
     
     @ZenCodeType.Method
