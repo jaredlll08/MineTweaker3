@@ -29,7 +29,7 @@ public class TagIngredient implements IIngredient {
     @Override
     public boolean matches(IItemStack stack, boolean ignoreDamage) {
         
-        return this.internal.contains(stack.getDefinition());
+        return stack.getInternal().is((TagKey<Item>) internal.getTagKey());
     }
     
     @Override
