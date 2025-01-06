@@ -8,6 +8,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import org.openzen.zencode.java.ZenCodeType;
 
+/**
+ * @docParam T string
+ */
 @ZenRegister
 @Document("vanilla/api/world/InteractionResultHolder")
 @NativeTypeRegistration(value = InteractionResultHolder.class, zenCodeName = "crafttweaker.api.world.InteractionResultHolder")
@@ -31,6 +34,14 @@ public class ExpandInteractionResultHolder {
         return InteractionResultHolder.success(object);
     }
     
+    /**
+     * Create a consume interaction with the given object.
+     * @param object The object that is held.
+     * @return A new InteractionResultHolder with the given object.
+     * @param <T> The type that is being held.
+     * @docParam tClass string
+     * @docParam object "value"
+     */
     @ZenCodeType.StaticExpansionMethod
     public static <T> InteractionResultHolder<T> consume(Class<T> tClass, T object) {
         

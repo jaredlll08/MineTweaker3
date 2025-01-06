@@ -22,7 +22,8 @@ public class ExpandICapabilityProvider {
      *
      * @return The found capability or null.
      *
-     * @docParam clazz The type of the capability.
+     * @docParam T IEnergyStorage
+     * @docParam clazz IEnergyStorage
      * @docParam cap Capabilities.ENERGY
      * @docParam side <constant:minecraft:direction:north>
      */
@@ -41,7 +42,7 @@ public class ExpandICapabilityProvider {
      *
      * @return The found capability or null.
      *
-     * @docParam clazz The type of the capability.
+     * @docParam clazz IEnergyStorage
      * @docParam cap Capabilities.ENERGY
      */
     @ZenCodeType.Nullable
