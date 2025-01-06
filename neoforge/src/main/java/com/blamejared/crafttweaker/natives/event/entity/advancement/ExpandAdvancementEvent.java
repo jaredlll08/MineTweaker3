@@ -1,7 +1,6 @@
 package com.blamejared.crafttweaker.natives.event.entity.advancement;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.event.ZenEvent;
 import com.blamejared.crafttweaker.api.event.bus.IEventBus;
 import com.blamejared.crafttweaker.api.event.bus.NeoForgeEventBusWire;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
@@ -15,7 +14,10 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = AdvancementEvent.class, zenCodeName = "crafttweaker.neoforge.api.event.advancement.AdvancementEvent")
 public class ExpandAdvancementEvent {
     
-    @ZenEvent.Bus
+    /**
+     * @deprecated This was never meant to be here, it would just add events to the {@link ExpandAdvancementEarnEvent#BUS}, use that instead.
+     */
+    @Deprecated(forRemoval = true)
     public static final IEventBus<AdvancementEvent.AdvancementEarnEvent> BUS = IEventBus.direct(
             AdvancementEvent.AdvancementEarnEvent.class,
             NeoForgeEventBusWire.of()
