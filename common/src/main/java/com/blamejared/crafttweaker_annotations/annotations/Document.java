@@ -13,4 +13,16 @@ public @interface Document {
     
     String scriptFile() default "";
     
+    Mod[] requiredMods() default {};
+    
+    public @interface Mod {
+        
+        String modid();
+        
+        String displayName();
+        
+        String url();
+        
+    }
+    
 }

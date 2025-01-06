@@ -23,7 +23,7 @@ object Versions {
     const val PARCHMENT_MINECRAFT = MINECRAFT
     const val PARCHMENT = "2023.12.31"
 
-    const val CRAFTTWEAKER_ANNOTATION_PROCESSOR = "3.0.0.16"
+    const val CRAFTTWEAKER_ANNOTATION_PROCESSOR = "4.0.0.17"
     const val HAMCREST = "2.2"
     const val JUPITER_ENGINE = "5.10.1"
     const val JUNIT_PLATFORM_LAUNCHER = "1.10.1"
