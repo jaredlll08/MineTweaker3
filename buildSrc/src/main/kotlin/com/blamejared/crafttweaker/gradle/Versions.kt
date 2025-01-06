@@ -23,7 +23,7 @@ object Versions {
     const val PARCHMENT = "2024.04.14"
     const val PARCHMENT_MINECRAFT = "1.20.4"
 
-    const val CRAFTTWEAKER_ANNOTATION_PROCESSOR = "3.0.0.16"
+    const val CRAFTTWEAKER_ANNOTATION_PROCESSOR = "4.0.0.17"
 
     const val FAUX_CUSTOM_ENTITY_DATA = "10.0.1"
     const val JEI = "17.3.0.49"
