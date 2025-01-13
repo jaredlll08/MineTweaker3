@@ -28,8 +28,8 @@ public class TagIngredient implements IIngredient {
     
     @Override
     public boolean matches(IItemStack stack, boolean ignoreDamage) {
-        
-        return stack.getInternal().is((TagKey<Item>) internal.getTagKey());
+        // We can't use Item#is because the registryHolder tags list is not updated yet
+        return internal.getInternal().contains(stack.getDefinition().builtInRegistryHolder());
     }
     
     @Override
