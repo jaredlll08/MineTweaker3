@@ -15,12 +15,22 @@ import java.util.List;
 @NativeTypeRegistration(value = AdvancementRewards.class, zenCodeName = "crafttweaker.api.advancement.AdvancementRewards")
 public class ExpandAdvancementRewards {
     
+    /**
+     * Gets the recipes that are unlocked when the advancement is completed.
+     *
+     * @return The recipes that are unlocked when the advancement is completed.
+     */
     @ZenCodeType.Getter("recipes")
     public static List<ResourceLocation> getRecipes(AdvancementRewards internal) {
         
         return internal.recipes();
     }
     
+    /**
+     * Grants the advancement rewards to the player.
+     *
+     * @param player The player to grant the advancement rewards to.
+     */
     @ZenCodeType.Method
     public static void grant(AdvancementRewards internal, ServerPlayer player) {
         

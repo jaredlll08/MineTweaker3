@@ -307,13 +307,24 @@ public class ExpandBlock {
                 resistance, ((AccessBlockBehaviour) internal).crafttweaker$getExplosionResistance(), ((AccessBlockBehaviour) internal)::crafttweaker$setExplosionResistance));
     }
     
+    /**
+     * Gets the {@link CTBlockIngredient} representation of this Block.
+     *
+     * @return The {@link CTBlockIngredient} representation of this Block.
+     */
     @ZenCodeType.Caster(implicit = true)
     public static CTBlockIngredient asBlockIngredient(Block internal) {
         
         return new CTBlockIngredient.BlockIngredient(internal);
     }
     
-    @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
+    /**
+     * Combines this Block with another Block to create a new {@link CTBlockIngredient}.
+     *
+     * @param other The other Block to combine with.
+     *
+     * @return The combined {@link CTBlockIngredient}.
+     */
     public static CTBlockIngredient asList(Block internal, CTBlockIngredient other) {
         
         List<CTBlockIngredient> elements = new ArrayList<>();

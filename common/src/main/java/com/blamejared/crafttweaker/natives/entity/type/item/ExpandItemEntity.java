@@ -23,30 +23,49 @@ import org.openzen.zencode.java.ZenCodeType;
 })
 public class ExpandItemEntity {
     
+    /**
+     * Set this item entity to have the default pickup delay.
+     */
     @ZenCodeType.Method
     public static void setDefaultPickUpDelay(ItemEntity internal) {
         
         internal.setDefaultPickUpDelay();
     }
     
+    /**
+     * Set this item entity to not have a pickup delay.
+     */
     @ZenCodeType.Method
     public static void setNoPickUpDelay(ItemEntity internal) {
         
         internal.setNoPickUpDelay();
     }
     
+    /**
+     * Set this item entity to never be picked up.
+     */
     @ZenCodeType.Method
     public static void setNeverPickUp(ItemEntity internal) {
         
         internal.setNeverPickUp();
     }
     
+    /**
+     * Sets the pickup delay in ticks for this item entity.
+     *
+     * @param ticks The number of ticks to delay the pickup for.
+     */
     @ZenCodeType.Method
     public static void setPickUpDelay(ItemEntity internal, int ticks) {
         
         internal.setPickUpDelay(ticks);
     }
     
+    /**
+     * Checks if this item entity has a pickup delay.
+     *
+     * @return True if this item entity has a pickup delay, false otherwise.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("hasPickupDelay")
     public static boolean hasPickUpDelay(ItemEntity internal) {
@@ -55,9 +74,9 @@ public class ExpandItemEntity {
     }
     
     /**
-     * Gets the IItemStack inside this ItemEntity.
+     * Gets the {@link IItemStack} inside this ItemEntity.
      *
-     * @return The IItemStack inside this ItemEntity.
+     * @return The {@link IItemStack} inside this ItemEntity.
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("item")
@@ -67,9 +86,9 @@ public class ExpandItemEntity {
     }
     
     /**
-     * Sets the IItemStack inside this ItemEntity.
+     * Sets the {@link IItemStack} inside this ItemEntity.
      *
-     * @param stack The new IItemStack.
+     * @param stack The new {@link IItemStack}.
      *
      * @docParam stack <item:minecraft:diamond>
      */

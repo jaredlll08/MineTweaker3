@@ -20,12 +20,22 @@ import java.util.Map;
 @NativeTypeRegistration(value = Advancement.class, zenCodeName = "crafttweaker.api.advancement.Advancement")
 public class ExpandAdvancement {
     
+    /**
+     * Checks if this is a root advancement
+     *
+     * @return true if this advancement does not have a parent, false otherwise
+     */
     @ZenCodeType.Getter("isRoot")
     public static boolean isRoot(Advancement internal) {
         
         return internal.isRoot();
     }
     
+    /**
+     * Gets the parent of this advancement.
+     *
+     * @return the parent of this advancement, or null if it doesn't have one.
+     */
     @ZenCodeType.Nullable
     @ZenCodeType.Getter("parent")
     public static ResourceLocation parent(Advancement internal) {
@@ -33,6 +43,11 @@ public class ExpandAdvancement {
         return internal.parent().orElse(null);
     }
     
+    /**
+     * Gets the {@link DisplayInfo} for this advancement
+     *
+     * @return The {@link DisplayInfo} for this advancement.
+     */
     @ZenCodeType.Nullable
     @ZenCodeType.Getter("display")
     public static DisplayInfo display(Advancement internal) {
@@ -40,6 +55,11 @@ public class ExpandAdvancement {
         return internal.display().orElse(null);
     }
     
+    /**
+     * Gets the {@link AdvancementRewards} for this advancement
+     *
+     * @return The {@link AdvancementRewards} for this advancement.
+     */
     @ZenCodeType.Getter("rewards")
     public static AdvancementRewards rewards(Advancement internal) {
         
@@ -58,12 +78,22 @@ public class ExpandAdvancement {
         return internal.requirements();
     }
     
+    /**
+     * Checks if this advancement sends a telemetry event
+     *
+     * @return true if this advancement sends a telemetry event, false otherwise
+     */
     @ZenCodeType.Getter("sendsTelemetryEvent")
     public static boolean sendsTelemetryEvent(Advancement internal) {
         
         return internal.sendsTelemetryEvent();
     }
     
+    /**
+     * Gets the name of this advancement
+     *
+     * @return The name of this advancement.
+     */
     @ZenCodeType.Nullable
     @ZenCodeType.Getter("name")
     public static Component name(Advancement internal) {

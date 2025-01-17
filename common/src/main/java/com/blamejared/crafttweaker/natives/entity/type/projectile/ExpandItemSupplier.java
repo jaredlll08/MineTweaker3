@@ -12,6 +12,13 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = ItemSupplier.class, zenCodeName = "crafttweaker.api.entity.type.projectile.ItemSupplier")
 public class ExpandItemSupplier {
     
+    /**
+     * Gets the item from this supplier
+     *
+     * @param internal The item supplier.
+     *
+     * @return The item of the item supplier.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("item")
     public static ItemStack getItem(ItemSupplier internal) {

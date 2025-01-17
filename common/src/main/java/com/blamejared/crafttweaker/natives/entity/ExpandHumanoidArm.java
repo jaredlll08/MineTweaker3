@@ -13,6 +13,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:entity/humanoidarm")
 public class ExpandHumanoidArm {
     
+    /**
+     * Gets the opposite arm.
+     *
+     * @return The opposite arm.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("opposite")
     public static HumanoidArm getOpposite(HumanoidArm internal) {
@@ -20,6 +25,11 @@ public class ExpandHumanoidArm {
         return internal.getOpposite();
     }
     
+    /**
+     * Gets the key of the humanoid arm.
+     *
+     * @return The key of the humanoid arm.
+     */
     @ZenCodeType.Method("key")
     public static String getKey(HumanoidArm internal) {
         

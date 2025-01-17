@@ -15,6 +15,11 @@ import java.util.Locale;
 @BracketEnum("minecraft:equipmentslot/type")
 public class ExpandEquipmentSlotType {
     
+    /**
+     * Gets the command string of the {@link EquipmentSlot.Type}.
+     *
+     * @return The command string of the {@link EquipmentSlot.Type}.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("commandString")
     public static String getCommandString(EquipmentSlot.Type internal) {

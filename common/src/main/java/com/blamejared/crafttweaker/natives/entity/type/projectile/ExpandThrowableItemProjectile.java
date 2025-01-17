@@ -12,6 +12,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = ThrowableItemProjectile.class, zenCodeName = "crafttweaker.api.entity.type.projectile.ThrowableItemProjectile")
 public class ExpandThrowableItemProjectile {
     
+    /**
+     * Sets the item of the projectile.
+     *
+     * @param stack The item to set.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Setter("item")
     public static void setItem(ThrowableItemProjectile internal, ItemStack stack) {

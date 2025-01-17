@@ -54,6 +54,11 @@ public class ExpandAttribute {
         return internal.isClientSyncable();
     }
     
+    /**
+     * Gets the registry name of the attribute.
+     *
+     * @return The registry name of the attribute.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     public static ResourceLocation getRegistryName(Attribute internal) {

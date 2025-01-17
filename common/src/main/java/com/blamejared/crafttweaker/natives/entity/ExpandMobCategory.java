@@ -13,12 +13,22 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:mobcategory")
 public class ExpandMobCategory {
     
+    /**
+     * Gets the name of the mob category.
+     *
+     * @return The name of the mob category.
+     */
     @ZenCodeType.Method
     public static String getName(MobCategory internal) {
         
         return internal.getName();
     }
     
+    /**
+     * Gets the maximum number of instances per chunk.
+     *
+     * @return The maximum number of instances per chunk.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("maxInstancesPerChunk")
     public static int getMaxInstancesPerChunk(MobCategory internal) {
@@ -26,6 +36,11 @@ public class ExpandMobCategory {
         return internal.getMaxInstancesPerChunk();
     }
     
+    /**
+     * Checks if the mob category is friendly.
+     *
+     * @return True if the mob category is friendly.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("friendly")
     public static boolean isFriendly(MobCategory internal) {
@@ -33,6 +48,11 @@ public class ExpandMobCategory {
         return internal.isFriendly();
     }
     
+    /**
+     * Checks if the mob category is persistent.
+     *
+     * @return True if the mob category is persistent.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("persistent")
     public static boolean isPersistent(MobCategory internal) {
@@ -40,6 +60,11 @@ public class ExpandMobCategory {
         return internal.isPersistent();
     }
     
+    /**
+     * Gets the despawn distance of the mob category.
+     *
+     * @return The despawn distance of the mob category.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("despawnDistance")
     public static int getDespawnDistance(MobCategory internal) {
@@ -47,6 +72,11 @@ public class ExpandMobCategory {
         return internal.getDespawnDistance();
     }
     
+    /**
+     * Gets the no despawn distance of the mob category.
+     *
+     * @return The no despawn distance of the mob category.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("noDespawnDistance")
     public static int getNoDespawnDistance(MobCategory internal) {

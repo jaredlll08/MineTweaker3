@@ -14,6 +14,15 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = PistonMath.class, zenCodeName = "crafttweaker.api.block.type.piston.PistonMath")
 public class ExpandPistonMath {
     
+    /**
+     * Gets the movement area of a piston.
+     *
+     * @param area      The area of the piston.
+     * @param direction The direction of the piston.
+     * @param progress  The progress of the piston.
+     *
+     * @return The movement area of the piston.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static AABB getMovementArea(AABB area, Direction direction, double progress) {
         

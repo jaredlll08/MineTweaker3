@@ -15,6 +15,13 @@ import java.util.Collection;
 @NativeTypeRegistration(value = ServerAdvancementManager.class, zenCodeName = "crafttweaker.api.advancement.ServerAdvancementManager")
 public class ExpandServerAdvancementManager {
     
+    /**
+     * Gets an advancement by its id.
+     *
+     * @param id The id of the advancement to get.
+     *
+     * @return The advancement with the given id, or null if it does not exist.
+     */
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.INDEXGET)
@@ -23,6 +30,11 @@ public class ExpandServerAdvancementManager {
         return internal.get(id);
     }
     
+    /**
+     * Gets all advancements.
+     *
+     * @return All advancements.
+     */
     @ZenCodeType.Getter("allAdvancements")
     public static Collection<AdvancementHolder> getAllAdvancements(ServerAdvancementManager internal) {
         

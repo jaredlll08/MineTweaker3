@@ -91,6 +91,11 @@ public class ExpandAbstractArrow {
         return internal.getPierceLevel();
     }
     
+    /**
+     * Gets the {@link IItemStack} that fired this arrow.
+     *
+     * @return The weapon item of this arrow.
+     */
     @ZenCodeType.Getter("weaponItem")
     public static IItemStack getWeaponItem(AbstractArrow internal) {
         

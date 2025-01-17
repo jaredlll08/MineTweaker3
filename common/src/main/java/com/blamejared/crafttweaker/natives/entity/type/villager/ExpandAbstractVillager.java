@@ -11,6 +11,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = AbstractVillager.class, zenCodeName = "crafttweaker.api.entity.type.villager.AbstractVillager")
 public class ExpandAbstractVillager {
     
+    /**
+     * Gets how unhappy the villager is.
+     *
+     * @return how unhappy the villager is
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("unhappyCounter")
     public static int getUnhappyCounter(AbstractVillager internal) {
@@ -18,6 +23,11 @@ public class ExpandAbstractVillager {
         return internal.getUnhappyCounter();
     }
     
+    /**
+     * Sets how unhappy the villager is.
+     *
+     * @param unhappyCounter The new unhappy counter.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Setter("unhappyCounter")
     public static void setUnhappyCounter(AbstractVillager internal, int unhappyCounter) {
@@ -25,6 +35,11 @@ public class ExpandAbstractVillager {
         internal.setUnhappyCounter(unhappyCounter);
     }
     
+    /**
+     * Checks if the villager is trading.
+     *
+     * @return if the villager is trading
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("isTrading")
     public static boolean isTrading(AbstractVillager internal) {
@@ -32,6 +47,9 @@ public class ExpandAbstractVillager {
         return internal.isTrading();
     }
     
+    /**
+     * Plays the celebrate sound for the villager.
+     */
     @ZenCodeType.Method
     public static void playCelebrateSound(AbstractVillager internal) {
         

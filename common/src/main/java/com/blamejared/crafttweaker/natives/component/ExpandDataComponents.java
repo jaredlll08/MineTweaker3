@@ -12,6 +12,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = DataComponents.class, zenCodeName = "crafttweaker.api.component.DataComponents")
 public class ExpandDataComponents {
     
+    /**
+     * Gets the common item components that all items intrinsically have.
+     *
+     * @return The common item components.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static DataComponentMap commonItemComponents() {
         

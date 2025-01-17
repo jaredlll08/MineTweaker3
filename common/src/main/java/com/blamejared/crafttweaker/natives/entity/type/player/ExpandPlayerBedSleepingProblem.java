@@ -14,6 +14,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:player/bed_sleeping_problem")
 public class ExpandPlayerBedSleepingProblem {
     
+    /**
+     * Gets the message of the player's bed sleeping problem.
+     *
+     * @return The message of the player's bed sleeping problem.
+     */
     @ZenCodeType.Nullable
     @ZenCodeType.Getter("message")
     public static Component getMessage(Player.BedSleepingProblem internal) {

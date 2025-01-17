@@ -38,6 +38,11 @@ public class ExpandBlockState {
             .stream()
             .allMatch(entry -> entry.getValue().equals(os.getValue(entry.getKey())));
     
+    /**
+     * Gets the sound type of this BlockState.
+     *
+     * @return The sound type of this BlockState.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("soundType")
     public static SoundType getSoundType(BlockState internal) {
@@ -45,6 +50,13 @@ public class ExpandBlockState {
         return internal.getSoundType();
     }
     
+    /**
+     * Rotates this BlockState by the given {@link Rotation}.
+     *
+     * @param rotation The {@link Rotation} to rotate this BlockState by.
+     *
+     * @return The rotated BlockState.
+     */
     @ZenCodeType.Method
     public static BlockState rotate(BlockState internal, Rotation rotation) {
         
@@ -241,6 +253,11 @@ public class ExpandBlockState {
         return prop != null;
     }
     
+    /**
+     * Gets the string representation of this BlockState.
+     *
+     * @return The string representation of this BlockState.
+     */
     @ZenCodeType.Method
     public static String asString(BlockState internal) {
         
@@ -299,12 +316,24 @@ public class ExpandBlockState {
         return builder.toString();
     }
     
+    /**
+     * Gets the {@link CTBlockIngredient} representation of this BlockState.
+     *
+     * @return The {@link CTBlockIngredient} representation of this BlockState.
+     */
     @ZenCodeType.Caster(implicit = true)
     public static CTBlockIngredient asBlockIngredient(BlockState internal) {
         
         return new CTBlockIngredient.BlockStateIngredient(internal);
     }
     
+    /**
+     * Combines this BlockState with another BlockState to create a new {@link CTBlockIngredient}.
+     *
+     * @param other The other BlockState to combine with.
+     *
+     * @return The combined {@link CTBlockIngredient}.
+     */
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static CTBlockIngredient asList(BlockState internal, CTBlockIngredient other) {
         
@@ -314,6 +343,13 @@ public class ExpandBlockState {
         return new CTBlockIngredient.CompoundBlockIngredient(elements);
     }
     
+    /**
+     * Checks if this BlockState matches another BlockState.
+     *
+     * @param other The other BlockState to check against.
+     *
+     * @return True if this BlockState matches the other BlockState. False otherwise.
+     */
     @ZenCodeType.Method
     public static boolean matches(BlockState internal, BlockState other) {
         
@@ -322,6 +358,13 @@ public class ExpandBlockState {
                 .allMatch(property -> internal.getValue(property).equals(other.getValue(property)));
     }
     
+    /**
+     * Checks if this BlockState equals another BlockState.
+     *
+     * @param other The other BlockState to check against.
+     *
+     * @return True if this BlockState equals the other BlockState. False otherwise.
+     */
     @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
     public static boolean equals(BlockState internal, BlockState other) {
         

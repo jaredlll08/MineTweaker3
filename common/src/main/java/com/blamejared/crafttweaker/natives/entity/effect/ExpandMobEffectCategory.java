@@ -14,6 +14,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:mobeffect/category")
 public class ExpandMobEffectCategory {
     
+    /**
+     * Gets the {@link ChatFormatting} of the {@link MobEffectCategory}.
+     *
+     * @return The {@link ChatFormatting} of the {@link MobEffectCategory}.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("tooltipFormatting")
     public static ChatFormatting getTooltipFormatting(MobEffectCategory internal) {

@@ -11,6 +11,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = ExperienceOrb.class, zenCodeName = "crafttweaker.api.entity.type.misc.ExperienceOrb")
 public class ExpandExperienceOrb {
     
+    /**
+     * Gets the value of the experience orb.
+     *
+     * @return The value of the experience orb.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("value")
     public static int getValue(ExperienceOrb internal) {
@@ -18,6 +23,11 @@ public class ExpandExperienceOrb {
         return internal.getValue();
     }
     
+    /**
+     * Gets the icon index of the experience orb.
+     *
+     * @return The icon index of the experience orb.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("icon")
     public static int getIcon(ExperienceOrb internal) {

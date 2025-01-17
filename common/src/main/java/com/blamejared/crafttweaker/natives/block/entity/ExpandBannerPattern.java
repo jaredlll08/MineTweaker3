@@ -15,18 +15,33 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = BannerPattern.class, zenCodeName = "crafttweaker.api.block.entity.BannerPattern")
 public class ExpandBannerPattern {
     
+    /**
+     * Gets the asset id of the banner pattern.
+     *
+     * @return The asset id of the banner pattern.
+     */
     @ZenCodeType.Getter("assetId")
     public static ResourceLocation assetId(BannerPattern internal) {
         
         return internal.assetId();
     }
     
+    /**
+     * Gets the translation key of the banner pattern.
+     *
+     * @return The translation key of the banner pattern.
+     */
     @ZenCodeType.Getter("translationKey")
     public static String translationKey(BannerPattern internal) {
         
         return internal.translationKey();
     }
     
+    /**
+     * Gets the registry name of the banner pattern.
+     *
+     * @return The registry name of the banner pattern.
+     */
     @ZenCodeType.Getter("registryName")
     public static ResourceLocation getRegistryName(BannerPattern internal) {
         
@@ -35,6 +50,11 @@ public class ExpandBannerPattern {
                         .getKey(internal));
     }
     
+    /**
+     * Gets the command string of the banner pattern.
+     *
+     * @return The command string of the banner pattern.
+     */
     @ZenCodeType.Getter("commandString")
     public static String getCommandString(BannerPattern internal) {
         

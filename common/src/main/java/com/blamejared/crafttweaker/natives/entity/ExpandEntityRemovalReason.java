@@ -13,6 +13,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:entity/removalreason")
 public class ExpandEntityRemovalReason {
     
+    /**
+     * Checks if the entity should be destroyed.
+     *
+     * @return True if the entity should be destroyed.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("shouldDestroy")
     public static boolean shouldDestroy(Entity.RemovalReason internal) {

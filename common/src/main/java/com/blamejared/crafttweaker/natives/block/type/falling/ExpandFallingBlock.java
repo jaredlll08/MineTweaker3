@@ -34,7 +34,15 @@ public class ExpandFallingBlock {
         return FallingBlock.isFree(state);
     }
     
-    @ZenCodeType.Method
+    /**
+     * Gets the dust color of the falling block.
+     *
+     * @param state The state of the block.
+     * @param level The level the block is falling in.
+     * @param pos   The position of the block.
+     *
+     * @return The dust color of the falling block.
+     */
     public static int getDustColor(FallingBlock internal, BlockState state, Level level, BlockPos pos) {
         
         return internal.getDustColor(state, level, pos);

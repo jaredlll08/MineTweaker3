@@ -11,6 +11,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = Abilities.class, zenCodeName = "crafttweaker.api.entity.type.player.Abilities")
 public class ExpandAbilities {
     
+    /**
+     * Gets the flying speed of the player.
+     *
+     * @return The flying speed of the player.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("flyingSpeed")
     public static float getFlyingSpeed(Abilities internal) {
@@ -18,6 +23,11 @@ public class ExpandAbilities {
         return internal.getFlyingSpeed();
     }
     
+    /**
+     * Sets the flying speed of the player.
+     *
+     * @param param0 The new flying speed of the player.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Setter("flyingSpeed")
     public static void setFlyingSpeed(Abilities internal, float param0) {
@@ -25,6 +35,11 @@ public class ExpandAbilities {
         internal.setFlyingSpeed(param0);
     }
     
+    /**
+     * Gets the walking speed of the player.
+     *
+     * @return The walking speed of the player.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("walkingSpeed")
     public static float getWalkingSpeed(Abilities internal) {
@@ -32,6 +47,11 @@ public class ExpandAbilities {
         return internal.getWalkingSpeed();
     }
     
+    /**
+     * Sets the walking speed of the player.
+     *
+     * @param param0 The new walking speed of the player.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Setter("walkingSpeed")
     public static void setWalkingSpeed(Abilities internal, float param0) {

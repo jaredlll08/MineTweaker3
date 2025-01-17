@@ -19,6 +19,11 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = BlockEntity.class, zenCodeName = "crafttweaker.api.block.entity.BlockEntity")
 public class ExpandBlockEntity {
     
+    /**
+     * Gets the {@link Level} of the block entity.
+     *
+     * @return The {@link Level} of the block entity.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("level")
     @ZenCodeType.Nullable
@@ -27,6 +32,11 @@ public class ExpandBlockEntity {
         return internal.getLevel();
     }
     
+    /**
+     * Checks if the block entity has a level.
+     *
+     * @return Whether the block entity has a level.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("hasLevel")
     public static boolean hasLevel(BlockEntity internal) {
@@ -34,34 +44,57 @@ public class ExpandBlockEntity {
         return internal.hasLevel();
     }
     
+    /**
+     * Gets the data of the block entity.
+     *
+     * @return The data of the block entity.
+     */
     @ZenCodeType.Getter("data")
     public static IData getData(BlockEntity internal) {
         
-        return new MapData(CraftTweakerAPI.getAccessibleElementsProvider().registryAccess(internal::saveWithoutMetadata));
+        return new MapData(CraftTweakerAPI.getAccessibleElementsProvider()
+                .registryAccess(internal::saveWithoutMetadata));
     }
     
+    /**
+     * Sets the data of the block entity.
+     *
+     * @param data The data to set.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Setter("data")
     public static void setData(BlockEntity internal, IData data) {
         
         if(data instanceof MapData map) {
-            internal.loadWithComponents(map.getInternal(), CraftTweakerAPI.getAccessibleElementsProvider().registryAccess());
+            internal.loadWithComponents(map.getInternal(), CraftTweakerAPI.getAccessibleElementsProvider()
+                    .registryAccess());
         } else {
             throw new IllegalArgumentException("Invalid data provided, expected MapData, received: '%s'".formatted(data));
         }
     }
     
+    /**
+     * Updates the data of the block entity, merging the provided data with the existing data.
+     *
+     * @param data The data to update.
+     */
     @ZenCodeType.Method
     public static void updateData(BlockEntity internal, IData data) {
         
         if(data instanceof MapData) {
             MapData mergedData = (MapData) getData(internal).merge(data);
-            internal.loadWithComponents(mergedData.getInternal(), CraftTweakerAPI.getAccessibleElementsProvider().registryAccess());
+            internal.loadWithComponents(mergedData.getInternal(), CraftTweakerAPI.getAccessibleElementsProvider()
+                    .registryAccess());
         } else {
             throw new IllegalArgumentException("Invalid data provided, expected MapData, received: '%s'".formatted(data));
         }
     }
     
+    /**
+     * Gets the {@link BlockPos} of the block entity.
+     *
+     * @return The {@link BlockPos} of the block entity.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("blockPos")
     public static BlockPos getBlockPos(BlockEntity internal) {
@@ -69,6 +102,11 @@ public class ExpandBlockEntity {
         return internal.getBlockPos();
     }
     
+    /**
+     * Gets the {@link BlockState} of the block entity.
+     *
+     * @return The {@link BlockState} of the block entity.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("blockState")
     public static BlockState getBlockState(BlockEntity internal) {
@@ -76,6 +114,11 @@ public class ExpandBlockEntity {
         return internal.getBlockState();
     }
     
+    /**
+     * Gets the {@link ResourceLocation} of the block entity type.
+     *
+     * @return The {@link ResourceLocation} of the block entity type.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
     public static ResourceLocation getRegistryName(BlockEntity internal) {

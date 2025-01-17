@@ -18,24 +18,47 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:advancement/type")
 public class ExpandAdvancementType {
     
+    /**
+     * Gets the name of the advancement type.
+     *
+     * @return The name of the advancement type.
+     */
     @ZenCodeType.Getter("name")
     public static String getName(AdvancementType internal) {
         
         return internal.name();
     }
     
+    /**
+     * Gets the chat color of the advancement type.
+     *
+     * @return The chat color of the advancement type.
+     */
     @ZenCodeType.Getter("chatColor")
     public static ChatFormatting getChatColor(AdvancementType internal) {
         
         return internal.getChatColor();
     }
     
+    /**
+     * Gets the display name of the advancement type.
+     *
+     * @return The display name of the advancement type.
+     */
     @ZenCodeType.Getter("displayName")
     public static Component getDisplayName(AdvancementType internal) {
         
         return internal.getDisplayName();
     }
     
+    /**
+     * Creates an announcement component for the advancement type.
+     *
+     * @param advancement  The advancement to create the announcement for.
+     * @param serverPlayer The server player to create the announcement for.
+     *
+     * @return The announcement for the advancement type.
+     */
     @ZenCodeType.Method
     public static MutableComponent createAnnouncement(AdvancementType internal, AdvancementHolder advancement, ServerPlayer serverPlayer) {
         

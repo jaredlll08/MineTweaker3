@@ -14,12 +14,26 @@ import org.openzen.zencode.java.ZenCodeType;
 @BracketEnum("minecraft:equipmentslot/group")
 public class ExpandEquipmentSlotGroup {
     
+    /**
+     * Gets the {@link EquipmentSlotGroup} by the {@link EquipmentSlot}.
+     *
+     * @param slot The {@link EquipmentSlot} to get the {@link EquipmentSlotGroup} of.
+     *
+     * @return The {@link EquipmentSlotGroup} of the {@link EquipmentSlot}.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static EquipmentSlotGroup bySlot(EquipmentSlot slot) {
         
         return EquipmentSlotGroup.bySlot(slot);
     }
     
+    /**
+     * Checks if the {@link EquipmentSlotGroup} contains the {@link EquipmentSlot}.
+     *
+     * @param slot The {@link EquipmentSlot} to check.
+     *
+     * @return True if the {@link EquipmentSlotGroup} contains the {@link EquipmentSlot}, false otherwise.
+     */
     @ZenCodeType.Method
     public static boolean test(EquipmentSlotGroup internal, EquipmentSlot slot) {
         

@@ -28,6 +28,11 @@ public class ExpandDecoratedPotPattern {
         return internal.assetId();
     }
     
+    /**
+     * Gets the command string for the pot pattern.
+     *
+     * @return The command string for the pot pattern.
+     */
     @ZenCodeType.Getter("commandString")
     public static String getCommandString(DecoratedPotPattern internal) {
         
