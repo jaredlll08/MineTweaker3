@@ -26,6 +26,7 @@ import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -194,6 +195,17 @@ public interface IItemStack extends IIngredient, IIngredientWithAmount, DataComp
     default <T> IItemStack without(DataComponentType<T> type) {
         
         return remove(type);
+    }
+    
+    @ZenCodeType.Method
+    default IItemStack withoutComponents() {
+        
+        return modify(itemStack -> {
+            
+            for(TypedDataComponent<?> component : itemStack.getComponents()) {
+                itemStack.remove(component.type());
+            }
+        });
     }
     
     @ZenCodeType.Method
