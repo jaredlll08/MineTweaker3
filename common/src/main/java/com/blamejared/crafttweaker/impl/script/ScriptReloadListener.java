@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.ingredient.IngredientCacheBuster;
 import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
 import com.blamejared.crafttweaker.api.util.sequence.SequenceManager;
+import com.blamejared.crafttweaker.api.villager.CTVillagerTrades;
 import com.blamejared.crafttweaker.api.zencode.scriptrun.IScriptRun;
 import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptDiscoveryConfiguration;
 import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
@@ -64,6 +65,7 @@ public final class ScriptReloadListener extends SimplePreparableReloadListener<V
         
         IngredientCacheBuster.claim();
         SequenceManager.clearSequences();
+        CTVillagerTrades.clear();
         IAccessibleServerElementsProvider asep = CraftTweakerAPI.getAccessibleElementsProvider().server();
         asep.resources(this.resources);
         TagManager tagmanager = asep.accessibleResources().crafttweaker$getTagManager();
