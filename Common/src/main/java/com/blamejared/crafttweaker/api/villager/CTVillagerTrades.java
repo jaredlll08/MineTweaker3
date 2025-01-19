@@ -53,8 +53,6 @@ public class CTVillagerTrades {
      * Use {@link com.blamejared.crafttweaker.api.plugin.ICraftTweakerPlugin#registerVillagerTradeConverters(IVillagerTradeRegistrationHandler)} to register custom trades to this list
      */
     public static final Map<Class<VillagerTrades.ItemListing>, Function<VillagerTrades.ItemListing, CTTradeObject>> TRADE_CONVERTER = new HashMap<>();
-    // The event only fires once, so we use this to make sure we don't constantly add to the above lists
-    public static boolean RAN_EVENTS = false;
     
     /**
      * Adds a new custom trade with the selling and buying items determined by the custom MerchantOffer generator.
@@ -658,15 +656,19 @@ public class CTVillagerTrades {
     
     private void apply(ActionTradeBase action, boolean wandering) {
         
-        if(!CTVillagerTrades.RAN_EVENTS) {
-            if(wandering) {
-                CTVillagerTrades.ACTION_WANDERING_TRADES.add(action);
-            } else {
-                CTVillagerTrades.ACTIONS_VILLAGER_TRADES.add(action);
-            }
+        if(wandering) {
+            CTVillagerTrades.ACTION_WANDERING_TRADES.add(action);
+        } else {
+            CTVillagerTrades.ACTIONS_VILLAGER_TRADES.add(action);
         }
         CraftTweakerAPI.apply(action);
     }
     
+    
+    public static void clear() {
+        
+        CTVillagerTrades.ACTIONS_VILLAGER_TRADES.clear();
+        CTVillagerTrades.ACTION_WANDERING_TRADES.clear();
+    }
     
 }

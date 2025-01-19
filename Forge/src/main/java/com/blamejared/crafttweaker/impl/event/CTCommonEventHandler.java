@@ -93,7 +93,6 @@ public class CTCommonEventHandler {
         collect.forEach(actionTradeBase -> actionTradeBase.apply(e.getTrades()
                 .computeIfAbsent(actionTradeBase.getLevel(), value -> new ArrayList<>())));
         CTVillagerTrades.ACTIONS_VILLAGER_TRADES.removeAll(collect);
-        CTVillagerTrades.RAN_EVENTS = true;
     }
 
     @SubscribeEvent
