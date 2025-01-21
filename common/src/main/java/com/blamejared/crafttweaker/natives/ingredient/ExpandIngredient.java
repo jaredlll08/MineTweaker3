@@ -18,6 +18,13 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = Ingredient.class, zenCodeName = "crafttweaker.api.ingredient.Ingredient")
 public class ExpandIngredient {
     
+    /**
+     * Casts an Ingredient to an IIngredient.
+     *
+     * @param internal The Ingredient to cast.
+     *
+     * @return The IIngredient.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IIngredient asIIngredient(Ingredient internal) {
