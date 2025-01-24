@@ -108,6 +108,7 @@ public class ExpandBundleContents {
          * @return The immutable BundleContents.
          */
         @ZenCodeType.Method
+        @ZenCodeType.Caster(implicit = true)
         public static BundleContents toImmutable(BundleContents.Mutable internal) {
             
             return internal.toImmutable();
@@ -135,6 +136,7 @@ public class ExpandBundleContents {
          * @return The item that was removed.
          */
         @ZenCodeType.Nullable
+        @ZenCodeType.Method
         public static IItemStack removeOne(BundleContents.Mutable internal) {
             
             return Optionull.map(internal.removeOne(), IItemStack::of);

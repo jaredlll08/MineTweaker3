@@ -113,6 +113,7 @@ public class ExpandPlayer {
      * @return The item entity that was dropped.
      */
     @ZenCodeType.Nullable
+    @ZenCodeType.Method
     public static ItemEntity drop(Player internal, ItemStack stack, boolean traceItem) {
         
         return internal.drop(stack, traceItem);

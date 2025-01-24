@@ -45,6 +45,7 @@ public class ExpandDataComponentType {
      *
      * @return The registry name of the data component type.
      */
+    @ZenCodeType.Getter("registryName")
     public static ResourceLocation getRegistryName(DataComponentType internal) {
         
         return Services.REGISTRY.keyOrThrow(Registries.DATA_COMPONENT_TYPE, internal);

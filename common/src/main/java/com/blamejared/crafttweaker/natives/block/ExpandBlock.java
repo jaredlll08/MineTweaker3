@@ -325,6 +325,7 @@ public class ExpandBlock {
      *
      * @return The combined {@link CTBlockIngredient}.
      */
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static CTBlockIngredient asList(Block internal, CTBlockIngredient other) {
         
         List<CTBlockIngredient> elements = new ArrayList<>();
