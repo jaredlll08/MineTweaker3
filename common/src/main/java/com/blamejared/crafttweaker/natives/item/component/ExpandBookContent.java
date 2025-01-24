@@ -14,12 +14,24 @@ import java.util.List;
 @NativeTypeRegistration(value = BookContent.class, zenCodeName = "crafttweaker.api.item.component.BookContent")
 public class ExpandBookContent {
     
+    /**
+     * Gets the pages of the book content.
+     *
+     * @return The pages of the book content.
+     */
     @ZenCodeType.Method
     public static <T, C> List<Filterable<T>> pages(BookContent<T, C> internal) {
         
         return internal.pages();
     }
     
+    /**
+     * Sets the pages of the book content.
+     *
+     * @param list The pages of the book content.
+     *
+     * @return The new book content.
+     */
     @ZenCodeType.Method
     public static <T, C> C withReplacedPages(BookContent<T, C> internal, List<Filterable<T>> list) {
         

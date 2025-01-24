@@ -18,12 +18,28 @@ import java.util.List;
 @NativeTypeRegistration(value = AdventureModePredicate.class, zenCodeName = "crafttweaker.api.item.component.AdventureModePredicate")
 public class ExpandAdventureModePredicate {
     
+    /**
+     * Creates a new AdventureModePredicate with the given predicates and showInTooltip flag.
+     *
+     * @param predicates    The list of block predicates.
+     * @param showInTooltip Whether the predicate should show in the tooltip.
+     *
+     * @return The new AdventureModePredicate.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static AdventureModePredicate of(List<BlockPredicate> predicates, boolean showInTooltip) {
         
         return new AdventureModePredicate(predicates, showInTooltip);
     }
     
+    /**
+     * Creates a new AdventureModePredicate with the given blocks and showInTooltip flag.
+     *
+     * @param predicates    The list of blocks.
+     * @param showInTooltip Whether the predicate should show in the tooltip.
+     *
+     * @return The new AdventureModePredicate.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static AdventureModePredicate ofBlocks(List<Block> predicates, boolean showInTooltip) {
         
@@ -32,6 +48,14 @@ public class ExpandAdventureModePredicate {
                 .build()), showInTooltip);
     }
     
+    /**
+     * Creates a new AdventureModePredicate with the given tags and showInTooltip flag.
+     *
+     * @param predicates    The list of tags.
+     * @param showInTooltip Whether the predicate should show in the tooltip.
+     *
+     * @return The new AdventureModePredicate.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static AdventureModePredicate ofTags(List<KnownTag<Block>> predicates, boolean showInTooltip) {
         
@@ -40,12 +64,24 @@ public class ExpandAdventureModePredicate {
                 .build()), showInTooltip);
     }
     
+    /**
+     * Gets whether the predicate should show in the tooltip.
+     *
+     * @return Whether the predicate should show in the tooltip.
+     */
     @ZenCodeType.Getter("showInTooltip")
     public static boolean showInTooltip(AdventureModePredicate internal) {
         
         return internal.showInTooltip();
     }
     
+    /**
+     * Sets whether the predicate should show in the tooltip.
+     *
+     * @param tooltip Whether the predicate should show in the tooltip.
+     *
+     * @return The new AdventureModePredicate.
+     */
     @ZenCodeType.Method
     public static AdventureModePredicate withTooltip(AdventureModePredicate internal, boolean tooltip) {
         

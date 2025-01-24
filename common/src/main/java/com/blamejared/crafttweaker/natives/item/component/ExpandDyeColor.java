@@ -13,13 +13,26 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = DyeColor.class, zenCodeName = "crafttweaker.api.item.component.DyeColor")
 public class ExpandDyeColor {
     
+    /**
+     * Gets the text color of the DyeColor.
+     *
+     * @return The text color of the DyeColor.
+     */
     @ZenCodeType.Getter("textColor")
     public static int getTextColor(DyeColor internal) {
+        
         return internal.getTextColor();
     }
     
+    /**
+     * Gets the firework color of the DyeColor.
+     *
+     * @return The firework color of the DyeColor.
+     */
     @ZenCodeType.Getter("fireworkColor")
     public static int getFireworkColor(DyeColor internal) {
+        
         return internal.getFireworkColor();
     }
+    
 }

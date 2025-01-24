@@ -16,18 +16,40 @@ import java.util.List;
 @NativeTypeRegistration(value = ChargedProjectiles.class, zenCodeName = "crafttweaker.api.item.component.ChargedProjectiles")
 public class ExpandChargedProjectiles {
     
+    /**
+     * Creates a new ChargedProjectiles with the given item.
+     *
+     * @param stack The item to create the ChargedProjectiles from.
+     *
+     * @return The new ChargedProjectiles.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static ChargedProjectiles of(IItemStack stack) {
         
         return ChargedProjectiles.of(stack.getInternal());
     }
     
+    /**
+     * Creates a new ChargedProjectiles with the given items.
+     *
+     * @param stacks The items to create the ChargedProjectiles from.
+     *
+     * @return The new ChargedProjectiles.
+     */
     @ZenCodeType.StaticExpansionMethod
     public static ChargedProjectiles of(List<IItemStack> stacks) {
         
         return ChargedProjectiles.of(Lists.transform(stacks, IItemStack::getInternal));
     }
     
+    /**
+     * Checks if the ChargedProjectiles contains the given item.
+     *
+     * @param internal The ChargedProjectiles.
+     * @param item     The item to check for.
+     *
+     * @return Whether the ChargedProjectiles contains the given item.
+     */
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
     public static boolean contains(ChargedProjectiles internal, Item item) {
@@ -35,12 +57,26 @@ public class ExpandChargedProjectiles {
         return internal.contains(item);
     }
     
+    /**
+     * Gets the items of the ChargedProjectiles.
+     *
+     * @param internal The ChargedProjectiles.
+     *
+     * @return The items of the ChargedProjectiles.
+     */
     @ZenCodeType.Getter("items")
     public static List<IItemStack> getItems(ChargedProjectiles internal) {
         
         return Lists.transform(internal.getItems(), IItemStack::of);
     }
     
+    /**
+     * Checks if the ChargedProjectiles is empty.
+     *
+     * @param internal The ChargedProjectiles.
+     *
+     * @return Whether the ChargedProjectiles is empty.
+     */
     @ZenCodeType.Getter("empty")
     public static boolean isEmpty(ChargedProjectiles internal) {
         
