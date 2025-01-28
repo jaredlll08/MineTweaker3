@@ -7,7 +7,7 @@ import com.blamejared.crafttweaker.api.loot.LootManager;
 import com.blamejared.crafttweaker.api.plugin.ICommandRegistrationHandler;
 import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
 import com.blamejared.crafttweaker.api.tag.MCTag;
-import com.blamejared.crafttweaker.api.tag.manager.ITagManager;
+import com.blamejared.crafttweaker.api.util.GenericUtil;
 import com.blamejared.crafttweaker.api.util.PathUtil;
 import com.blamejared.crafttweaker.api.villager.CTVillagerTrades;
 import com.blamejared.crafttweaker.impl.command.CtCommands;
@@ -18,14 +18,21 @@ import com.blamejared.crafttweaker.natives.world.biome.ExpandBiome;
 import com.blamejared.crafttweaker.platform.Services;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -38,6 +45,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public final class DumpCommands {
     
@@ -245,19 +253,31 @@ public final class DumpCommands {
                     CommandSourceStack source = context.getSource();
                     
                     CommandUtilities.COMMAND_LOGGER.info("All Tag Contents");
-                    CraftTweakerTagRegistry.INSTANCE.managers()
-                            .stream()
-                            .sorted(ITagManager::compareTo)
-                            .peek(it -> CommandUtilities.COMMAND_LOGGER.info("Contents of '{}' tags:", it.tagFolder()))
-                            .flatMap(it -> it.tags().stream().sorted(MCTag::compareTo))
-                            .peek(it -> CommandUtilities.COMMAND_LOGGER.info(it.getCommandString()))
-                            .flatMap(it -> it.idElements()
-                                    .stream()
-                                    .sorted(Comparator.comparing(ResourceLocation::getPath)
-                                            .thenComparing(ResourceLocation::getNamespace))
-                                    .map(o -> getTagAsString(source, it, o)))
-                            .forEach(it -> CommandUtilities.COMMAND_LOGGER.info("\t- {}", it));
-                    
+                    RegistryAccess registryAccess = context.getSource().registryAccess();
+                    registryAccess.registries()
+                            .sorted(Comparator.comparing(o -> o.key().location()))
+                            .forEach(entry -> {
+                                Registry<?> registry = entry.value();
+                                String tagFolder = CraftTweakerTagRegistry.INSTANCE.makeTagFolder(registry.key());
+                                CommandUtilities.COMMAND_LOGGER.info("Contents of '{}' tags:", tagFolder);
+                                registry.getTags()
+                                        .sorted(Comparator.comparing((Pair<? extends TagKey<?>, ? extends HolderSet.Named<?>> o) -> o.getFirst()
+                                                .location()))
+                                        .forEach(pair -> {
+                                            CommandUtilities.COMMAND_LOGGER.info("<tag:" + tagFolder + ":" + pair.getFirst()
+                                                    .location() + ">");
+                                            
+                                            Function<Holder<?>, ResourceLocation> keyExtractor = holder -> holder.unwrap()
+                                                    .map(ResourceKey::location, o -> registry.getKey(GenericUtil.uncheck(o)));
+                                            pair.getSecond()
+                                                    .stream()
+                                                    .map(keyExtractor)
+                                                    .sorted(ResourceLocation::compareTo)
+                                                    .forEach(resourceLocation -> {
+                                                        CommandUtilities.COMMAND_LOGGER.info("\t- {}", resourceLocation);
+                                                    });
+                                        });
+                            });
                     CommandUtilities.openLogFile(source, Component.translatable("crafttweaker.command.list.check.log", CommandUtilities.makeNoticeable(Component.translatable("crafttweaker.command.misc.tag.contents")), CommandUtilities.getFormattedLogFile())
                             .withStyle(ChatFormatting.GREEN));
                     return Command.SINGLE_SUCCESS;
