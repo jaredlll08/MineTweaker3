@@ -1,0 +1,1 @@
+<item:minecraft:dirt>.burnTime = 500;

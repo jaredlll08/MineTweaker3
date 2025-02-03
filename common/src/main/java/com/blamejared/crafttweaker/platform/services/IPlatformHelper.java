@@ -27,9 +27,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.material.Fluid;
 
 import java.lang.annotation.Annotation;
@@ -191,5 +193,13 @@ public interface IPlatformHelper {
     }
     
     FoodProperties.PossibleEffect createPossibleEffect(MobEffectInstance effect, float probability);
+    
+    
+    default void setCompostable(IItemStack stack, Optional<Float> value, boolean undoing) {
+        
+        Item item = stack.getInternal().getItem();
+        value.ifPresentOrElse(val -> ComposterBlock.COMPOSTABLES.put(item, val.floatValue()), () -> ComposterBlock.COMPOSTABLES.removeFloat(item));
+        
+    }
     
 }

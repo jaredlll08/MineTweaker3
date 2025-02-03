@@ -4,8 +4,11 @@ import com.blamejared.crafttweaker.api.action.base.IUndoableAction;
 import com.blamejared.crafttweaker.api.action.internal.CraftTweakerAction;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.zencode.IScriptLoadSource;
+import com.blamejared.crafttweaker.platform.Services;
 import net.minecraft.world.level.block.ComposterBlock;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Optional;
 
 public class ActionSetCompostable extends CraftTweakerAction implements IUndoableAction {
     
@@ -23,11 +26,7 @@ public class ActionSetCompostable extends CraftTweakerAction implements IUndoabl
     @Override
     public void apply() {
         
-        if(newValue <= 0) {
-            ComposterBlock.COMPOSTABLES.remove(stack.getInternal().getItem());
-        } else {
-            ComposterBlock.COMPOSTABLES.put(stack.getInternal().getItem(), newValue);
-        }
+        Services.PLATFORM.setCompostable(stack, Optional.of(newValue).filter(aFloat -> aFloat > 0), false);
     }
     
     @Override
@@ -39,11 +38,7 @@ public class ActionSetCompostable extends CraftTweakerAction implements IUndoabl
     @Override
     public void undo() {
         
-        if(oldValue <= 0) {
-            ComposterBlock.COMPOSTABLES.remove(stack.getInternal().getItem());
-        } else {
-            ComposterBlock.COMPOSTABLES.put(stack.getInternal().getItem(), oldValue);
-        }
+        Services.PLATFORM.setCompostable(stack, Optional.of(oldValue).filter(aFloat -> aFloat > 0), true);
     }
     
     @Override

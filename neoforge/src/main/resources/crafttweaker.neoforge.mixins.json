@@ -7,6 +7,8 @@
   "mixins": [
     "common.access.entity.AccessFakePlayerFactory",
     "common.access.loot.AccessLootModifierManager",
+    "common.access.neoforge.AccessDataMapLoader",
+    "common.access.neoforge.AccessDataMapLoaderResult",
     "common.access.neoforge.AccessNeoForgeInternalHandler",
     "common.access.villager.AccessBasicTrade",
     "common.transform.item.attribute.MixinItemAttributeModifierEvent",
