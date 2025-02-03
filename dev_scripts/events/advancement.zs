@@ -1,3 +1,4 @@
+#modloader neoforge
 import crafttweaker.neoforge.api.event.advancement.AdvancementEarnEvent;
 import crafttweaker.api.entity.type.player.ServerPlayer;
 import crafttweaker.api.world.ServerLevel;
